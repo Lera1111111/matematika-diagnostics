@@ -171,7 +171,7 @@ const questions: Question[] = [
     prompt: "Вычисли:",
     expression: "2 3/5 + 1 7/10",
     type: "text",
-    hint: "Например: 4 3/10 или 43/10",
+    hint: "Например: 2 1/3 или 7/3",
     topic: "Смешанные числа",
     block: "Обыкновенные дроби",
     correctLabel: "4 3/10",
