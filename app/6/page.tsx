@@ -385,6 +385,7 @@ function MathDoodle() {
 
 export default function Home() {
   const [screen, setScreen] = useState<"home" | "test" | "review" | "result">("home");
+    const [studentName, setStudentName] = useState("");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
   const [hydrated, setHydrated] = useState(false);
@@ -422,11 +423,13 @@ export default function Home() {
     [answers],
   );
 
-  const start = () => {
+   const start = () => {
+    if (!studentName.trim()) return;
+
     setScreen("test");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
+  
   const restart = () => {
     localStorage.removeItem(STORAGE_KEY);
     setAnswers({});
@@ -685,8 +688,8 @@ export default function Home() {
             <span>из 20</span>
           </div>
           <div>
-            <p className="kicker">Диагностика завершена</p>
-            <h1>{copy.title}</h1>
+                        <p className="kicker">Диагностика завершена</p>
+            <h1>{studentName.trim()}, {copy.title.toLowerCase()}</h1>
             <p>{copy.text}</p>
             <small>{copy.extra}</small>
           </div>
@@ -696,7 +699,7 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="kicker">Персональный разбор</p>
-              <h2>Как обстоят дела по темам</h2>
+              <h2>{studentName.trim()}, вот твой результат по темам</h2>
             </div>
             <span>Рекомендации только по твоим ответам</span>
           </div>
@@ -817,9 +820,23 @@ export default function Home() {
               Это не контрольная и не экзамен. Здесь нет оценок — только понятный
               результат и рекомендации.
             </p>
+                      <label className="answer-field">
+            <span>Как тебя зовут?</span>
+            <input
+              type="text"
+              value={studentName}
+              onChange={(event) => setStudentName(event.target.value)}
+              placeholder="Введи имя"
+              autoComplete="given-name"
+            />
+          </label>
           </div>
           <div className="hero-actions">
-            <button className="button primary big" onClick={start}>
+         <button
+  className="button primary big"
+  onClick={start}
+  disabled={!studentName.trim()}
+>
               Начать диагностику <span>→</span>
             </button>
             <p><b>20 заданий</b><span>·</span> около 20 минут <span>·</span> результат сразу</p>
