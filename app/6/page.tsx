@@ -815,11 +815,11 @@ export default function Home() {
             а что стоит освежить перед новым учебным годом.
           </p>
           <div className="calm-note">
-            <span>♡</span>
-            <p>
-              Это не контрольная и не экзамен. Здесь нет оценок — только понятный
-              результат и рекомендации.
-           </p>
+  <span>♡</span>
+  <p>
+    Это не контрольная и не экзамен. Здесь нет оценок — только понятный
+    результат и рекомендации.
+  </p>
 </div>
 
 <div className="name-start-card">
@@ -838,6 +838,21 @@ export default function Home() {
       }
     }}
   />
+</div>
+
+<div className="hero-actions">
+  <button
+    className="button primary big"
+    onClick={start}
+    disabled={!studentName.trim()}
+  >
+    Начать диагностику <span>→</span>
+  </button>
+
+  <p>
+    <b>20 заданий</b>
+    <span>·</span> около 20 минут <span>·</span> результат сразу
+  </p>
 </div>
 
 <div className="hero-actions">
