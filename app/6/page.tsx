@@ -859,19 +859,7 @@ const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
   </p>
 </div>
 
-          <div className="hero-actions">
-            <button
-              className="button primary big"
-              onClick={start}
-              disabled={!studentName.trim()}
-            >
-              Начать диагностику <span>→</span>
-            </button>
-            <p>
-              <b>20 заданий</b>
-              <span>·</span> около 20 минут <span>·</span> результат сразу
-            </p>
-          </div>
+        
         </div>
         <MathDoodle />
       </section>
