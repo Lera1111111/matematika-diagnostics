@@ -837,7 +837,6 @@ export default function Home() {
     }}
   />
 </div>
-</div>
           </div>
           <div className="hero-actions">
          <button
