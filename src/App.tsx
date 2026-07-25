@@ -8,6 +8,7 @@ import AfterNinePage from "../app/after9/page";
 
 const pageByRoute: Record<string, React.ComponentType> = {
   "/": HomePage,
+   "/6": GradeSixPage,
   "/7": GradeSevenPage,
   "/8": GradeEightPage,
   "/9": GradeNinePage,
@@ -16,7 +17,8 @@ const pageByRoute: Record<string, React.ComponentType> = {
 };
 
 const titleByRoute: Record<string, string> = {
-  "/": "Что повторить перед 6 классом?",
+  "/": "Математические диагностики",
+  "/6": "Что повторить перед 6 классом?",
   "/7": "Что повторить перед 7 классом?",
   "/8": "Что повторить перед 8 классом?",
   "/9": "Что повторить перед 9 классом?",
