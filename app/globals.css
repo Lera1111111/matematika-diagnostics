@@ -2872,3 +2872,72 @@ footer {
     height: 54px;
   }
 }
+.name-start-card {
+  width: 100%;
+  max-width: 680px;
+  margin-top: 26px;
+}
+
+.name-start-card label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3f3948;
+}
+
+.name-start-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.name-start-row input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 58px;
+  padding: 0 18px;
+  border: 1px solid rgba(111, 78, 180, 0.28);
+  border-radius: 16px;
+  background: #ffffff;
+  color: #302a38;
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+  box-shadow: 0 8px 24px rgba(80, 57, 120, 0.06);
+}
+
+.name-start-row input:focus {
+  border-color: #7457c8;
+  box-shadow:
+    0 0 0 4px rgba(116, 87, 200, 0.1),
+    0 8px 24px rgba(80, 57, 120, 0.08);
+}
+
+.name-start-row .button {
+  min-width: 260px;
+  min-height: 58px;
+  white-space: nowrap;
+}
+
+.name-start-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  color: #7f778a;
+  font-size: 14px;
+}
+
+@media (max-width: 760px) {
+  .name-start-row {
+    grid-template-columns: 1fr;
+  }
+
+  .name-start-row .button {
+    width: 100%;
+    min-width: 0;
+  }
+}
