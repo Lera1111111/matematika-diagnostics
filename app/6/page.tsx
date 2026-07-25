@@ -18,7 +18,7 @@ type Question = {
   check: (answer: Answer) => boolean;
 };
 
-const TELEGRAM_URL = "https://t.me/m/8wQr09o1NDEy";
+const TELEGRAM_USERNAME = "vxoab";
 const STORAGE_KEY = "math-diagnostic-6-v1";
 
 const normalize = (value: string) =>
@@ -448,15 +448,12 @@ export default function Home() {
 
     return (
       <main className="test-shell">
-        <header className="compact-header">
-          <button className="brand brand-button" onClick={() => setScreen("home")}>
-            <span className="brand-mark">∿</span>
-            <span>Математика без стресса</span>
-          </button>
-          <button className="text-button" onClick={restart}>
-            Начать сначала
-          </button>
-        </header>
+       <header className="site-header">
+  <div className="brand">
+    <span className="brand-mark">∿</span>
+    <span>Математика без стресса</span>
+  </div>
+</header>
 
         <section className="test-wrap">
           <div className="progress-line">
@@ -664,6 +661,13 @@ inputMode={question.block === "Обыкновенные дроби" ? "text" : "
 
   if (screen === "result") {
     const copy = resultCopy(score);
+    const telegramMessage = encodeURIComponent(
+  `Здравствуйте! Меня зовут ${studentName.trim()}. ` +
+    `Результат моей диагностики перед 6 классом — ${score} из ${questions.length}. ` +
+    `Хочу узнать, какие темы лучше повторить.`,
+);
+
+const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
     const blocks = [...new Set(questions.map((question) => question.block))];
     const strongTopics = questions
       .filter((question) => question.check(answers[question.id] ?? ""))
@@ -778,7 +782,7 @@ inputMode={question.block === "Обыкновенные дроби" ? "text" : "
             <p>{copy.card}</p>
           </div>
           <div className="cta-actions">
-            <a className="button primary" href={TELEGRAM_URL} target="_blank" rel="noreferrer">
+            <a className="button primary" href={telegramUrl} target="_blank" rel="noreferrer">
               {copy.cta}
             </a>
             <button className="button secondary" onClick={restart}>
