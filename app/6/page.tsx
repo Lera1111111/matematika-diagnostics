@@ -820,24 +820,23 @@ export default function Home() {
               Это не контрольная и не экзамен. Здесь нет оценок — только понятный
               результат и рекомендации.
             </p>
-                     <div className="name-start-card">
+                    <div className="name-start-card">
   <label htmlFor="student-name">Как тебя зовут?</label>
 
-  <div className="name-start-row">
-    <input
-      id="student-name"
-      type="text"
-      value={studentName}
-      onChange={(event) => setStudentName(event.target.value)}
-      placeholder="Введи имя"
-      autoComplete="given-name"
-      onKeyDown={(event) => {
-        if (event.key === "Enter" && studentName.trim()) {
-          start();
-        }
-      }}
-    />
-  </div>
+  <input
+    id="student-name"
+    type="text"
+    value={studentName}
+    onChange={(event) => setStudentName(event.target.value)}
+    placeholder="Введи имя"
+    autoComplete="given-name"
+    onKeyDown={(event) => {
+      if (event.key === "Enter" && studentName.trim()) {
+        start();
+      }
+    }}
+  />
+</div>
 </div>
           </div>
           <div className="hero-actions">
