@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import HomePage from "../app/page";
+import GradeSixPage from "../app/6/page";
 import GradeSevenPage from "../app/7/page";
 import GradeEightPage from "../app/8/page";
 import GradeNinePage from "../app/9/page";
