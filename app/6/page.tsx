@@ -495,7 +495,7 @@ export default function Home() {
               <label className="answer-field">
                 <span>Твой ответ</span>
                 <input
-                  inputMode="decimal"
+inputMode={question.block === "Обыкновенные дроби" ? "text" : "decimal"}
                   autoFocus
                   value={typeof answer === "string" ? answer : ""}
                   onChange={(event) => update(event.target.value)}
