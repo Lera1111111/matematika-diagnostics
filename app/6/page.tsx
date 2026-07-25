@@ -385,7 +385,7 @@ function MathDoodle() {
 
 export default function Home() {
   const [screen, setScreen] = useState<"home" | "test" | "review" | "result">("home");
-    const [studentName, setStudentName] = useState("");
+  const [studentName, setStudentName] = useState("");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
   const [hydrated, setHydrated] = useState(false);
@@ -423,7 +423,7 @@ export default function Home() {
     [answers],
   );
 
-   const start = () => {
+  const start = () => {
     if (!studentName.trim()) return;
 
     setScreen("test");
@@ -688,7 +688,7 @@ export default function Home() {
             <span>из 20</span>
           </div>
           <div>
-                        <p className="kicker">Диагностика завершена</p>
+            <p className="kicker">Диагностика завершена</p>
             <h1>{studentName.trim()}, {copy.title.toLowerCase()}</h1>
             <p>{copy.text}</p>
             <small>{copy.extra}</small>
@@ -815,57 +815,43 @@ export default function Home() {
             а что стоит освежить перед новым учебным годом.
           </p>
           <div className="calm-note">
-  <span>♡</span>
-  <p>
-    Это не контрольная и не экзамен. Здесь нет оценок — только понятный
-    результат и рекомендации.
-  </p>
-</div>
-
-<div className="name-start-card">
-  <label htmlFor="student-name">Как тебя зовут?</label>
-
-  <input
-    id="student-name"
-    type="text"
-    value={studentName}
-    onChange={(event) => setStudentName(event.target.value)}
-    placeholder="Введи имя"
-    autoComplete="given-name"
-    onKeyDown={(event) => {
-      if (event.key === "Enter" && studentName.trim()) {
-        start();
-      }
-    }}
-  />
-</div>
-
-<div className="hero-actions">
-  <button
-    className="button primary big"
-    onClick={start}
-    disabled={!studentName.trim()}
-  >
-    Начать диагностику <span>→</span>
-  </button>
-
-  <p>
-    <b>20 заданий</b>
-    <span>·</span> около 20 минут <span>·</span> результат сразу
-  </p>
-</div>
-
-<div className="hero-actions">
+            <span>♡</span>
+            <p>
+              Это не контрольная и не экзамен. Здесь нет оценок — только понятный
+              результат и рекомендации.
+            </p>
           </div>
+
+          <div className="name-start-card">
+            <label htmlFor="student-name">Как тебя зовут?</label>
+
+            <input
+              id="student-name"
+              type="text"
+              value={studentName}
+              onChange={(event) => setStudentName(event.target.value)}
+              placeholder="Введи имя"
+              autoComplete="given-name"
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && studentName.trim()) {
+                  start();
+                }
+              }}
+            />
+          </div>
+
           <div className="hero-actions">
-         <button
-  className="button primary big"
-  onClick={start}
-  disabled={!studentName.trim()}
->
+            <button
+              className="button primary big"
+              onClick={start}
+              disabled={!studentName.trim()}
+            >
               Начать диагностику <span>→</span>
             </button>
-            <p><b>20 заданий</b><span>·</span> около 20 минут <span>·</span> результат сразу</p>
+            <p>
+              <b>20 заданий</b>
+              <span>·</span> около 20 минут <span>·</span> результат сразу
+            </p>
           </div>
         </div>
         <MathDoodle />
