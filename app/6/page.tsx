@@ -819,8 +819,10 @@ export default function Home() {
             <p>
               Это не контрольная и не экзамен. Здесь нет оценок — только понятный
               результат и рекомендации.
-            </p>
-                    <div className="name-start-card">
+           </p>
+</div>
+
+<div className="name-start-card">
   <label htmlFor="student-name">Как тебя зовут?</label>
 
   <input
@@ -837,6 +839,8 @@ export default function Home() {
     }}
   />
 </div>
+
+<div className="hero-actions">
           </div>
           <div className="hero-actions">
          <button
