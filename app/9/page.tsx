@@ -451,7 +451,12 @@ export default function GradeNineDiagnostic() {
     else setCurrent((value) => value + 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+const start = () => {
+  if (!name.trim()) return;
 
+  setScreen("test");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
   const restart = () => {
     if (!window.confirm("Начать диагностику заново? Сохранённые ответы будут удалены.")) return;
     localStorage.removeItem(STORAGE_KEY);
@@ -728,10 +733,12 @@ export default function GradeNineDiagnostic() {
 
   return (
     <main className="home-page grade-nine-page">
-      <header className="site-header">
-        <a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-        <button className="header-cta" onClick={() => setScreen("test")}>Начать диагностику</button>
-      </header>
+<header className="site-header">
+  <a className="brand" href="/">
+    <span className="brand-mark">∿</span>
+    <span>Математика без стресса</span>
+  </a>
+</header>
       <section className="hero">
         <div className="hero-copy">
           <div className="soft-pill">Диагностика по программе 8 класса</div>
@@ -740,14 +747,38 @@ export default function GradeNineDiagnostic() {
           <div className="diagnostic-facts">
             <span><b>28</b> заданий</span><span>Алгебра и геометрия</span>
             <span>Без оценки и таймера</span><span>Персональные рекомендации</span>
-          </div>
-          <label className="name-field">
-            <span>Как тебя зовут? <small>необязательно</small></span>
-            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Имя" autoComplete="given-name" />
-          </label>
-          <div className="hero-actions">
-            <button className="button primary big" onClick={() => setScreen("test")}>Начать диагностику <span>→</span></button>
-          </div>
+<div className="name-start-card">
+  <label htmlFor="student-name">Как тебя зовут?</label>
+
+  <div className="name-start-row">
+    <input
+      id="student-name"
+      type="text"
+      value={name}
+      onChange={(event) => setName(event.target.value)}
+      placeholder="Введи имя"
+      autoComplete="given-name"
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && name.trim()) {
+          start();
+        }
+      }}
+    />
+
+    <button
+      className="button primary big"
+      onClick={start}
+      disabled={!name.trim()}
+    >
+      Начать диагностику <span>→</span>
+    </button>
+  </div>
+
+  <p className="name-start-meta">
+    <b>28 заданий</b>
+    <span>·</span> около 35–40 минут <span>·</span> результат сразу
+  </p>
+</div>
           <div className="calm-note"><span>♡</span><p>Если ты совсем не понимаешь, как выполнить задание, выбирай «Не знаю, как решить». Это поможет точнее определить темы для повторения.</p></div>
           <p className="privacy-note">Без регистрации. Имя и ответы остаются только в браузере на этом устройстве.</p>
         </div>
