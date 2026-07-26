@@ -58,7 +58,22 @@ function asNumber(value: string) {
   const parsed = Number(cleaned);
   return Number.isFinite(parsed) ? parsed : null;
 }
+function renderMathText(value: string) {
+  const parts = value.split(/(√(?:\([^)]*\)|[0-9a-zа-яё]+))/gi);
 
+  return parts.map((part, index) => {
+    if (!part.startsWith("√")) {
+      return part;
+    }
+
+    return (
+      <span className="pretty-root" key={`${part}-${index}`}>
+        <span className="pretty-root-sign">√</span>
+        <span className="pretty-root-value">{part.slice(1)}</span>
+      </span>
+    );
+  });
+}
 function rootsAreCorrect(value: string) {
   const roots = value
     .trim()
@@ -517,7 +532,11 @@ const start = () => {
             </div>
             <p className="question-eyebrow">{question.eyebrow}</p>
             <h1>{question.prompt}</h1>
-            {question.expression && <div className="expression grade-nine-expression">{question.expression}</div>}
+            {question.expression && (
+  <div className="expression grade-nine-expression">
+    {renderMathText(question.expression)}
+  </div>
+)}
             {question.diagram && <GradeNineDiagram kind={question.diagram} />}
             {question.note && <p className="diagram-note">{question.note}</p>}
 
@@ -550,7 +569,7 @@ const start = () => {
                         ...previous, [question.id]: { value: option, dontKnow: false },
                       }))}
                     />
-                    <span>{option}</span>
+<span>{renderMathText(option)}</span>
                   </label>
                 ))}
               </div>
@@ -573,7 +592,7 @@ const start = () => {
                           }));
                         }}
                       />
-                      <span>{option}</span>
+<span>{renderMathText(option)}</span>
                     </label>
                   );
                 })}
