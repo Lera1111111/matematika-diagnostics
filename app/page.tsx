@@ -38,13 +38,6 @@ const diagnostics = [
     meta: "Первая и вторая части",
     className: "",
   },
-{
-  href: "/after9",
-  label: "После 9 класса",
-  description: "Что повторить перед 10 классом или колледжем",
-  meta: "Программа 5–9 классов",
-  className: "after-nine-card",
-},
 ];
 
 function MathDoodle() {
