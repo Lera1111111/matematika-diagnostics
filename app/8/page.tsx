@@ -22,7 +22,7 @@ type Question = {
   check: (answer: string) => boolean;
 };
 
-const TELEGRAM_URL = "https://t.me/m/8wQr09o1NDEy";
+const TELEGRAM_USERNAME = "vxoab";
 const STORAGE_KEY = "math-diagnostic-8-v2";
 
 const normalize = (value: string) =>
@@ -533,6 +533,13 @@ const start = () => {
 
   if (screen === "result") {
     const copy = resultCopy(score);
+    const telegramMessage = encodeURIComponent(
+  `Здравствуйте! Меня зовут ${studentName.trim()}. ` +
+    `Результат моей диагностики перед 8 классом — ${score} из ${questions.length}. ` +
+    `Хочу узнать, какие темы лучше повторить.`,
+);
+
+const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
     const blocks = [...new Set(questions.map((question) => question.block))];
     const strong = questions.filter((q) => getStatus(q) === "correct").map((q) => q.topic);
     const repeat = questions.filter((q) => getStatus(q) === "incorrect").map((q) => q.topic);
@@ -549,7 +556,9 @@ const start = () => {
           <div className="score-orbit"><strong>{score}</strong><span>из 26</span></div>
           <div>
             <p className="kicker">Диагностика завершена</p>
-            <h1>{copy.title}</h1>
+           <h1>
+  {studentName.trim()}, {copy.title.toLowerCase()}
+</h1>
             <p>{copy.text}</p><small>{copy.extra}</small>
           </div>
         </section>
@@ -647,7 +656,7 @@ const start = () => {
         <section className="final-cta">
           <div><p className="kicker">Следующий шаг</p><h2>Хочешь подготовиться к 8 классу без стресса?</h2><p>{copy.card}</p></div>
           <div className="cta-actions">
-            <a className="button primary" href={TELEGRAM_URL} target="_blank" rel="noreferrer">Записаться на занятия</a>
+            <a className="button primary" href={telegramUrl} target="_blank" rel="noreferrer">Записаться на занятия</a>
             <button className="button secondary" onClick={restart}>Пройти тест ещё раз</button>
           </div>
         </section>
