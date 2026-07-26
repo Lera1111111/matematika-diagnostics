@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { createElement, useEffect, useMemo, useState } from "react";
 
 type StoredAnswer = { value: string; dontKnow: boolean };
 type QuestionType = "text" | "single" | "multi" | "roots";
@@ -71,19 +71,19 @@ function renderMathText(value: string) {
       ? part.slice(2, -1)
       : part.slice(1);
 
-    return (
-      <math
-        className="math-root"
-        key={`${part}-${index}`}
-        aria-label={`квадратный корень из ${radicand}`}
-      >
-        <msqrt>
-          <mtext>{radicand}</mtext>
-        </msqrt>
-      </math>
-    );
-  });
-}
+   return createElement(
+  "math",
+  {
+    className: "math-root",
+    key: `${part}-${index}`,
+    "aria-label": `квадратный корень из ${radicand}`,
+  },
+  createElement(
+    "msqrt",
+    null,
+    createElement("mtext", null, radicand),
+  ),
+);
 function rootsAreCorrect(value: string) {
   const roots = value
     .trim()
