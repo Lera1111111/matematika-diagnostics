@@ -198,8 +198,7 @@ function OgeDiagram({ kind }: { kind: NonNullable<Question["diagram"]> }) {
           <>
             <polygon points="215,30 70,225 365,225" />
             <line x1="141" y1="128" x2="293" y2="128" className="midline" />
-            <path d="M190 121 l10 7 -10 7 M217 121 l10 7 -10 7" className="parallel-mark" />
-            <path d="M190 218 l10 7 -10 7 M217 218 l10 7 -10 7" className="parallel-mark" />
+    
             <text x="206" y="23">A</text><text x="52" y="245">B</text><text x="370" y="245">C</text>
             <text x="125" y="125">D</text><text x="299" y="125">E</text>
             <text x="158" y="79" className="value-label">4</text>
@@ -216,8 +215,6 @@ function OgeDiagram({ kind }: { kind: NonNullable<Question["diagram"]> }) {
             <path d="M101 198 A38 38 0 0 0 87 184" className="angle-arc" />
             <path d="M170 213 l10 7 -10 7 M220 213 l10 7 -10 7" className="parallel-mark" />
             <path d="M205 58 l10 7 -10 7 M245 58 l10 7 -10 7" className="parallel-mark" />
-            <path d="M84 139 l7 10 7 -10" className="side-arrow" />
-            <path d="M319 139 l7 10 7 -10" className="side-arrow" />
             <text x="51" y="242">A</text><text x="302" y="242">B</text><text x="370" y="60">C</text>
             <text x="120" y="58">D</text><text x="279" y="55">E</text>
             <text x="177" y="246" className="value-label">6</text>
