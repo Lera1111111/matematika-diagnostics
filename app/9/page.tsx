@@ -66,11 +66,21 @@ function renderMathText(value: string) {
       return part;
     }
 
+    const hasParentheses = part.startsWith("√(") && part.endsWith(")");
+    const radicand = hasParentheses
+      ? part.slice(2, -1)
+      : part.slice(1);
+
     return (
-      <span className="pretty-root" key={`${part}-${index}`}>
-        <span className="pretty-root-sign">√</span>
-        <span className="pretty-root-value">{part.slice(1)}</span>
-      </span>
+      <math
+        className="math-root"
+        key={`${part}-${index}`}
+        aria-label={`квадратный корень из ${radicand}`}
+      >
+        <msqrt>
+          <mtext>{radicand}</mtext>
+        </msqrt>
+      </math>
     );
   });
 }
