@@ -291,6 +291,7 @@ export default function AfterGradeNineDiagnostic() {
   const [zoomPhoto, setZoomPhoto] = useState<Photo | null>(null);
   const [toast, setToast] = useState("");
   const [copyFallback, setCopyFallback] = useState("");
+  const [advancedSkipped, setAdvancedSkipped] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -537,10 +538,83 @@ export default function AfterGradeNineDiagnostic() {
     );
   }
 
-  if (screen === "bridgeB" || screen === "bridgeC") {
-    const b = screen === "bridgeB";
-    return <main className="center-screen after9-page"><section className="review-card bridge-card"><div className="review-icon">{b?"Б":"В"}</div><p className="kicker">{b?"Блок А завершён":"Последняя часть"}</p><h1>{b?"Основная программа 7–9 классов":"Готовность к дальнейшему обучению"}</h1><p>{b?"Теперь проверим алгебру, функции, текстовые задачи, вероятность и геометрию.":"В этих заданиях важен не только финальный ответ, но и ход решения. Выполняй задания на бумаге и приложи фотографии. Если какое-то задание пока не получается, это нормально."}</p><button className="button primary" onClick={()=>{setCurrent(b?10:20);setScreen("test");window.scrollTo({top:0})}}>Продолжить →</button></section></main>;
-  }
+ if (screen === "bridgeB") {
+  return (
+    <main className="center-screen after9-page">
+      <section className="review-card bridge-card">
+        <div className="review-icon">Б</div>
+        <p className="kicker">Блок А завершён</p>
+
+        <h1>Основная программа 7–9 классов</h1>
+
+        <p>
+          Теперь проверим алгебру, функции, текстовые задачи,
+          вероятность и геометрию.
+        </p>
+
+        <button
+          className="button primary"
+          onClick={() => {
+            setCurrent(10);
+            setScreen("test");
+            window.scrollTo({ top: 0 });
+          }}
+        >
+          Продолжить →
+        </button>
+      </section>
+    </main>
+  );
+}
+
+if (screen === "bridgeC") {
+  return (
+    <main className="center-screen after9-page">
+      <section className="review-card bridge-card">
+        <div className="review-icon">✓</div>
+        <p className="kicker">Основная диагностика завершена</p>
+
+        <h1>Можно посмотреть результат</h1>
+
+        <p>
+          Ты выполнил(а) основную часть диагностики. Результат по базовым
+          знаниям и программе 7–9 классов уже готов.
+        </p>
+
+        <p>
+          Дополнительно можно выполнить четыре более сложных задания.
+          В них важен не только ответ, но и ход решения.
+        </p>
+
+        <div className="review-actions">
+          <button
+            className="button secondary"
+            onClick={() => {
+              setAdvancedSkipped(true);
+              setScreen("result");
+              localStorage.removeItem(STORAGE_KEY);
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            Посмотреть результат
+          </button>
+
+          <button
+            className="button primary"
+            onClick={() => {
+              setAdvancedSkipped(false);
+              setCurrent(20);
+              setScreen("test");
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            Выполнить сложные задания →
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
 
   if (screen === "photos") {
     return <main className="center-screen after9-page"><section className="review-card photo-review-card"><div className="review-icon">▧</div><p className="kicker">Решения на бумаге</p><h1>Загрузи фотографии решений</h1><p>Фотографии помогут увидеть не только финальные ответы, но и ход рассуждений. Особенно важно приложить решения заданий №21–24.</p><PhotoUploader bucket="final" photos={photos} onAdd={addPhotos} onRemove={removePhoto} onLabel={labelPhoto} onZoom={setZoomPhoto}/><p className="privacy-note">Можно подписать номер задания под каждой фотографией. Файлы хранятся только в этом браузере.</p><div className="review-actions"><button className="button secondary" onClick={()=>{setCurrent(23);setScreen("test")}}>Назад к №24</button><button className="button primary" onClick={()=>setScreen("review")}>Перейти к обзору →</button></div></section>{zoomPhoto&&<div className="photo-modal" onClick={()=>setZoomPhoto(null)}><button onClick={()=>setZoomPhoto(null)}>Закрыть ×</button><img src={zoomPhoto.data} alt={zoomPhoto.name}/></div>}</main>;
