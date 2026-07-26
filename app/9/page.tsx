@@ -398,7 +398,8 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <path d="M184 113 A31 31 0 0 1 236 113" className="angle-arc" />
             <text x="192" y="91" className="value-label">116°</text>
             <text x="112" y="72">A</text><text x="298" y="72">B</text>
-            <text x="220" y="136">O</text> text x="215" y="248">C</text>
+          <text x="220" y="136">O</text>
+<text x="215" y="248">C</text>
           </>
         )}
       </svg>
