@@ -94,7 +94,7 @@ export default function GeometryDiagram({ kind }: { kind: DiagramKind }) {
             <path d="M188 57 A34 34 0 0 0 232 57" className="angle-arc" />
             <path d="M300 205 A45 45 0 0 1 316 170" className="angle-arc secondary" />
             <text x="198" y="84" className="value-label">46°</text>
-<text x="326" y="186" className="question-label">?</text>
+<text x="292" y="174" className="question-label">?</text>
           </>
         )}
         {kind === "median" && (
