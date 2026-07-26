@@ -383,7 +383,7 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <polygon points="85,215 85,55 350,215" />
             <path d="M85 193 h22 v22" className="marker" />
             <path d="M310 215 A40 40 0 0 1 316 192" className="angle-arc" />
-       <text x="282" y="178" className="value-label">30°</text>
+<text x="274" y="196" className="value-label">30°</text>
             <text x="211" y="119" className="value-label">10</text>
             <text x="52" y="140" className="question-label">?</text>
           </>
@@ -398,7 +398,7 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <path d="M184 113 A31 31 0 0 1 236 113" className="angle-arc" />
             <text x="192" y="91" className="value-label">116°</text>
             <text x="112" y="72">A</text><text x="298" y="72">B</text>
-          <text x="220" y="136">O</text>
+          <text x="218" y="142">O</text>
 <text x="215" y="248">C</text>
           </>
         )}
