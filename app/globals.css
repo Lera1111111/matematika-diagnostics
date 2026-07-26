@@ -2941,36 +2941,9 @@ footer {
     min-width: 0;
   }
 }
-.pretty-root {
-  display: inline-flex;
-  align-items: flex-start;
-  vertical-align: middle;
-  position: relative;
-  line-height: 1;
-  margin: 0 0.08em;
-}
-
-.pretty-root-sign {
-  font-family: "Cambria Math", "Times New Roman", serif;
-  font-size: 1.22em;
-  line-height: 1;
-  transform: translateY(0.08em);
-}
-
-.pretty-root-value {
-  position: relative;
+.pretty-math-root {
   display: inline-block;
-  padding: 0.14em 0.12em 0 0.08em;
-  line-height: 1;
-}
-
-.pretty-root-value::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 2px;
-  background: currentColor;
-  border-radius: 999px;
+  font-size: 1em;
+  vertical-align: -0.12em;
+  margin: 0 0.05em;
 }
