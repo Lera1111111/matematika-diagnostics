@@ -72,22 +72,23 @@ function renderMathText(value: string) {
     const radicand = hasParentheses
       ? part.slice(2, -1)
       : part.slice(1);
+
+    return createElement(
+      "math",
+      {
+        className: "math-root",
+        key: `${part}-${index}`,
+        "aria-label": `квадратный корень из ${radicand}`,
+      },
+      createElement(
+        "msqrt",
+        null,
+        createElement("mtext", null, radicand),
+      ),
+    );
   });
 }
-    function rootsAreCorrect(value: string) {
-   return createElement(
-  "math",
-  {
-    className: "math-root",
-    key: `${part}-${index}`,
-    "aria-label": `квадратный корень из ${radicand}`,
-  },
-  createElement(
-    "msqrt",
-    null,
-    createElement("mtext", null, radicand),
-  ),
-);
+
 function rootsAreCorrect(value: string) {
   const roots = value
     .trim()
@@ -95,9 +96,9 @@ function rootsAreCorrect(value: string) {
     .map((part) => asNumber(part))
     .filter((part): part is number => part !== null)
     .sort((a, b) => a - b);
+
   return roots.length === 2 && roots[0] === 3 && roots[1] === 4;
 }
-
 const questions: Question[] = [
   {
     id: 1, part: "Алгебра", block: "Рациональные выражения",
