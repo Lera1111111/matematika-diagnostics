@@ -747,6 +747,7 @@ const start = () => {
           <div className="diagnostic-facts">
             <span><b>28</b> заданий</span><span>Алгебра и геометрия</span>
             <span>Без оценки и таймера</span><span>Персональные рекомендации</span>
+            </div>
 <div className="name-start-card">
   <label htmlFor="student-name">Как тебя зовут?</label>
 
