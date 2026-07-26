@@ -330,10 +330,7 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <polygon points="80,205 315,205 355,65 120,65" />
             <path d="M113 205 A33 33 0 0 0 91 174" className="angle-arc" />
             <text x="112" y="177" className="value-label">68°</text>
-            <path d="M175 198 l10 7 -10 7 M250 198 l10 7 -10 7" className="parallel-mark" />
-            <path d="M215 58 l10 7 -10 7 M290 58 l10 7 -10 7" className="parallel-mark" />
-            <path d="M91 126 l7 10 7 -10" className="side-arrow" />
-            <path d="M330 126 l7 10 7 -10" className="side-arrow" />
+            
             <text x="61" y="225">A</text><text x="318" y="225">B</text>
             <text x="360" y="61">C</text><text x="101" y="61">D</text>
           </>
@@ -342,8 +339,6 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
           <>
             <polygon points="70,210 350,210 295,55 135,55" />
             <line x1="102" y1="132" x2="323" y2="132" className="midline" />
-            <path d="M195 48 l10 7 -10 7 M220 48 l10 7 -10 7" className="parallel-mark" />
-            <path d="M195 203 l10 7 -10 7 M220 203 l10 7 -10 7" className="parallel-mark" />
             <text x="199" y="45" className="value-label">8</text>
             <text x="199" y="238" className="value-label">14</text>
           </>
@@ -380,7 +375,7 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <text x="49" y="136" className="value-label">6</text>
             <text x="103" y="226" className="value-label">8</text>
             <text x="236" y="133" className="value-label">9</text>
-            <text x="335" y="235" className="question-label">?</text>
+<text x="310" y="235" textAnchor="middle" className="question-label">?</text>
           </>
         )}
         {kind === "trig-30" && (
@@ -388,7 +383,7 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <polygon points="85,215 85,55 350,215" />
             <path d="M85 193 h22 v22" className="marker" />
             <path d="M310 215 A40 40 0 0 1 316 192" className="angle-arc" />
-            <text x="294" y="190" className="value-label">30°</text>
+       <text x="282" y="178" className="value-label">30°</text>
             <text x="211" y="119" className="value-label">10</text>
             <text x="52" y="140" className="question-label">?</text>
           </>
@@ -403,7 +398,7 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
             <path d="M184 113 A31 31 0 0 1 236 113" className="angle-arc" />
             <text x="192" y="91" className="value-label">116°</text>
             <text x="112" y="72">A</text><text x="298" y="72">B</text>
-            <text x="215" y="131">O</text><text x="215" y="248">C</text>
+            <text x="220" y="136">O</text> text x="215" y="248">C</text>
           </>
         )}
       </svg>
