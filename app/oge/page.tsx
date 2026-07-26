@@ -213,8 +213,6 @@ function OgeDiagram({ kind }: { kind: NonNullable<Question["diagram"]> }) {
             <circle cx="288" cy="65" r="4.5" className="diagram-point" />
             <path d="M112 220 A42 42 0 0 0 104 196" className="angle-arc" />
             <path d="M101 198 A38 38 0 0 0 87 184" className="angle-arc" />
-            <path d="M170 213 l10 7 -10 7 M220 213 l10 7 -10 7" className="parallel-mark" />
-            <path d="M205 58 l10 7 -10 7 M245 58 l10 7 -10 7" className="parallel-mark" />
             <text x="51" y="242">A</text><text x="302" y="242">B</text><text x="370" y="60">C</text>
             <text x="120" y="58">D</text><text x="279" y="55">E</text>
             <text x="177" y="246" className="value-label">6</text>
