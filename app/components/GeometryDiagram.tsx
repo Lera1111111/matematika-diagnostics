@@ -51,18 +51,21 @@ export default function GeometryDiagram({ kind }: { kind: DiagramKind }) {
           </>
         )}
         {kind === "parallel-perpendicular" && (
-          <>
-            <line x1="45" y1="70" x2="375" y2="70" />
-            <line x1="45" y1="165" x2="375" y2="165" />
-            <line x1="145" y1="25" x2="145" y2="215" />
-            <line x1="250" y1="25" x2="330" y2="215" />
-            <path d="M145 70 h18 v18 h-18" className="marker" />
-            <path d="M205 63 l9 7 -9 7 M225 63 l9 7 -9 7" className="parallel-mark" />
-            <path d="M205 158 l9 7 -9 7 M225 158 l9 7 -9 7" className="parallel-mark" />
-            <text x="25" y="76">a</text><text x="25" y="171">b</text>
-            <text x="136" y="20">c</text><text x="245" y="20">d</text>
-          </>
-        )}
+  <>
+    <line x1="45" y1="70" x2="375" y2="70" />
+    <line x1="45" y1="165" x2="375" y2="165" />
+    <line x1="145" y1="25" x2="145" y2="215" />
+    <line x1="250" y1="25" x2="330" y2="215" />
+
+    <line x1="145" y1="92" x2="165" y2="92" className="marker" />
+    <line x1="165" y1="70" x2="165" y2="92" className="marker" />
+
+    <text x="25" y="76">a</text>
+    <text x="25" y="171">b</text>
+    <text x="136" y="20">c</text>
+    <text x="245" y="20">d</text>
+  </>
+)}
         {kind === "adjacent-angles" && (
           <>
             <line x1="45" y1="190" x2="375" y2="190" />
