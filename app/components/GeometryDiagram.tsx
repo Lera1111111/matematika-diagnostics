@@ -94,7 +94,7 @@ export default function GeometryDiagram({ kind }: { kind: DiagramKind }) {
             <path d="M188 57 A34 34 0 0 0 232 57" className="angle-arc" />
             <path d="M300 205 A45 45 0 0 1 316 170" className="angle-arc secondary" />
             <text x="198" y="84" className="value-label">46°</text>
-            <text x="312" y="181" className="question-label">?</text>
+           <text x="320" y="191" className="question-label">?</text>
           </>
         )}
         {kind === "median" && (
@@ -113,14 +113,20 @@ export default function GeometryDiagram({ kind }: { kind: DiagramKind }) {
             <polygon points="225,195 305,45 395,195" />
             <line x1="68" y1="116" x2="84" y2="125" className="tick" />
             <line x1="258" y1="116" x2="274" y2="125" className="tick" />
-            <line x1="154" y1="108" x2="170" y2="98" className="double-tick" />
-            <line x1="162" y1="121" x2="178" y2="111" className="double-tick" />
-            <line x1="344" y1="108" x2="360" y2="98" className="double-tick" />
-            <line x1="352" y1="121" x2="368" y2="111" className="double-tick" />
+           <line x1="142" y1="108" x2="158" y2="98" className="double-tick" />
+<line x1="150" y1="121" x2="166" y2="111" className="double-tick" />
+
+<line x1="332" y1="108" x2="348" y2="98" className="double-tick" />
+<line x1="340" y1="121" x2="356" y2="111" className="double-tick" />
             <path d="M96 80 A31 31 0 0 0 134 80" className="angle-arc" />
             <path d="M286 80 A31 31 0 0 0 324 80" className="angle-arc" />
-            <text x="30" y="218">A</text><text x="108" y="37">B</text><text x="207" y="218">C</text>
-            <text x="218" y="218">A₁</text><text x="296" y="37">B₁</text><text x="395" y="218">C₁</text>
+           <text x="30" y="218">A</text>
+<text x="108" y="37">B</text>
+<text x="195" y="218">C</text>
+
+<text x="225" y="218">A₁</text>
+<text x="296" y="37">B₁</text>
+<text x="395" y="218">C₁</text>
           </>
         )}
         {kind === "parallel-transversal" && (
@@ -128,8 +134,6 @@ export default function GeometryDiagram({ kind }: { kind: DiagramKind }) {
             <line x1="40" y1="65" x2="380" y2="65" />
             <line x1="40" y1="180" x2="380" y2="180" />
             <line x1="160" y1="20" x2="225" y2="220" />
-            <path d="M205 58 l9 7 -9 7 M225 58 l9 7 -9 7" className="parallel-mark" />
-            <path d="M205 173 l9 7 -9 7 M225 173 l9 7 -9 7" className="parallel-mark" />
             <path d="M210 65 A35 35 0 0 1 187 98" className="angle-arc" />
             <path d="M201 147 A35 35 0 0 1 247 180" className="angle-arc secondary" />
             <text x="207" y="103" className="value-label">72°</text>
@@ -143,8 +147,8 @@ export default function GeometryDiagram({ kind }: { kind: DiagramKind }) {
             <path d="M100 181 h24 v24" className="marker" />
             <path d="M310 205 A40 40 0 0 1 317 183" className="angle-arc" />
             <path d="M135 59 A42 42 0 0 1 100 77" className="angle-arc secondary" />
-            <text x="286" y="180" className="value-label">34°</text>
-            <text x="112" y="89" className="question-label">?</text>
+           <text x="286" y="193" className="value-label">34°</text>
+<text x="112" y="103" className="question-label">?</text>
           </>
         )}
       </svg>
