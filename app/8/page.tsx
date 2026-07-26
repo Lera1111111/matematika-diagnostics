@@ -314,6 +314,7 @@ function MathDoodle() {
 
 export default function GradeEight() {
   const [screen, setScreen] = useState<"home" | "test" | "geometry" | "review" | "result">("home");
+  const [studentName, setStudentName] = useState("");
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, StoredAnswer>>({});
   const [notice, setNotice] = useState(false);
@@ -359,7 +360,12 @@ export default function GradeEight() {
     else setCurrent((value) => value + 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+const start = () => {
+  if (!studentName.trim()) return;
 
+  setScreen("test");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
   const restart = () => {
     localStorage.removeItem(STORAGE_KEY);
     setAnswers({});
@@ -466,22 +472,24 @@ export default function GradeEight() {
             <div className="test-actions grade-seven-actions">
               <button className="button secondary" disabled={current === 0 || notice} onClick={() => setCurrent((value) => value - 1)}>← Назад</button>
               <button
-                className="button dont-know-button"
-                disabled={notice}
-                onClick={() => {
-                  setAnswers((previous) => ({
-                    ...previous,
-                    [question.id]: { value: "", dontKnow: true },
-                  }));
-                  setNotice(true);
-                  window.setTimeout(goNext, 1250);
-                }}
-              >
-                Не знаю, как решить
-              </button>
-              <button className="button primary" disabled={!hasResponse || stored.dontKnow || notice} onClick={goNext}>
-                Ответить и продолжить →
-              </button>
+  className="button dont-know-button"
+  onClick={() => {
+    setAnswers((previous) => ({
+      ...previous,
+      [question.id]: { value: "", dontKnow: true },
+    }));
+    setNotice(true);
+  }}
+>
+  Не знаю, как решить
+</button>
+              <button
+  className="button primary"
+  disabled={!hasResponse && !stored.dontKnow}
+  onClick={goNext}
+>
+  {stored.dontKnow ? "Продолжить →" : "Ответить и продолжить →"}
+</button>
             </div>
           </article>
           <p className="save-note">Ответы сохраняются на этом устройстве автоматически</p>
@@ -650,19 +658,49 @@ export default function GradeEight() {
   return (
     <main className="home-page">
       <header className="site-header">
-        <a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-        <button className="header-cta" onClick={() => setScreen("test")}>Начать диагностику</button>
-      </header>
+  <a className="brand" href="/">
+    <span className="brand-mark">∿</span>
+    <span>Математика без стресса</span>
+  </a>
+</header>
       <section className="hero">
         <div className="hero-copy">
           <div className="soft-pill">Диагностика после 7 класса</div>
           <h1>Что повторить<br />перед <em>8 классом?</em></h1>
           <p className="hero-lead">Пройди диагностику и узнай, какие темы 7 класса ты помнишь, а что стоит повторить перед началом нового учебного года.</p>
           <div className="calm-note"><span>♡</span><p>Это не контрольная и не экзамен. Здесь нет школьных оценок — только понятный результат и персональные рекомендации.</p></div>
-          <div className="hero-actions">
-            <button className="button primary big" onClick={() => setScreen("test")}>Начать диагностику <span>→</span></button>
-            <p><b>26 заданий</b><span>·</span> около 30–35 минут <span>·</span> результат сразу</p>
-          </div>
+          <div className="name-start-card">
+  <label htmlFor="student-name">Как тебя зовут?</label>
+
+  <div className="name-start-row">
+    <input
+      id="student-name"
+      type="text"
+      value={studentName}
+      onChange={(event) => setStudentName(event.target.value)}
+      placeholder="Введи имя"
+      autoComplete="given-name"
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && studentName.trim()) {
+          start();
+        }
+      }}
+    />
+
+    <button
+      className="button primary big"
+      onClick={start}
+      disabled={!studentName.trim()}
+    >
+      Начать диагностику <span>→</span>
+    </button>
+  </div>
+
+  <p className="name-start-meta">
+    <b>26 заданий</b>
+    <span>·</span> около 30–35 минут <span>·</span> результат сразу
+  </p>
+</div>
           <p className="hero-dont-know">Решай самостоятельно, без калькулятора и подсказок. Если не знаешь, как выполнить задание, не угадывай — нажми «Не знаю, как решить».</p>
         </div>
         <MathDoodle />
