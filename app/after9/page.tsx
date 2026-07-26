@@ -197,7 +197,7 @@ function readPhoto(file: File, bucket: string) {
 function DiagnosticDiagram({ kind }: { kind: NonNullable<Question["diagram"]> }) {
   return (
     <div className="geometry-diagram after9-diagram">
-      <svg viewBox="0 0 430 270" role="img" aria-label="Геометрическая схема">
+<svg className="after9-svg" viewBox="0 0 430 270" role="img" aria-label="Геометрическая схема">
         {kind === "rectangle" && (
           <>
             <polygon points="65,70 365,70 365,220 65,220" />
@@ -244,7 +244,7 @@ function GraphOption({ id }: { id: string }) {
     return `${170 + x * 24},${130 - y * 24}`;
   }).join(" ");
   return (
-    <svg viewBox="0 0 300 230" role="img" aria-label="Вариант графика квадратичной функции">
+<svg className="after9-svg" viewBox="0 0 300 230" role="img" aria-label="Вариант графика квадратичной функции">
       <g className="mini-grid">
         {[26,50,74,98,122,146,170,194,218,242,266,290].map((x) => <line key={`x${x}`} x1={x} y1="10" x2={x} y2="220" />)}
         {[10,34,58,82,106,130,154,178,202].map((y) => <line key={`y${y}`} x1="10" y1={y} x2="290" y2={y} />)}
