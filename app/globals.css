@@ -2947,3 +2947,46 @@ footer {
   font-size: 1em;
   margin: 0 0.04em;
 }
+.after9-svg polygon,
+.after9-svg polyline,
+.after9-svg line,
+.after9-svg circle,
+.after9-svg path {
+  fill: none;
+  stroke: #574866;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.after9-svg text {
+  fill: #574866;
+  stroke: none;
+}
+
+.after9-svg .diagram-point {
+  fill: #574866;
+  stroke: none;
+}
+
+.after9-svg .marker,
+.after9-svg .angle-arc,
+.after9-svg .tick,
+.after9-svg .parallel-mark,
+.after9-svg .parabola-line {
+  fill: none;
+  stroke: #8d6bd8;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.after9-svg .mini-grid line {
+  stroke: #ddd6ef;
+  stroke-width: 1;
+}
+
+.after9-svg .mini-axes line {
+  stroke: #7c6a97;
+  stroke-width: 2;
+}
