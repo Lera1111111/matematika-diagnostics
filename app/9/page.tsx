@@ -304,6 +304,22 @@ function isCorrect(question: Question, answer?: StoredAnswer) {
   return selected.length === expected.length && selected.every((item, index) => item === expected[index]);
 }
 
+function getCorrectAnswer(question: Question) {
+  if (question.type === "roots") {
+    return "3; 4";
+  }
+
+  if (question.type === "text") {
+    return String(question.number);
+  }
+
+  if (Array.isArray(question.correct)) {
+    return question.correct.join("; ");
+  }
+
+  return question.correct || "—";
+}
+
 function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
   return (
     <div className="geometry-diagram grade-nine-diagram">
@@ -730,7 +746,61 @@ const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
             ))}
           </div>
         </section>
+<details className="mistakes result-section task-review">
+  <summary>
+    Посмотреть обзор решений <span>({questions.length})</span>
+  </summary>
 
+  <div>
+    {questions.map((question, index) => {
+      const questionStatus = status(question);
+      const answer = answers[question.id];
+
+      const studentAnswer = answer?.dontKnow
+        ? "Не знаю, как решить"
+        : answer?.value
+          ? answer.value.split(MULTI_SEPARATOR).join("; ")
+          : "Нет ответа";
+
+      return (
+        <article
+          className={`review-task ${questionStatus}`}
+          key={question.id}
+        >
+          <span>
+            Задание {index + 1} ·{" "}
+            {questionStatus === "correct"
+              ? "Верно"
+              : questionStatus === "incorrect"
+                ? "Есть ошибка"
+                : questionStatus === "dont_know"
+                  ? "Не знаю"
+                  : "Нет ответа"}
+          </span>
+
+          <h3>{question.eyebrow}</h3>
+
+          <p>{question.prompt}</p>
+
+          {question.expression && (
+            <div className="review-expression">
+              {renderMathText(question.expression)}
+            </div>
+          )}
+
+          <p>
+            Твой ответ: <b>{renderMathText(studentAnswer)}</b>
+          </p>
+
+          <p>
+            Правильный ответ:{" "}
+            <b>{renderMathText(getCorrectAnswer(question))}</b>
+          </p>
+        </article>
+      );
+    })}
+  </div>
+</details>
         <section className="result-section three-topic-panels grade-nine-groups">
           {good.length > 0 && (
             <article className="topic-panel strong-panel"><p className="kicker">Уверенная база</p><h2>С этим всё хорошо</h2><div className="topic-tags">{good.map((item) => <span key={item.name}>✓ {item.name}</span>)}</div></article>
