@@ -2941,3 +2941,23 @@ footer {
     min-width: 0;
   }
 }
+.pretty-root {
+  display: inline-flex;
+  align-items: flex-start;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0 0.06em;
+}
+
+.pretty-root-sign {
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: 1.15em;
+  line-height: 1;
+  transform: translateY(0.04em);
+}
+
+.pretty-root-value {
+  border-top: 0.075em solid currentColor;
+  padding: 0.08em 0.12em 0 0.06em;
+  line-height: 1;
+}
