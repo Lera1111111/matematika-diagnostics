@@ -72,7 +72,8 @@ function renderMathText(value: string) {
     const radicand = hasParentheses
       ? part.slice(2, -1)
       : part.slice(1);
-
+  });
+}
     function rootsAreCorrect(value: string) {
    return createElement(
   "math",
