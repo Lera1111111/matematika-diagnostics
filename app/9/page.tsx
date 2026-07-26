@@ -37,7 +37,7 @@ type BlockResult = {
   percent: number;
   status: "good" | "repeat" | "priority";
 };
-
+const TELEGRAM_USERNAME = "vxoab";
 const STORAGE_KEY = "math-diagnostic-before-9-v1";
 const MULTI_SEPARATOR = "|||";
 
@@ -491,18 +491,6 @@ const start = () => {
     window.setTimeout(() => setCopyState(""), 2200);
   };
 
-  const shareResult = async () => {
-    const text = resultText();
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "Что повторить перед 9 классом?", text });
-      } else {
-        await navigator.clipboard.writeText(text);
-        setCopyState("Результат скопирован — теперь его можно отправить");
-        window.setTimeout(() => setCopyState(""), 2600);
-      }
-    } catch {}
-  };
 
   if (screen === "test") {
     const question = questions[current];
@@ -672,6 +660,13 @@ const start = () => {
       : percent >= 50
         ? "Многое уже получается. Небольшое повторение поможет начать 9 класс спокойнее и увереннее."
         : "Есть темы, которые стоит восстановить по порядку. Это не оценка, а понятный маршрут для повторения.";
+    const telegramMessage = encodeURIComponent(
+  `Здравствуйте! Меня зовут ${name.trim()}. ` +
+    `Результат моей диагностики перед 9 классом — ${score} из 28. ` +
+    `Хочу узнать, какие темы лучше повторить.`,
+);
+
+const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
     return (
       <main className="result-page grade-nine-page">
         <header className="compact-header result-header">
@@ -722,7 +717,14 @@ const start = () => {
           <p>Результат не является школьной оценкой. Диагностика помогает понять, какие темы стоит повторить, чтобы увереннее начать 9 класс.</p>
           <div className="result-share-actions">
             <button className="button secondary" onClick={copyResult}>Скопировать результат</button>
-            <button className="button primary" onClick={shareResult}>Поделиться результатом</button>
+            <a
+  className="button primary"
+  href={telegramUrl}
+  target="_blank"
+  rel="noreferrer"
+>
+  Обсудить результат
+</a>
             <button className="button secondary" onClick={restart}>Пройти ещё раз</button>
           </div>
           {copyState && <p className="copy-toast" role="status">{copyState}</p>}
