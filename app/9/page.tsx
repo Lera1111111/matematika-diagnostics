@@ -73,26 +73,7 @@ function renderMathText(value: string) {
       ? part.slice(2, -1)
       : part.slice(1);
 
-    return createElement(
-      "math",
-      {
-        className: "math-root",
-        key: `${part}-${index}`,
-        "aria-label": `квадратный корень из ${radicand}`,
-      },
-      createElement(
-        "msqrt",
-        null,
-        createElement("mtext", null, radicand),
-      ),
-    );
-  });
-}
-    const hasParentheses = part.startsWith("√(") && part.endsWith(")");
-    const radicand = hasParentheses
-      ? part.slice(2, -1)
-      : part.slice(1);
-
+    function rootsAreCorrect(value: string) {
    return createElement(
   "math",
   {
