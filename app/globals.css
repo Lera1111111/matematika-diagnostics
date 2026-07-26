@@ -2941,9 +2941,9 @@ footer {
     min-width: 0;
   }
 }
-.pretty-math-root {
+.math-root {
   display: inline-block;
-  font-size: 1em;
   vertical-align: -0.12em;
-  margin: 0 0.05em;
+  font-size: 1em;
+  margin: 0 0.04em;
 }
