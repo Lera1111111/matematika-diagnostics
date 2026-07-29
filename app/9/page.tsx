@@ -765,7 +765,7 @@ export default function GradeNineDiagnostic() {
 
         return `<tr>
           <td>${index + 1}</td>
-          <td>${escapeHtml(question.topic || question.block)}</td>
+          <<td>${escapeHtml(question.block)}</td>
           <td>${escapeHtml(studentAnswer)}</td>
           <td>${escapeHtml(getCorrectAnswer(question))}</td>
           <td>${escapeHtml(statusLabel)}</td>
