@@ -3055,3 +3055,40 @@ footer {
   box-shadow: 0 0 0 3px rgba(103, 79, 166, 0.13);
   transform: translateY(-1px);
 }
+.question-number-nav button.reference,
+.overview-item.reference {
+  background: #fde8f2;
+  border-color: #e8a9c7;
+  color: #9a416d;
+}
+
+.result-answer-item.reference {
+  background: #fff3f8;
+  border-color: #e8a9c7;
+}
+
+.reference-material {
+  margin-top: 24px;
+  padding: 16px 18px;
+  border: 1px solid #ded6e8;
+  border-radius: 16px;
+  background: #faf7ff;
+}
+
+.reference-material summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #674fa6;
+}
+
+.reference-material-content {
+  margin-top: 16px;
+}
+
+.reference-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  font-weight: 600;
+}
