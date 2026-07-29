@@ -447,12 +447,8 @@ function DiagnosticDiagram({ kind }: { kind: NonNullable<Question["diagram"]> })
           <>
             <polygon points="45,220 385,220 300,60 130,60" />
             <line x1="45" y1="220" x2="300" y2="60" />
-            <path d="M86 220 A42 42 0 0 0 80 199" className="angle-arc" />
-            <path d="M77 201 A37 37 0 0 0 64 187" className="angle-arc" />
             <line x1="82" y1="148" x2="96" y2="156" className="tick" />
             <line x1="334" y1="156" x2="348" y2="148" className="tick" />
-            <path d="M178 53 l10 7 -10 7 M207 53 l10 7 -10 7" className="parallel-mark" />
-            <path d="M178 213 l10 7 -10 7 M207 213 l10 7 -10 7" className="parallel-mark" />
             <text x="27" y="242">A</text><text x="388" y="242">B</text><text x="304" y="53">C</text><text x="113" y="53">D</text>
             <text x="207" y="247" className="value-label">14</text><text x="205" y="51" className="value-label">6</text>
           </>
