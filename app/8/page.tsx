@@ -642,7 +642,7 @@ export default function GradeEight() {
 
   const downloadResult = () => {
     const rows = questions
-      .map((question) => {
+      .map((question, index) => {
         const status = getStatus(question);
         const statusLabel =
           status === "correct"
@@ -654,7 +654,7 @@ export default function GradeEight() {
                 : "Нет ответа";
 
         return `<tr>
-          <td>${question.id}</td>
+         <td>${index + 1}</td>
           <td>${escapeHtml(question.topic)}</td>
           <td>${escapeHtml(formatAnswer(answers[question.id], question))}</td>
           <td>${escapeHtml(question.correctLabel)}</td>
@@ -840,7 +840,7 @@ ${rows}
                     });
                   }}
                 >
-                  {item.id}
+                 {index + 1}
                 </button>
               );
             })}
