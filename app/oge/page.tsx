@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import OgeReferenceModal from "../components/OgeReferenceModal";
 
 declare global {
   interface Window {
@@ -316,6 +317,7 @@ function defaultAnswer(): StoredAnswer {
 
 export default function OgeEntryDiagnostic() {
   const [screen, setScreen] = useState<"home" | "test" | "bridgeB" | "bridgeC" | "photos" | "review" | "result">("home");
+  const [referenceOpen, setReferenceOpen] = useState(false);
   const [name, setName] = useState("");
   const [accepted, setAccepted] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -674,7 +676,15 @@ export default function OgeEntryDiagnostic() {
                 {ready && !answer.dontKnow && <p className="manual-note">Ответ сохранён. Доказательство и решение проверит преподаватель.</p>}
               </div>
             )}
-
+<div className="oge-reference-action">
+  <button
+    type="button"
+    className="button secondary oge-reference-open-button"
+    onClick={() => setReferenceOpen(true)}
+  >
+    Справочные материалы ОГЭ
+  </button>
+</div>
             <div className="test-actions grade-seven-actions">
               <button className="button secondary" disabled={current === 0} onClick={() => { setCurrent((value) => value - 1); window.scrollTo({ top: 0 }); }}>← Назад</button>
               <button className={`button dont-know-button ${answer.dontKnow ? "active-dont-know" : ""}`} onClick={() => markDontKnow(question)}>{answer.dontKnow ? "Отмечено: не знаю" : "Не знаю, как решить"}</button>
@@ -692,6 +702,10 @@ export default function OgeEntryDiagnostic() {
           </article>
           <p className="save-note">Ответы и прогресс сохраняются только на этом устройстве</p>
         </section>
+        <OgeReferenceModal
+  open={referenceOpen}
+  onClose={() => setReferenceOpen(false)}
+/>
       </main>
     );
   }
