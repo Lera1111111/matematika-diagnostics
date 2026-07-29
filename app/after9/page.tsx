@@ -2,6 +2,20 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+declare global {
+  interface Window {
+    katex?: {
+      render: (
+        expression: string,
+        element: HTMLElement,
+        options?: {
+          displayMode?: boolean;
+          throwOnError?: boolean;
+        }
+      ) => void;
+    };
+  }
+}
 type Answer = {
   value: string;
   extra: string;
@@ -34,7 +48,7 @@ const questions: Question[] = [
   { id: 1, block: "Блок А", topic: "Действия с числами", prompt: "Вычислите:", expression: "(2 1/4 − 1,6) · 5/13", type: "number" },
   { id: 2, block: "Блок А", topic: "Проценты", prompt: "После скидки 15% куртка стоит 1020 рублей. Сколько рублей куртка стоила до скидки?", type: "number" },
   { id: 3, block: "Блок А", topic: "Пропорции", prompt: "2,4 кг яблок стоят 432 рубля. Сколько рублей стоят 3,5 кг таких яблок?", type: "number" },
-  { id: 4, block: "Блок А", topic: "Степени и корни", prompt: "Вычислите:", expression: "(√50 − √8) / √2", type: "number" },
+  { id: 4, block: "Блок А", topic: "Степени и корни", prompt: "Вычислите:", expression: String.raw`\frac{\sqrt{50}-\sqrt{8}}{\sqrt{2}}`, type: "number" },
   { id: 5, block: "Блок А", topic: "Преобразование выражений", prompt: "Упростите выражение:", expression: "(2x − 3)² − 4x(x − 3)", type: "number" },
   { id: 6, block: "Блок А", topic: "Линейное уравнение", prompt: "Решите уравнение:", expression: "3(2x − 1) − 4(x + 2) = 7", type: "number" },
   { id: 7, block: "Блок А", topic: "Подстановка в формулу", prompt: "Площадь трапеции вычисляется по формуле S = (a + b)h / 2. Найдите площадь, если a = 7, b = 13, h = 4.", type: "number" },
@@ -193,7 +207,34 @@ function readPhoto(file: File, bucket: string) {
     reader.readAsDataURL(file);
   });
 }
+function MathFormula({ expression }: { expression: string }) {
+  const [element, setElement] = useState<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    if (!element) return;
+
+    const renderFormula = () => {
+      if (!window.katex) return false;
+
+      window.katex.render(expression, element, {
+        displayMode: true,
+        throwOnError: false,
+      });
+
+      return true;
+    };
+
+    if (renderFormula()) return;
+
+    const timer = window.setInterval(() => {
+      if (renderFormula()) window.clearInterval(timer);
+    }, 100);
+
+    return () => window.clearInterval(timer);
+  }, [element, expression]);
+
+  return <div ref={setElement} />;
+}
 function DiagnosticDiagram({ kind }: { kind: NonNullable<Question["diagram"]> }) {
   return (
     <div className="geometry-diagram after9-diagram">
@@ -490,17 +531,57 @@ export default function AfterGradeNineDiagnostic() {
   };
 
   if (screen === "test") {
-    const question = questions[current]; const stored = answer(question.id);
-    const setPart = (index: number, value: string) => { const parts = [...stored.parts]; parts[index] = value; update(question.id, { parts }); };
-    return (
-      <main className="test-shell oge-page after9-page">
-        <header className="compact-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a><button className="text-button" onClick={restart}>Начать сначала</button></header>
-        <section className="test-wrap">
-          <div className="progress-line"><div><span>Задание {question.id} из 24</span><small>{question.block} · {question.topic}</small></div><strong>{Math.round(question.id / 24 * 100)}%</strong></div>
-          <div className="progress-track"><span style={{ width: `${question.id / 24 * 100}%` }} /></div>
-          <article className="question-card after9-question">
-            <div className="question-meta"><span>{question.block}</span><span>{question.topic}</span></div>
-            <h1>{question.prompt}</h1>{question.expression && <div className="expression oge-expression">{question.expression}</div>}
+  const question = questions[current];
+  const stored = answer(question.id);
+
+  const setPart = (index: number, value: string) => {
+    const parts = [...stored.parts];
+    parts[index] = value;
+    update(question.id, { parts });
+  };
+
+  return (
+    <main className="test-shell oge-page after9-page">
+      <header className="compact-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+
+        <button className="text-button" onClick={restart}>
+          Начать сначала
+        </button>
+      </header>
+
+      <section className="test-wrap">
+        <div className="progress-line">
+          <div>
+            <span>Задание {question.id} из 24</span>
+            <small>
+              {question.block} · {question.topic}
+            </small>
+          </div>
+
+          <strong>{Math.round((question.id / 24) * 100)}%</strong>
+        </div>
+
+        <div className="progress-track">
+          <span style={{ width: `${(question.id / 24) * 100}%` }} />
+        </div>
+
+        <article className="question-card after9-question">
+          <div className="question-meta">
+            <span>{question.block}</span>
+            <span>{question.topic}</span>
+          </div>
+
+          <h1>{question.prompt}</h1>
+
+          {question.expression && (
+            <div className="expression oge-expression">
+              <MathFormula expression={question.expression} />
+            </div>
+          )}
             {question.type === "table" && <div className="temperature-table"><div><b>Время</b>{["0:00","4:00","8:00","12:00","16:00","20:00"].map((v) => <span key={v}>{v}</span>)}</div><div><b>Температура, °C</b>{[6,3,1,5,8,7].map((v,i) => <span key={`${v}-${i}`}>{v}</span>)}</div></div>}
             {question.diagram && <DiagnosticDiagram kind={question.diagram} />}
 
