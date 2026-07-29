@@ -174,19 +174,29 @@ const questions: Question[] = [
     correctLabel: "14", solution: "Пусть меньшее число x, тогда большее x + 7. x + x + 7 = 35, 2x = 28, x = 14.",
     check: equalsNumber(14),
   },
-  {
-    id: 17, eyebrow: "Система линейных уравнений", prompt: "Реши систему:",
-   expression: String.raw`\begin{cases}
+{
+  id: 17,
+  eyebrow: "Система линейных уравнений",
+  prompt: "Реши систему:",
+ expression: String.raw`\begin{cases}
 x+y=11\\
 x-y=3
 \end{cases}`,
-    topic: "Системы линейных уравнений", block: "Системы линейных уравнений",
-    correctLabel: "x = 7, y = 4", solution: "Складываем уравнения: 2x = 14, x = 7. Тогда y = 11 − 7 = 4.",
-    check: (answer) => {
-      const [x, y] = answer.split("|");
-      return asNumber(x || "") === 7 && asNumber(y || "") === 4;
-    },
+  type: "system",
+  topic: "Системы линейных уравнений",
+  block: "Системы линейных уравнений",
+  correctLabel: "x = 7, y = 4",
+  solution:
+    "Складываем уравнения: 2x = 14, x = 7. Тогда y = 11 − 7 = 4.",
+  check: (answer) => {
+    const [x, y] = answer.split("|");
+
+    return (
+      asNumber(x || "") === 7 &&
+      asNumber(y || "") === 4
+    );
   },
+},
   {
     id: 19, eyebrow: "Значение функции", prompt: "Дана функция y = −3x + 2. Найди значение y, если x = −2.",
     type: "text", topic: "Вычисление значения функции по формуле", block: "Функции и графики",
