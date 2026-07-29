@@ -230,3 +230,24 @@
     padding: 14px 18px 18px;
   }
 }
+.oge-reference-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.oge-reference-open-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .oge-reference-action {
+    justify-content: stretch;
+  }
+
+  .oge-reference-open-button {
+    width: 100%;
+  }
+}
