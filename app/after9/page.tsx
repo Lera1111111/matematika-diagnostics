@@ -890,9 +890,19 @@ if (screen === "bridgeC") {
   }
 
   if (screen === "result") {
-    const scoreA=questions.slice(0,10).filter(q=>questionCorrect(q.id)).length, scoreB=questions.slice(10,20).filter(q=>questionCorrect(q.id)).length;
-    const self=skills.filter(s=>s.correct&&!s.reference), reference=skills.filter(s=>s.correct&&s.reference), repeat=skills.filter(s=>!s.correct);
-    const pa=scoreA/10,pb=scoreB/10;
+  const scoreA = questions
+    .slice(0, 10)
+    .filter((q) => questionCorrect(q.id)).length;
+
+  const scoreB = questions
+    .slice(10, 20)
+    .filter((q) => questionCorrect(q.id)).length;
+
+  const self = skills.filter((s) => s.correct);
+  const repeat = skills.filter((s) => !s.correct);
+
+  const pa = scoreA / 10;
+  const pb = scoreB / 10;
     let conclusion=pa<.5?"Сначала стоит укрепить базовые вычислительные и алгебраические навыки. Они понадобятся практически в каждой теме старшей школы или колледжа":pa<.8?"Основная база уже есть, но некоторые вычислительные и алгебраические навыки стоит повторить перед началом новой программы":pb<.7?"Базовые навыки сформированы. Основное внимание стоит уделить отдельным темам программы 7–9 классов":pb>=.8?"Большая часть опорных знаний из программы 5–9 классов сохранилась. После проверки сложных заданий можно будет составить точный план повторения":"Базовые навыки сформированы. Отдельные темы программы 7–9 классов стоит повторить перед началом новой программы";
     if(Math.abs(pa-pb)>=.4) conclusion+=pa>pb?" Базовые навыки оказались увереннее, чем темы программы 7–9 классов.":" Темы 7–9 классов оказались увереннее базовых вычислительных навыков.";
 return (
