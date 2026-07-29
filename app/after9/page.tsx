@@ -885,10 +885,101 @@ if (screen === "bridgeC") {
     return <main className="center-screen after9-page"><section className="review-card photo-review-card"><div className="review-icon">▧</div><p className="kicker">Решения на бумаге</p><h1>Загрузи фотографии решений</h1><p>Фотографии помогут увидеть не только финальные ответы, но и ход рассуждений. Особенно важно приложить решения заданий №21–24.</p><PhotoUploader bucket="final" photos={photos} onAdd={addPhotos} onRemove={removePhoto} onLabel={labelPhoto} onZoom={setZoomPhoto}/><p className="privacy-note">Можно подписать номер задания под каждой фотографией. Файлы хранятся только в этом браузере.</p><div className="review-actions"><button className="button secondary" onClick={()=>{setCurrent(23);setScreen("test")}}>Назад к №24</button><button className="button primary" onClick={()=>setScreen("review")}>Перейти к обзору →</button></div></section>{zoomPhoto&&<div className="photo-modal" onClick={()=>setZoomPhoto(null)}><button onClick={()=>setZoomPhoto(null)}>Закрыть ×</button><img src={zoomPhoto.data} alt={zoomPhoto.name}/></div>}</main>;
   }
 
-  if (screen === "review") {
-    return <main className="result-page after9-page review-overview"><header className="compact-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a></header><section className="result-section overview-heading"><p className="kicker">Перед завершением</p><h1>Обзор всех 24 заданий</h1><p>{unanswered.length?`Без ответа осталось: ${unanswered.length}. Вернись к ним или засчитай как «Не знаю, как решить».`:"Все задания заполнены или отмечены как «Не знаю, как решить»."}</p></section><section className="result-section overview-grid">{questions.map((q,index)=><button className={`overview-item ${answer(q.id).dontKnow?"unknown":hasContent(q)?"answered":"empty"}`} key={q.id} onClick={()=>{setCurrent(index);setScreen("test");window.scrollTo({top:0})}}><b>№{q.id}</b>}</button>)}</section><section className="result-section review-finish">{unanswered.length>0&&<button className="button secondary" onClick={()=>setAnswers((prev)=>{const next={...prev};unanswered.forEach(q=>{next[q.id]={...(next[q.id]||blank()),value:"",extra:"",parts:[],explanation:"",dontKnow:true}});return next})}>Засчитать пропуски как «Не знаю»</button>}<button className="button primary" disabled={unanswered.length>0} onClick={()=>{if(!window.confirm("После завершения ответы будут проверены, и изменить их уже не получится. Завершить диагностику?"))return;setScreen("result");localStorage.removeItem(STORAGE_KEY);window.scrollTo({top:0})}}>Завершить диагностику</button></section></main>;
-  }
+ if (screen === "review") {
+  const markUnansweredAsUnknown = () => {
+    setAnswers((previous) => {
+      const next = { ...previous };
 
+      unanswered.forEach((question) => {
+        next[question.id] = {
+          ...(next[question.id] || blank()),
+          value: "",
+          extra: "",
+          parts: [],
+          explanation: "",
+          dontKnow: true,
+        };
+      });
+
+      return next;
+    });
+  };
+
+  const finishDiagnostic = () => {
+    const confirmed = window.confirm(
+      "После завершения ответы будут проверены, и изменить их уже не получится. Завершить диагностику?"
+    );
+
+    if (!confirmed) return;
+
+    setScreen("result");
+    localStorage.removeItem(STORAGE_KEY);
+    window.scrollTo({ top: 0 });
+  };
+
+  return (
+    <main className="result-page after9-page review-overview">
+      <header className="compact-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+      </header>
+
+      <section className="result-section overview-heading">
+        <p className="kicker">Перед завершением</p>
+        <h1>Обзор всех 24 заданий</h1>
+
+        <p>
+          {unanswered.length > 0
+            ? `Без ответа осталось: ${unanswered.length}. Вернись к ним или засчитай как «Не знаю, как решить».`
+            : "Все задания заполнены или отмечены как «Не знаю, как решить»."}
+        </p>
+      </section>
+
+      <section className="result-section overview-grid">
+        {questions.map((question, index) => (
+          <button
+            className={`overview-item ${
+              answer(question.id).dontKnow
+                ? "unknown"
+                : hasContent(question)
+                  ? "answered"
+                  : "empty"
+            }`}
+            key={question.id}
+            onClick={() => {
+              setCurrent(index);
+              setScreen("test");
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            <b>№{question.id}</b>
+          </button>
+        ))}
+      </section>
+
+      <section className="result-section review-finish">
+        {unanswered.length > 0 && (
+          <button
+            className="button secondary"
+            onClick={markUnansweredAsUnknown}
+          >
+            Засчитать пропуски как «Не знаю»
+          </button>
+        )}
+
+        <button
+          className="button primary"
+          disabled={unanswered.length > 0}
+          onClick={finishDiagnostic}
+        >
+          Завершить диагностику
+        </button>
+      </section>
+    </main>
+  );
+}
 if (screen === "result") {
   const scoreA = questions
     .slice(0, 10)
