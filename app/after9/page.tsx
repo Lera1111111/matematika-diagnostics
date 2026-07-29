@@ -1033,7 +1033,9 @@ if (screen === "result") {
         </div>
 
         <div>
-          <p className="kicker">Предварительный результат</p>
+         <p className="kicker">
+  {advancedSkipped ? "Результат" : "Предварительный результат"}
+</p>
           <h1>{name}, вот твой результат</h1>
           <p>{conclusion}</p>
           <small>Дальнейшее обучение: {destination}</small>
@@ -1063,10 +1065,12 @@ if (screen === "result") {
           <span>«не знаю»</span>
         </article>
 
-        <article>
-          <strong>Ожидает</strong>
-          <span>проверка блока В</span>
-        </article>
+       {!advancedSkipped && (
+  <article>
+    <strong>Ожидает</strong>
+    <span>проверка блока В</span>
+  </article>
+)}
       </section>
 
       <section className="result-section three-topic-panels oge-topic-panels">
@@ -1097,23 +1101,39 @@ if (screen === "result") {
         )}
       </section>
 
-      <section className="result-section manual-block">
-        <p className="kicker">Блок В</p>
-        <h2>Задания №21–24 ожидают проверки преподавателя</h2>
+     {!advancedSkipped && (
+  <section className="result-section manual-block">
+    <p className="kicker">Блок В</p>
+    <h2>Задания №21–24 ожидают проверки преподавателя</h2>
 
-        <div>
-          {[21, 22, 23, 24].map((id) => (
-            <span key={id}>
-              №{id} — {manualStatus(id)}
-            </span>
-          ))}
-        </div>
-      </section>
+    <div>
+      {[21, 22, 23, 24].map((id) => (
+        <span key={id}>
+          №{id} — {manualStatus(id)}
+        </span>
+      ))}
+    </div>
+  </section>
+)}
 
       <section className="final-cta oge-final">
-        <div>
-          <p className="kicker">Получить разбор и план повторения</p>
-          <h2>Отправь результат и фотографии решений Лере</h2>
+  <div>
+    <p className="kicker">
+      {advancedSkipped ? "Следующий шаг" : "Получить разбор и план повторения"}
+    </p>
+
+    <h2>
+      {advancedSkipped
+        ? "Хочешь повторить математику без стресса?"
+        : "Отправь результат и фотографии решений Лере"}
+    </h2>
+
+    <p>
+      {advancedSkipped
+        ? "Разберём только те темы, в которых остались пробелы, без повторения всей программы 5–9 классов."
+        : "Я посмотрю не только ответы, но и ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план."}
+    </p>
+  </div>
 
           <p>
             Я посмотрю не только ответы, но и ход работы, отмечу сильные
