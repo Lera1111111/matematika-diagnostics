@@ -790,7 +790,7 @@ export default function AfterGradeNineDiagnostic() {
               <PhotoUploader bucket={`q${question.id}`} photos={photos} onAdd={addPhotos} onRemove={removePhoto} onLabel={labelPhoto} onZoom={setZoomPhoto}/>
               {hasContent(question) && !stored.dontKnow && <p className="manual-note">Ответ сохранён. Полное решение проверит преподаватель.</p>}
             </div>}
-            <label className="reference-check"><input type="checkbox" checked={stored.reference} onChange={(e)=>setAnswers((prev)=>({...prev,[question.id]:{...(prev[question.id]||blank()),reference:e.target.checked}}))}/><span>Использовал(а) справочные материалы</span></label>
+           
             <div className="test-actions grade-seven-actions"><button className="button secondary" disabled={current===0} onClick={()=>{setCurrent(v=>v-1);window.scrollTo({top:0})}}>← Назад</button><button className={`button dont-know-button ${stored.dontKnow?"active-dont-know":""}`} onClick={()=>markUnknown(question)}>{stored.dontKnow?"Отмечено: не знаю":"Не знаю, как решить"}</button><button className="button primary" onClick={goNext}>Далее →</button></div>
           </article>
           <p className="save-note">Ответы, тексты решений и прогресс сохраняются только на этом устройстве</p>
