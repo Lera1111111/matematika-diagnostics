@@ -211,6 +211,7 @@ export default function HomePage() {
               <i>{diagnostic.meta} →</i>
             </a>
           ))}
+            </div>
       </section>
 
       <section className="final-cta">
