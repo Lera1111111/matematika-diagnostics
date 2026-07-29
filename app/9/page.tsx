@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-type StoredAnswer = { value: string; dontKnow: boolean; usedReference: boolean };
+type StoredAnswer = { value: string; dontKnow: boolean };
 type QuestionType = "text" | "single" | "multi" | "roots";
 type DiagramKind =
   | "function-graph"
@@ -53,7 +53,7 @@ type BlockResult = {
   status: "good" | "repeat" | "priority";
 };
 const TELEGRAM_USERNAME = "vxoab";
-const STORAGE_KEY = "math-diagnostic-before-9-v2";
+const STORAGE_KEY = "math-diagnostic-before-9-v3";
 const MULTI_SEPARATOR = "|||";
 
 const normalize = (value: string) =>
@@ -571,13 +571,9 @@ export default function GradeNineDiagnostic() {
 
     if (answer.dontKnow) return "dont_know";
 
-    if (isCorrect(question, answer)) {
-      return answer.usedReference
-        ? "with_reference"
-        : "correct";
-    }
-
-    return "incorrect";
+    return isCorrect(question, answer)
+      ? "correct"
+      : "incorrect";
   };
 
   const answeredCount = questions.filter(
@@ -600,9 +596,6 @@ export default function GradeNineDiagnostic() {
     (question) => status(question) === "dont_know",
   ).length;
 
-  const referenceCount = questions.filter(
-    (question) => status(question) === "with_reference",
-  ).length;
 
   const unanswered = questions.filter(
     (question) => status(question) === "unanswered",
@@ -700,7 +693,6 @@ export default function GradeNineDiagnostic() {
       `Результат: ${score} из ${questions.length}`,
       `Ошибок: ${incorrectCount}`,
       `Отмечено «Не знаю»: ${dontKnowCount}`,
-      `Правильно со справочным материалом: ${referenceCount}`,
       section("С этим всё хорошо", ordered("good")),
       section(
         "Стоит немного повторить",
@@ -753,19 +745,15 @@ export default function GradeNineDiagnostic() {
         const statusLabel =
           questionStatus === "correct"
             ? "Правильно"
-            : questionStatus === "with_reference"
-              ? "Правильно со справочным материалом"
-              : questionStatus === "incorrect"
-                ? answer?.usedReference
-                  ? "Неправильно, использован справочный материал"
-                  : "Неправильно"
-                : questionStatus === "dont_know"
-                  ? "Не знаю"
-                  : "Нет ответа";
+            : questionStatus === "incorrect"
+              ? "Неправильно"
+              : questionStatus === "dont_know"
+                ? "Не знаю"
+                : "Нет ответа";
 
         return `<tr>
           <td>${index + 1}</td>
-          <<td>${escapeHtml(question.block)}</td>
+          <td>${escapeHtml(question.block)}</td>
           <td>${escapeHtml(studentAnswer)}</td>
           <td>${escapeHtml(getCorrectAnswer(question))}</td>
           <td>${escapeHtml(statusLabel)}</td>
@@ -832,7 +820,6 @@ ${rows}
       answers[question.id] || {
         value: "",
         dontKnow: false,
-        usedReference: false,
       };
 
     const selected = stored.dontKnow
@@ -870,9 +857,6 @@ ${rows}
         [question.id]: {
           value,
           dontKnow: false,
-          usedReference:
-            previous[question.id]?.usedReference ||
-            false,
         },
       }));
     };
@@ -942,11 +926,9 @@ ${rows}
               const stateClass =
                 itemStatus === "dont_know"
                   ? "unknown"
-                  : itemStatus === "with_reference"
-                    ? "reference"
-                    : itemStatus === "unanswered"
-                      ? "empty"
-                      : "answered";
+                  : itemStatus === "unanswered"
+                    ? "empty"
+                    : "answered";
 
               return (
                 <button
@@ -1122,72 +1104,6 @@ ${rows}
               </div>
             )}
 
-            <details className="reference-material">
-              <summary>
-                Открыть справочный материал
-              </summary>
-
-              <div className="reference-material-content">
-                <h3>Основные формулы</h3>
-
-                <p>
-                  <b>Квадрат суммы:</b>{" "}
-                  (a + b)² = a² + 2ab + b²
-                </p>
-                <p>
-                  <b>Квадрат разности:</b>{" "}
-                  (a − b)² = a² − 2ab + b²
-                </p>
-                <p>
-                  <b>Разность квадратов:</b>{" "}
-                  a² − b² = (a − b)(a + b)
-                </p>
-                <p>
-                  <b>Площадь трапеции:</b>{" "}
-                  S = (a + b)h / 2
-                </p>
-                <p>
-                  <b>Теорема Пифагора:</b>{" "}
-                  c² = a² + b²
-                </p>
-                <p>
-                  <b>Вписанный угол:</b> равен половине
-                  центрального угла, опирающегося на ту
-                  же дугу.
-                </p>
-                <p>
-                  <b>Область определения корня:</b>{" "}
-                  подкоренное выражение должно быть не
-                  меньше нуля.
-                </p>
-              </div>
-            </details>
-
-            <label className="reference-check">
-              <input
-                type="checkbox"
-                checked={stored.usedReference}
-                onChange={(event) =>
-                  setAnswers((previous) => ({
-                    ...previous,
-                    [question.id]: {
-                      value:
-                        previous[question.id]?.value ||
-                        "",
-                      dontKnow:
-                        previous[question.id]?.dontKnow ||
-                        false,
-                      usedReference:
-                        event.target.checked,
-                    },
-                  }))
-                }
-              />
-
-              <span>
-                Я использовал(а) справочный материал
-              </span>
-            </label>
 
             <p className="dont-know-hint">
               Если способ решения совсем непонятен, не
@@ -1219,9 +1135,6 @@ ${rows}
                     [question.id]: {
                       value: "",
                       dontKnow: true,
-                      usedReference:
-                        previous[question.id]
-                          ?.usedReference || false,
                     },
                   }))
                 }
@@ -1292,9 +1205,6 @@ ${rows}
           next[question.id] = {
             value: "",
             dontKnow: true,
-            usedReference:
-              previous[question.id]?.usedReference ||
-              false,
           };
         });
 
@@ -1343,11 +1253,9 @@ ${rows}
             const stateClass =
               questionStatus === "dont_know"
                 ? "unknown"
-                : questionStatus === "with_reference"
-                  ? "reference"
-                  : questionStatus === "unanswered"
-                    ? "empty"
-                    : "answered";
+                : questionStatus === "unanswered"
+                  ? "empty"
+                  : "answered";
 
             return (
               <button
@@ -1476,10 +1384,6 @@ ${rows}
             <span>«не знаю»</span>
           </article>
 
-          <article>
-            <strong>{referenceCount}</strong>
-            <span>со справочным</span>
-          </article>
         </section>
 
         <section className="result-section">
@@ -1638,11 +1542,9 @@ ${rows}
               const stateClass =
                 questionStatus === "correct"
                   ? "correct"
-                  : questionStatus === "with_reference"
-                    ? "reference"
-                    : questionStatus === "incorrect"
-                      ? "wrong"
-                      : "unknown";
+                  : questionStatus === "incorrect"
+                    ? "wrong"
+                    : "unknown";
 
               const studentAnswer = answer?.dontKnow
                 ? "Не знаю, как решить"
@@ -1663,11 +1565,9 @@ ${rows}
                     <span>
                       {questionStatus === "correct"
                         ? "Правильно"
-                        : questionStatus === "with_reference"
-                          ? "Со справочным"
-                          : questionStatus === "incorrect"
-                            ? "Неправильно"
-                            : "Не знаю"}
+                        : questionStatus === "incorrect"
+                          ? "Неправильно"
+                          : "Не знаю"}
                     </span>
                   </summary>
 
@@ -1688,12 +1588,6 @@ ${rows}
                       )}
                     </p>
 
-                    {answer?.usedReference && (
-                      <p>
-                        <b>Справочный материал:</b>{" "}
-                        использован
-                      </p>
-                    )}
                   </div>
                 </details>
               );
@@ -1835,11 +1729,6 @@ ${rows}
                   самостоятельно.
                 </li>
                 <li>
-                  Если нужна формула, открой справочный
-                  материал и обязательно отметь это
-                  галочкой.
-                </li>
-                <li>
                   Строгого ограничения времени нет.
                 </li>
                 <li>
@@ -1922,10 +1811,10 @@ ${rows}
 
           <article className="step-card blue">
             <span>02</span>
-            <h3>Можно пользоваться формулами</h3>
+            <h3>Можно честно не знать</h3>
             <p>
-              Открываешь справочный материал и
-              отмечаешь задания, где он понадобился.
+              Если способ решения незнаком, отмечаешь
+              это без случайных догадок.
             </p>
           </article>
 
@@ -1933,8 +1822,8 @@ ${rows}
             <span>03</span>
             <h3>Получаешь маршрут</h3>
             <p>
-              Видишь сильные темы, ошибки и задания,
-              выполненные со справочным материалом.
+              Видишь сильные темы, ошибки и то,
+              что стоит разобрать подробнее.
             </p>
           </article>
         </div>
