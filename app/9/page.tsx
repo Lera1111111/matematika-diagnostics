@@ -2,7 +2,22 @@
 
 import { createElement, useEffect, useMemo, useState } from "react";
 
-type StoredAnswer = { value: string; dontKnow: boolean };
+declare global {
+  interface Window {
+    katex?: {
+      render: (
+        expression: string,
+        element: HTMLElement,
+        options?: {
+          displayMode?: boolean;
+          throwOnError?: boolean;
+        },
+      ) => void;
+    };
+  }
+}
+
+type StoredAnswer = { value: string; dontKnow: boolean; usedReference: boolean };
 type QuestionType = "text" | "single" | "multi" | "roots";
 type DiagramKind =
   | "function-graph"
@@ -38,7 +53,7 @@ type BlockResult = {
   status: "good" | "repeat" | "priority";
 };
 const TELEGRAM_USERNAME = "vxoab";
-const STORAGE_KEY = "math-diagnostic-before-9-v1";
+const STORAGE_KEY = "math-diagnostic-before-9-v2";
 const MULTI_SEPARATOR = "|||";
 
 const normalize = (value: string) =>
@@ -104,77 +119,77 @@ const questions: Question[] = [
     id: 1, part: "Алгебра", block: "Рациональные выражения",
     eyebrow: "Допустимые значения переменной",
     prompt: "При каких значениях x выражение не имеет смысла?",
-    expression: "(x + 2) / (x(x − 5))", type: "multi",
+    expression: String.raw`\frac{x+2}{x(x-5)}`, type: "multi",
     options: ["x = −2", "x = 0", "x = 2", "x = 5"],
     correct: ["x = 0", "x = 5"],
   },
   {
     id: 2, part: "Алгебра", block: "Рациональные выражения",
     eyebrow: "Сокращение алгебраической дроби", prompt: "Сократи дробь:",
-    expression: "(x² − 9) / (x² + 3x)", type: "single",
+    expression: String.raw`\frac{x^2-9}{x^2+3x}`, type: "single",
     options: ["(x − 3) / x", "(x + 3) / x", "(x − 3) / (x + 3)", "(x + 3) / (x − 3)"],
     correct: "(x − 3) / x",
   },
   {
     id: 3, part: "Алгебра", block: "Рациональные выражения",
     eyebrow: "Действия с алгебраическими дробями", prompt: "Упрости выражение:",
-    expression: "[2x / (x − 1)] · [(x² − 1) / 4x]", type: "single",
+    expression: String.raw`\frac{2x}{x-1}\cdot\frac{x^2-1}{4x}`, type: "single",
     options: ["(x + 1) / 2", "(x − 1) / 2", "2(x + 1)", "(x + 1) / 4"],
     correct: "(x + 1) / 2",
   },
   {
     id: 4, part: "Алгебра", block: "Квадратные корни",
     eyebrow: "Вычисление выражения", prompt: "Вычисли:",
-    expression: "√144 + √25", type: "text", number: 17,
+    expression: String.raw`\sqrt{144}+\sqrt{25}`, type: "text", number: 17,
   },
   {
     id: 5, part: "Алгебра", block: "Квадратные корни",
     eyebrow: "Преобразование выражения с корнями", prompt: "Упрости:",
-    expression: "√75 − √12", type: "single",
+    expression: String.raw`\sqrt{75}-\sqrt{12}`, type: "single",
     options: ["3√3", "7√3", "√63", "3"], correct: "3√3",
   },
   {
     id: 6, part: "Алгебра", block: "Квадратные корни",
     eyebrow: "Сравнение выражений с корнями", prompt: "Сравни:",
-    expression: "√45 и 3√5", type: "single",
+    expression: String.raw`\sqrt{45}\quad\text{и}\quad3\sqrt{5}`, type: "single",
     options: ["√45 > 3√5", "√45 < 3√5", "√45 = 3√5", "сравнить невозможно"],
     correct: "√45 = 3√5",
   },
   {
     id: 7, part: "Алгебра", block: "Выражения и уравнения",
     eyebrow: "Формулы сокращённого умножения", prompt: "Раскрой скобки:",
-    expression: "(a − 4)²", type: "single",
+    expression: String.raw`(a-4)^2`, type: "single",
     options: ["a² − 8a + 16", "a² − 16", "a² − 4a + 16", "a² + 8a + 16"],
     correct: "a² − 8a + 16",
   },
   {
     id: 8, part: "Алгебра", block: "Выражения и уравнения",
     eyebrow: "Разложение на множители", prompt: "Разложи на множители:",
-    expression: "6x² − 15x", type: "single",
+    expression: String.raw`6x^2-15x`, type: "single",
     options: ["3x(2x − 5)", "3(2x² − 5x)", "x(6x − 15x)", "3x(2x − 15)"],
     correct: "3x(2x − 5)",
   },
   {
     id: 9, part: "Алгебра", block: "Выражения и уравнения",
     eyebrow: "Линейное уравнение", prompt: "Реши уравнение:",
-    expression: "3(2x − 1) − 5 = 4x + 6", type: "text", number: 7,
+    expression: String.raw`3(2x-1)-5=4x+6`, type: "text", number: 7,
   },
   {
     id: 10, part: "Алгебра", block: "Выражения и уравнения",
     eyebrow: "Квадратное уравнение", prompt: "Реши уравнение:",
-    expression: "x² − 7x + 12 = 0", type: "roots",
+    expression: String.raw`x^2-7x+12=0`, type: "roots",
     note: "Запиши оба корня через запятую или точку с запятой. Порядок не важен.",
   },
   {
     id: 11, part: "Алгебра", block: "Неравенства",
     eyebrow: "Линейное неравенство", prompt: "Реши неравенство:",
-    expression: "5 − 2x > 11", type: "single",
+    expression: String.raw`5-2x>11`, type: "single",
     options: ["x < −3", "x > −3", "x < 3", "x > 3"], correct: "x < −3",
   },
   {
     id: 12, part: "Алгебра", block: "Неравенства",
     eyebrow: "Система неравенств", prompt: "Найди множество решений системы:",
-    expression: "x ≥ −1,\nx < 4.", type: "single",
+    expression: String.raw`\begin{cases}x\ge -1\\x<4\end{cases}`, type: "single",
     options: ["[−1; 4)", "(−1; 4)", "[−1; 4]", "(−∞; −1] ∪ (4; +∞)"], correct: "[−1; 4)",
   },
   {
@@ -190,13 +205,13 @@ const questions: Question[] = [
   {
     id: 15, part: "Алгебра", block: "Функции и графики",
     eyebrow: "Область определения функции", prompt: "Укажи область определения функции:",
-    expression: "y = √(5 − x)", type: "single",
+    expression: String.raw`y=\sqrt{5-x}`, type: "single",
     options: ["x ≤ 5", "x ≥ 5", "x < 5", "любое число"], correct: "x ≤ 5",
   },
   {
     id: 16, part: "Алгебра", block: "Степени",
     eyebrow: "Степень с отрицательным показателем", prompt: "Вычисли:",
-    expression: "2⁻³", type: "single",
+    expression: String.raw`2^{-3}`, type: "single",
     options: ["1/8", "−8", "8", "−1/8"], correct: "1/8",
   },
   {
@@ -423,6 +438,56 @@ function GradeNineDiagram({ kind }: { kind: DiagramKind }) {
   );
 }
 
+
+function MathFormula({
+  expression,
+  displayMode = true,
+}: {
+  expression: string;
+  displayMode?: boolean;
+}) {
+  const [element, setElement] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!element) return;
+
+    const renderFormula = () => {
+      if (!window.katex) return false;
+
+      window.katex.render(expression, element, {
+        displayMode,
+        throwOnError: false,
+      });
+
+      return true;
+    };
+
+    if (renderFormula()) return;
+
+    const timer = window.setInterval(() => {
+      if (renderFormula()) window.clearInterval(timer);
+    }, 100);
+
+    return () => window.clearInterval(timer);
+  }, [element, expression, displayMode]);
+
+  return <div ref={setElement} />;
+}
+
+function escapeHtml(value: string) {
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+      })[character] || character,
+  );
+}
+
 function Doodle() {
   return (
     <div className="doodle grade-eight-doodle grade-nine-doodle" aria-hidden="true">
@@ -435,214 +500,754 @@ function Doodle() {
   );
 }
 
+
 export default function GradeNineDiagnostic() {
-  const [screen, setScreen] = useState<"home" | "test" | "bridge" | "review" | "result">("home");
+  const [screen, setScreen] =
+    useState<"home" | "test" | "bridge" | "review" | "result">("home");
   const [name, setName] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, StoredAnswer>>({});
   const [hydrated, setHydrated] = useState(false);
   const [copyState, setCopyState] = useState("");
+  const [copyFallback, setCopyFallback] = useState("");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
+
       if (saved) {
         const parsed = JSON.parse(saved);
+
+        if (["home", "test", "bridge", "review"].includes(parsed.screen)) {
+          setScreen(parsed.screen);
+        }
+
         setName(parsed.name || "");
+        setAccepted(Boolean(parsed.accepted));
         setAnswers(parsed.answers || {});
-        setCurrent(Math.min(Math.max(parsed.current || 0, 0), questions.length - 1));
+        setCurrent(
+          Math.min(
+            Math.max(parsed.current || 0, 0),
+            questions.length - 1,
+          ),
+        );
       }
-    } catch {}
+    } catch {
+      // Повреждённое сохранение не мешает начать заново.
+    }
+
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated && screen !== "result") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ name, answers, current }));
-    }
-  }, [name, answers, current, screen, hydrated]);
+    if (!hydrated || screen === "result") return;
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        screen,
+        name,
+        accepted,
+        answers,
+        current,
+      }),
+    );
+  }, [
+    screen,
+    name,
+    accepted,
+    answers,
+    current,
+    hydrated,
+  ]);
 
   const status = (question: Question) => {
     const answer = answers[question.id];
-    if (!answer || (!answer.dontKnow && !answer.value.trim())) return "unanswered";
+
+    if (!answer || (!answer.dontKnow && !answer.value.trim())) {
+      return "unanswered";
+    }
+
     if (answer.dontKnow) return "dont_know";
-    return isCorrect(question, answer) ? "correct" : "incorrect";
+
+    if (isCorrect(question, answer)) {
+      return answer.usedReference
+        ? "with_reference"
+        : "correct";
+    }
+
+    return "incorrect";
   };
 
-  const answeredCount = questions.filter((question) => status(question) !== "unanswered").length;
-  const score = useMemo(() => questions.filter((question) => isCorrect(question, answers[question.id])).length, [answers]);
-  const unanswered = questions.filter((question) => status(question) === "unanswered");
+  const answeredCount = questions.filter(
+    (question) => status(question) !== "unanswered",
+  ).length;
 
-  const blockResults = useMemo<BlockResult[]>(() => blockOrder.map((block) => {
-    const items = questions.filter((question) => question.block === block);
-    const correct = items.filter((question) => isCorrect(question, answers[question.id])).length;
-    const unknown = items.filter((question) => answers[question.id]?.dontKnow).length;
-    const percent = Math.round((correct / items.length) * 100);
-    const blockStatus: BlockResult["status"] = percent >= 80 ? "good" : percent >= 50 ? "repeat" : "priority";
-    return { name: block, correct, total: items.length, unknown, percent, status: blockStatus };
-  }), [answers]);
+  const score = useMemo(
+    () =>
+      questions.filter((question) =>
+        isCorrect(question, answers[question.id]),
+      ).length,
+    [answers],
+  );
+
+  const incorrectCount = questions.filter(
+    (question) => status(question) === "incorrect",
+  ).length;
+
+  const dontKnowCount = questions.filter(
+    (question) => status(question) === "dont_know",
+  ).length;
+
+  const referenceCount = questions.filter(
+    (question) => status(question) === "with_reference",
+  ).length;
+
+  const unanswered = questions.filter(
+    (question) => status(question) === "unanswered",
+  );
+
+  const blockResults = useMemo<BlockResult[]>(
+    () =>
+      blockOrder.map((block) => {
+        const items = questions.filter(
+          (question) => question.block === block,
+        );
+
+        const correct = items.filter((question) =>
+          isCorrect(question, answers[question.id]),
+        ).length;
+
+        const unknown = items.filter(
+          (question) => answers[question.id]?.dontKnow,
+        ).length;
+
+        const percent = Math.round(
+          (correct / items.length) * 100,
+        );
+
+        const blockStatus: BlockResult["status"] =
+          percent >= 80
+            ? "good"
+            : percent >= 50
+              ? "repeat"
+              : "priority";
+
+        return {
+          name: block,
+          correct,
+          total: items.length,
+          unknown,
+          percent,
+          status: blockStatus,
+        };
+      }),
+    [answers],
+  );
 
   const ordered = (kind: BlockResult["status"]) =>
     blockResults
       .filter((block) => block.status === kind)
-      .sort((a, b) => a.percent - b.percent || b.unknown - a.unknown || blockOrder.indexOf(a.name) - blockOrder.indexOf(b.name));
+      .sort(
+        (a, b) =>
+          a.percent - b.percent ||
+          b.unknown - a.unknown ||
+          blockOrder.indexOf(a.name) -
+            blockOrder.indexOf(b.name),
+      );
 
-  const goNext = () => {
-    if (current === 17) setScreen("bridge");
-    else if (current === questions.length - 1) setScreen("review");
-    else setCurrent((value) => value + 1);
+  const start = () => {
+    if (!name.trim() || !accepted) return;
+
+    setScreen("test");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-const start = () => {
-  if (!name.trim()) return;
 
-  setScreen("test");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
   const restart = () => {
-    if (!window.confirm("Начать диагностику заново? Сохранённые ответы будут удалены.")) return;
+    const confirmed = window.confirm(
+      "Начать диагностику заново? Сохранённые ответы будут удалены.",
+    );
+
+    if (!confirmed) return;
+
     localStorage.removeItem(STORAGE_KEY);
     setName("");
+    setAccepted(false);
     setAnswers({});
     setCurrent(0);
     setScreen("home");
     setCopyState("");
+    setCopyFallback("");
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const resultText = () => {
-    const section = (title: string, items: BlockResult[]) =>
-      items.length ? `${title}:\n${items.map((item) => `— ${item.name}`).join("\n")}` : "";
+    const section = (
+      title: string,
+      items: BlockResult[],
+    ) =>
+      items.length
+        ? `${title}:\n${items
+            .map((item) => `— ${item.name}`)
+            .join("\n")}`
+        : "";
+
     return [
-      "Диагностика “Что повторить перед 9 классом?”",
+      "Диагностика «Что повторить перед 9 классом?»",
       `Имя: ${name.trim() || "не указано"}`,
-      `Результат: ${score} из 28`,
+      `Результат: ${score} из ${questions.length}`,
+      `Ошибок: ${incorrectCount}`,
+      `Отмечено «Не знаю»: ${dontKnowCount}`,
+      `Правильно со справочным материалом: ${referenceCount}`,
       section("С этим всё хорошо", ordered("good")),
-      section("Стоит немного повторить", ordered("repeat")),
-      section("Нужно повторить в первую очередь", ordered("priority")),
-    ].filter(Boolean).join("\n\n");
+      section(
+        "Стоит немного повторить",
+        ordered("repeat"),
+      ),
+      section(
+        "Нужно повторить в первую очередь",
+        ordered("priority"),
+      ),
+      `Работа выполнена: ${new Date().toLocaleString("ru-RU")}`,
+    ]
+      .filter(Boolean)
+      .join("\n\n");
   };
 
-  const copyResult = async () => {
+  const copyResult = async (
+    message = "Результат скопирован",
+  ) => {
     try {
       await navigator.clipboard.writeText(resultText());
-      setCopyState("Результат скопирован");
+      setCopyState(message);
+      setCopyFallback("");
     } catch {
-      setCopyState("Не получилось скопировать автоматически");
+      setCopyState(
+        "Не получилось скопировать автоматически",
+      );
+      setCopyFallback(resultText());
     }
-    window.setTimeout(() => setCopyState(""), 2200);
+
+    window.setTimeout(
+      () => setCopyState(""),
+      3000,
+    );
   };
 
+  const downloadResult = () => {
+    const rows = questions
+      .map((question, index) => {
+        const questionStatus = status(question);
+        const answer = answers[question.id];
+
+        const studentAnswer = answer?.dontKnow
+          ? "Не знаю, как решить"
+          : answer?.value
+            ? answer.value
+                .split(MULTI_SEPARATOR)
+                .join("; ")
+            : "Нет ответа";
+
+        const statusLabel =
+          questionStatus === "correct"
+            ? "Правильно"
+            : questionStatus === "with_reference"
+              ? "Правильно со справочным материалом"
+              : questionStatus === "incorrect"
+                ? answer?.usedReference
+                  ? "Неправильно, использован справочный материал"
+                  : "Неправильно"
+                : questionStatus === "dont_know"
+                  ? "Не знаю"
+                  : "Нет ответа";
+
+        return `<tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(question.topic || question.block)}</td>
+          <td>${escapeHtml(studentAnswer)}</td>
+          <td>${escapeHtml(getCorrectAnswer(question))}</td>
+          <td>${escapeHtml(statusLabel)}</td>
+        </tr>`;
+      })
+      .join("");
+
+    const html = `<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>Результат диагностики</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1000px;margin:40px auto;padding:0 20px;color:#28222c}
+h1{color:#674fa6}
+pre{white-space:pre-wrap;background:#f6f1fa;padding:20px;border-radius:16px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:10px;border:1px solid #ddd;text-align:left;vertical-align:top}
+@media print{button{display:none}}
+</style>
+<body>
+<h1>Что повторить перед 9 классом?</h1>
+<pre>${escapeHtml(resultText())}</pre>
+<h2>Все задания</h2>
+<table>
+<tr>
+<th>№</th>
+<th>Тема</th>
+<th>Ответ ученика</th>
+<th>Правильный ответ</th>
+<th>Статус</th>
+</tr>
+${rows}
+</table>
+<button onclick="window.print()">Печать / сохранить как PDF</button>
+</body>
+</html>`;
+
+    const url = URL.createObjectURL(
+      new Blob([html], {
+        type: "text/html;charset=utf-8",
+      }),
+    );
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `Перед_9_классом_${
+      name.trim().replace(/\s+/g, "_") ||
+      "ученик"
+    }.html`;
+
+    link.click();
+
+    window.setTimeout(
+      () => URL.revokeObjectURL(url),
+      1000,
+    );
+  };
 
   if (screen === "test") {
     const question = questions[current];
-    const stored = answers[question.id] || { value: "", dontKnow: false };
-    const selected = stored.dontKnow ? [] : stored.value.split(MULTI_SEPARATOR).filter(Boolean);
-    const hasAnswer = stored.dontKnow || Boolean(stored.value.trim());
+
+    const stored =
+      answers[question.id] || {
+        value: "",
+        dontKnow: false,
+        usedReference: false,
+      };
+
+    const selected = stored.dontKnow
+      ? []
+      : stored.value
+          .split(MULTI_SEPARATOR)
+          .filter(Boolean);
+
+    const hasAnswer =
+      stored.dontKnow ||
+      Boolean(stored.value.trim());
+
+    const goNext = () => {
+      if (!hasAnswer) return;
+
+      if (current === 17) {
+        setScreen("bridge");
+      } else if (
+        current === questions.length - 1
+      ) {
+        setScreen("review");
+      } else {
+        setCurrent((value) => value + 1);
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    };
+
+    const updateAnswer = (value: string) => {
+      setAnswers((previous) => ({
+        ...previous,
+        [question.id]: {
+          value,
+          dontKnow: false,
+          usedReference:
+            previous[question.id]?.usedReference ||
+            false,
+        },
+      }));
+    };
+
     return (
       <main className="test-shell grade-nine-page">
         <header className="compact-header">
-          <a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-          <button className="text-button" onClick={restart}>Начать сначала</button>
+          <a className="brand" href="/">
+            <span className="brand-mark">∿</span>
+            <span>Математика без стресса</span>
+          </a>
+
+          <button
+            className="text-button"
+            onClick={restart}
+          >
+            Начать сначала
+          </button>
         </header>
+
         <section className="test-wrap">
           <div className="progress-line">
-            <div><span>Задание {current + 1} из 28</span><small>{answeredCount} ответов сохранено</small></div>
-            <strong>{Math.round(((current + 1) / 28) * 100)}%</strong>
+            <div>
+              <span>
+                Задание {current + 1} из{" "}
+                {questions.length}
+              </span>
+              <small>
+                {answeredCount} ответов сохранено
+              </small>
+            </div>
+
+            <strong>
+              {Math.round(
+                ((current + 1) /
+                  questions.length) *
+                  100,
+              )}
+              %
+            </strong>
           </div>
-          <div className="progress-track" aria-label={`Прогресс: задание ${current + 1} из 28`}>
-            <span style={{ width: `${((current + 1) / 28) * 100}%` }} />
+
+          <div
+            className="progress-track"
+            aria-label={`Прогресс: задание ${
+              current + 1
+            } из ${questions.length}`}
+          >
+            <span
+              style={{
+                width: `${
+                  ((current + 1) /
+                    questions.length) *
+                  100
+                }%`,
+              }}
+            />
           </div>
+
+          <nav
+            className="question-number-nav"
+            aria-label="Переход по заданиям"
+          >
+            {questions.map((item, index) => {
+              const itemStatus = status(item);
+
+              const stateClass =
+                itemStatus === "dont_know"
+                  ? "unknown"
+                  : itemStatus === "with_reference"
+                    ? "reference"
+                    : itemStatus === "unanswered"
+                      ? "empty"
+                      : "answered";
+
+              return (
+                <button
+                  type="button"
+                  className={`${stateClass} ${
+                    index === current ? "current" : ""
+                  }`}
+                  key={item.id}
+                  onClick={() => {
+                    setCurrent(index);
+                    setScreen("test");
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </nav>
+
           <article className="question-card grade-nine-question">
             <div className="question-meta">
-              <span>{question.part}</span><span>{question.block}</span>
+              <span>{question.part}</span>
+              <span>{question.block}</span>
             </div>
-            <p className="question-eyebrow">{question.eyebrow}</p>
-            <h1>{question.prompt}</h1>
-            {question.expression && (
-  <div className="expression grade-nine-expression">
-    {renderMathText(question.expression)}
-  </div>
-)}
-            {question.diagram && <GradeNineDiagram kind={question.diagram} />}
-            {question.note && <p className="diagram-note">{question.note}</p>}
 
-            {(question.type === "text" || question.type === "roots") && (
+            <p className="question-eyebrow">
+              {question.eyebrow}
+            </p>
+
+            <h1>{question.prompt}</h1>
+
+            {question.expression && (
+              <div className="expression grade-nine-expression">
+                <MathFormula
+                  expression={question.expression}
+                />
+              </div>
+            )}
+
+            {question.diagram && (
+              <GradeNineDiagram kind={question.diagram} />
+            )}
+
+            {question.note && (
+              <p className="diagram-note">
+                {question.note}
+              </p>
+            )}
+
+            {(question.type === "text" ||
+              question.type === "roots") && (
               <label className="answer-field">
                 <span>Твой ответ</span>
+
                 <input
                   autoFocus
-                  inputMode={question.type === "text" ? "decimal" : "text"}
-                  value={stored.dontKnow ? "" : stored.value}
-                  onChange={(event) => setAnswers((previous) => ({
-                    ...previous,
-                    [question.id]: { value: event.target.value, dontKnow: false },
-                  }))}
-                  placeholder={question.type === "roots" ? "Например: 3; 4" : "Введи ответ"}
+                  inputMode={
+                    question.type === "text"
+                      ? "decimal"
+                      : "text"
+                  }
+                  value={
+                    stored.dontKnow
+                      ? ""
+                      : stored.value
+                  }
+                  onChange={(event) =>
+                    updateAnswer(event.target.value)
+                  }
+                  placeholder={
+                    question.type === "roots"
+                      ? "Например: 3; 4"
+                      : "Введи ответ"
+                  }
+                  onKeyDown={(event) => {
+                    if (
+                      event.key === "Enter" &&
+                      hasAnswer
+                    ) {
+                      goNext();
+                    }
+                  }}
                 />
-                {question.type === "roots" && <small>Можно через запятую или точку с запятой, в любом порядке</small>}
+
+                {question.type === "roots" && (
+                  <small>
+                    Можно через запятую или точку с
+                    запятой, в любом порядке
+                  </small>
+                )}
               </label>
             )}
 
             {question.type === "single" && (
-              <div className="options semantic-options" role="radiogroup" aria-label="Выбери один ответ">
+              <div
+                className="options semantic-options"
+                role="radiogroup"
+                aria-label="Выбери один ответ"
+              >
                 {question.options?.map((option) => (
-                  <label className={`option ${!stored.dontKnow && stored.value === option ? "selected" : ""}`} key={option}>
+                  <label
+                    className={`option ${
+                      !stored.dontKnow &&
+                      stored.value === option
+                        ? "selected"
+                        : ""
+                    }`}
+                    key={option}
+                  >
                     <input
                       type="radio"
                       name={`question-${question.id}`}
-                      checked={!stored.dontKnow && stored.value === option}
-                      onChange={() => setAnswers((previous) => ({
-                        ...previous, [question.id]: { value: option, dontKnow: false },
-                      }))}
+                      checked={
+                        !stored.dontKnow &&
+                        stored.value === option
+                      }
+                      onChange={() =>
+                        updateAnswer(option)
+                      }
                     />
-<span>{renderMathText(option)}</span>
+
+                    <span>
+                      {renderMathText(option)}
+                    </span>
                   </label>
                 ))}
               </div>
             )}
 
             {question.type === "multi" && (
-              <div className="options semantic-options" aria-label="Выбери все верные ответы">
+              <div
+                className="options semantic-options"
+                aria-label="Выбери все верные ответы"
+              >
                 {question.options?.map((option) => {
-                  const checked = selected.includes(option);
+                  const checked =
+                    selected.includes(option);
+
                   return (
-                    <label className={`option checkbox-option ${checked ? "selected" : ""}`} key={option}>
+                    <label
+                      className={`option checkbox-option ${
+                        checked ? "selected" : ""
+                      }`}
+                      key={option}
+                    >
                       <input
                         type="checkbox"
                         checked={checked}
                         onChange={() => {
-                          const next = checked ? selected.filter((item) => item !== option) : [...selected, option];
-                          setAnswers((previous) => ({
-                            ...previous,
-                            [question.id]: { value: next.join(MULTI_SEPARATOR), dontKnow: false },
-                          }));
+                          const next = checked
+                            ? selected.filter(
+                                (item) =>
+                                  item !== option,
+                              )
+                            : [...selected, option];
+
+                          updateAnswer(
+                            next.join(MULTI_SEPARATOR),
+                          );
                         }}
                       />
-<span>{renderMathText(option)}</span>
+
+                      <span>
+                        {renderMathText(option)}
+                      </span>
                     </label>
                   );
                 })}
               </div>
             )}
 
-            <p className="dont-know-hint">Если способ решения совсем непонятен, не угадывай — это поможет точнее составить рекомендации.</p>
+            <details className="reference-material">
+              <summary>
+                Открыть справочный материал
+              </summary>
+
+              <div className="reference-material-content">
+                <h3>Основные формулы</h3>
+
+                <p>
+                  <b>Квадрат суммы:</b>{" "}
+                  (a + b)² = a² + 2ab + b²
+                </p>
+                <p>
+                  <b>Квадрат разности:</b>{" "}
+                  (a − b)² = a² − 2ab + b²
+                </p>
+                <p>
+                  <b>Разность квадратов:</b>{" "}
+                  a² − b² = (a − b)(a + b)
+                </p>
+                <p>
+                  <b>Площадь трапеции:</b>{" "}
+                  S = (a + b)h / 2
+                </p>
+                <p>
+                  <b>Теорема Пифагора:</b>{" "}
+                  c² = a² + b²
+                </p>
+                <p>
+                  <b>Вписанный угол:</b> равен половине
+                  центрального угла, опирающегося на ту
+                  же дугу.
+                </p>
+                <p>
+                  <b>Область определения корня:</b>{" "}
+                  подкоренное выражение должно быть не
+                  меньше нуля.
+                </p>
+              </div>
+            </details>
+
+            <label className="reference-check">
+              <input
+                type="checkbox"
+                checked={stored.usedReference}
+                onChange={(event) =>
+                  setAnswers((previous) => ({
+                    ...previous,
+                    [question.id]: {
+                      value:
+                        previous[question.id]?.value ||
+                        "",
+                      dontKnow:
+                        previous[question.id]?.dontKnow ||
+                        false,
+                      usedReference:
+                        event.target.checked,
+                    },
+                  }))
+                }
+              />
+
+              <span>
+                Я использовал(а) справочный материал
+              </span>
+            </label>
+
+            <p className="dont-know-hint">
+              Если способ решения совсем непонятен, не
+              угадывай — это поможет точнее составить
+              рекомендации.
+            </p>
+
             <div className="test-actions grade-seven-actions">
-              <button className="button secondary" disabled={current === 0} onClick={() => { setCurrent((value) => value - 1); window.scrollTo({ top: 0 }); }}>← Назад</button>
               <button
-                className={`button dont-know-button ${stored.dontKnow ? "active-dont-know" : ""}`}
-                onClick={() => setAnswers((previous) => ({
-                  ...previous, [question.id]: { value: "", dontKnow: true },
-                }))}
+                className="button secondary"
+                disabled={current === 0}
+                onClick={() => {
+                  setCurrent((value) => value - 1);
+                  window.scrollTo({ top: 0 });
+                }}
               >
-                {stored.dontKnow ? "Отмечено: не знаю" : "Не знаю, как решить"}
+                ← Назад
               </button>
-              <button className="button primary" disabled={!hasAnswer} onClick={goNext}>
-                {current === 27 ? "Завершить →" : "Далее →"}
+
+              <button
+                className={`button dont-know-button ${
+                  stored.dontKnow
+                    ? "active-dont-know"
+                    : ""
+                }`}
+                onClick={() =>
+                  setAnswers((previous) => ({
+                    ...previous,
+                    [question.id]: {
+                      value: "",
+                      dontKnow: true,
+                      usedReference:
+                        previous[question.id]
+                          ?.usedReference || false,
+                    },
+                  }))
+                }
+              >
+                {stored.dontKnow
+                  ? "Отмечено: не знаю"
+                  : "Не знаю, как решить"}
+              </button>
+
+              <button
+                className="button primary"
+                disabled={!hasAnswer}
+                onClick={goNext}
+              >
+                {current === questions.length - 1
+                  ? "К обзору"
+                  : "Далее"}{" "}
+                →
               </button>
             </div>
           </article>
-          <p className="save-note">Имя, ответы и прогресс сохраняются только в этом браузере</p>
+
+          <p className="save-note">
+            Имя, ответы и прогресс сохраняются только
+            в этом браузере
+          </p>
         </section>
       </main>
     );
@@ -653,181 +1258,513 @@ const start = () => {
       <main className="center-screen grade-nine-page">
         <section className="review-card bridge-card">
           <div className="review-icon">△</div>
-          <p className="kicker">Алгебра завершена</p>
+          <p className="kicker">
+            Алгебра завершена
+          </p>
           <h1>Переходим к геометрии</h1>
-          <p>Впереди 10 заданий по программе 8 класса: четырёхугольники, площади, подобие, тригонометрия и окружность.</p>
-          <button className="button primary" onClick={() => { setCurrent(18); setScreen("test"); window.scrollTo({ top: 0 }); }}>Перейти к геометрии →</button>
+          <p>
+            Впереди 10 заданий по программе 8 класса:
+            четырёхугольники, площади, подобие,
+            тригонометрия и окружность.
+          </p>
+
+          <button
+            className="button primary"
+            onClick={() => {
+              setCurrent(18);
+              setScreen("test");
+              window.scrollTo({ top: 0 });
+            }}
+          >
+            Перейти к геометрии →
+          </button>
         </section>
       </main>
     );
   }
 
   if (screen === "review") {
+    const markUnansweredUnknown = () => {
+      setAnswers((previous) => {
+        const next = { ...previous };
+
+        unanswered.forEach((question) => {
+          next[question.id] = {
+            value: "",
+            dontKnow: true,
+            usedReference:
+              previous[question.id]?.usedReference ||
+              false,
+          };
+        });
+
+        return next;
+      });
+    };
+
+    const finish = () => {
+      const confirmed = window.confirm(
+        "После завершения изменить ответы будет нельзя. Показать результат?",
+      );
+
+      if (!confirmed) return;
+
+      setScreen("result");
+      localStorage.removeItem(STORAGE_KEY);
+      window.scrollTo({ top: 0 });
+    };
+
     return (
-      <main className="center-screen grade-nine-page">
-        <section className="review-card">
-          <div className="review-icon">{unanswered.length ? "!" : "✓"}</div>
-          <p className="kicker">Перед результатом</p>
-          <h1>{unanswered.length ? `Осталось без ответа: ${unanswered.length}` : "Все 28 заданий пройдены"}</h1>
-          <p>{unanswered.length
-            ? "Можно вернуться к первому пропущенному заданию или засчитать все пропуски как «Не знаю, как решить»."
-            : "Теперь можно посмотреть результат по каждому тематическому блоку и порядок повторения."}</p>
-          <div className="review-actions">
-            <button className="button secondary" onClick={() => {
-              setCurrent(unanswered.length ? questions.indexOf(unanswered[0]) : 27);
-              setScreen("test");
-            }}>{unanswered.length ? "Вернуться к пропускам" : "Вернуться к заданиям"}</button>
-            {unanswered.length ? (
-              <button className="button primary" onClick={() => {
-                const marked = { ...answers };
-                unanswered.forEach((question) => { marked[question.id] = { value: "", dontKnow: true }; });
-                setAnswers(marked);
-              }}>Засчитать как «не знаю»</button>
-            ) : (
-              <button className="button primary" onClick={() => {
-                setScreen("result");
-                localStorage.removeItem(STORAGE_KEY);
-                window.scrollTo({ top: 0 });
-              }}>Показать результат</button>
-            )}
-          </div>
+      <main className="result-page grade-nine-page review-overview">
+        <header className="compact-header">
+          <a className="brand" href="/">
+            <span className="brand-mark">∿</span>
+            <span>Математика без стресса</span>
+          </a>
+        </header>
+
+        <section className="result-section overview-heading">
+          <p className="kicker">
+            Перед результатом
+          </p>
+          <h1>Обзор всех 28 заданий</h1>
+
+          <p>
+            {unanswered.length
+              ? `Без ответа осталось: ${unanswered.length}. Вернись к ним или засчитай как «Не знаю, как решить».`
+              : "Все задания заполнены или отмечены как «Не знаю, как решить»."}
+          </p>
+        </section>
+
+        <section className="result-section overview-grid">
+          {questions.map((question, index) => {
+            const questionStatus = status(question);
+
+            const stateClass =
+              questionStatus === "dont_know"
+                ? "unknown"
+                : questionStatus === "with_reference"
+                  ? "reference"
+                  : questionStatus === "unanswered"
+                    ? "empty"
+                    : "answered";
+
+            return (
+              <button
+                className={`overview-item ${stateClass}`}
+                key={question.id}
+                onClick={() => {
+                  setCurrent(index);
+                  setScreen("test");
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                <b>№{index + 1}</b>
+              </button>
+            );
+          })}
+        </section>
+
+        <section className="result-section review-finish">
+          {unanswered.length > 0 && (
+            <button
+              className="button secondary"
+              onClick={markUnansweredUnknown}
+            >
+              Засчитать пропуски как «Не знаю»
+            </button>
+          )}
+
+          <button
+            className="button primary"
+            disabled={unanswered.length > 0}
+            onClick={finish}
+          >
+            Показать результат
+          </button>
         </section>
       </main>
     );
   }
 
   if (screen === "result") {
-    const percent = Math.round((score / 28) * 100);
+    const percent = Math.round(
+      (score / questions.length) * 100,
+    );
+
     const good = ordered("good");
     const repeat = ordered("repeat");
     const priority = ordered("priority");
-    const conclusion = percent >= 80
-      ? "База 8 класса сохранилась уверенно. Перед учебным годом достаточно точечно освежить отдельные темы."
-      : percent >= 50
-        ? "Многое уже получается. Небольшое повторение поможет начать 9 класс спокойнее и увереннее."
-        : "Есть темы, которые стоит восстановить по порядку. Это не оценка, а понятный маршрут для повторения.";
-    const telegramMessage = encodeURIComponent(
-  `Здравствуйте! Меня зовут ${name.trim()}. ` +
-    `Результат моей диагностики перед 9 классом — ${score} из 28. ` +
-    `Хочу узнать, какие темы лучше повторить.`,
-);
 
-const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
+    const conclusion =
+      score === questions.length
+        ? "Все задания выполнены правильно. Тем для обязательного повторения нет — можно переходить к программе 9 класса."
+        : percent >= 80
+          ? "База 8 класса сохранилась уверенно. Перед учебным годом достаточно точечно освежить отдельные темы."
+          : percent >= 50
+            ? "Многое уже получается. Небольшое повторение поможет начать 9 класс спокойнее и увереннее."
+            : "Есть темы, которые стоит восстановить по порядку. Это не оценка, а понятный маршрут для повторения.";
+
+    const telegramMessage = encodeURIComponent(
+      `Здравствуйте! Меня зовут ${name.trim()}. ` +
+        `Результат моей диагностики перед 9 классом — ${score} из ${questions.length}. ` +
+        `Хочу обсудить план повторения.`,
+    );
+
+    const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
+
     return (
       <main className="result-page grade-nine-page">
         <header className="compact-header result-header">
-          <a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-          <button className="text-button" onClick={restart}>Пройти ещё раз</button>
+          <a className="brand" href="/">
+            <span className="brand-mark">∿</span>
+            <span>Математика без стресса</span>
+          </a>
+
+          <button
+            className="text-button"
+            onClick={restart}
+          >
+            Пройти ещё раз
+          </button>
         </header>
+
         <section className="result-hero">
-          <div className="score-orbit"><strong>{score}</strong><span>из 28</span></div>
+          <div className="score-orbit">
+            <strong>{score}</strong>
+            <span>из {questions.length}</span>
+          </div>
+
           <div>
-            <p className="kicker">Диагностика завершена</p>
-            <h1>{name.trim() ? `${name.trim()}, вот твой результат` : "Вот твой результат"}</h1>
+            <p className="kicker">
+              Диагностика завершена
+            </p>
+
+            <h1>
+              {name.trim()
+                ? `${name.trim()}, вот твой результат`
+                : "Вот твой результат"}
+            </h1>
+
             <p>{conclusion}</p>
           </div>
         </section>
+
         <section className="result-section result-stats grade-nine-stats">
-          <article><strong>{score}/28</strong><span>правильных ответов</span></article>
-          <article><strong>{percent}%</strong><span>общий результат</span></article>
-          <article><strong>{questions.filter((q) => q.part === "Алгебра" && isCorrect(q, answers[q.id])).length}/18</strong><span>алгебра</span></article>
-          <article><strong>{questions.filter((q) => q.part === "Геометрия" && isCorrect(q, answers[q.id])).length}/10</strong><span>геометрия</span></article>
+          <article>
+            <strong>
+              {score}/{questions.length}
+            </strong>
+            <span>правильных ответов</span>
+          </article>
+
+          <article>
+            <strong>{percent}%</strong>
+            <span>общий результат</span>
+          </article>
+
+          <article>
+            <strong>{incorrectCount}</strong>
+            <span>с ошибкой</span>
+          </article>
+
+          <article>
+            <strong>{dontKnowCount}</strong>
+            <span>«не знаю»</span>
+          </article>
+
+          <article>
+            <strong>{referenceCount}</strong>
+            <span>со справочным</span>
+          </article>
         </section>
 
         <section className="result-section">
-          <div className="section-heading"><div><p className="kicker">По тематическим блокам</p><h2>Что уже получается и что повторить</h2></div></div>
+          <div className="section-heading">
+            <div>
+              <p className="kicker">
+                По тематическим блокам
+              </p>
+              <h2>
+                Что уже получается и что повторить
+              </h2>
+            </div>
+          </div>
+
           <div className="block-results grade-nine-blocks">
             {blockResults.map((block) => (
-              <article className={`block-card ${block.status === "good" ? "great" : block.status === "repeat" ? "medium" : "restore"}`} key={block.name}>
-                <div className="block-topline"><span>{block.correct}/{block.total} · {block.percent}%</span><b>{block.status === "good" ? "Тема усвоена" : block.status === "repeat" ? "Стоит немного повторить" : "Нужно повторить"}</b></div>
+              <article
+                className={`block-card ${
+                  block.status === "good"
+                    ? "great"
+                    : block.status === "repeat"
+                      ? "medium"
+                      : "restore"
+                }`}
+                key={block.name}
+              >
+                <div className="block-topline">
+                  <span>
+                    {block.correct}/{block.total} ·{" "}
+                    {block.percent}%
+                  </span>
+
+                  <b>
+                    {block.status === "good"
+                      ? "Тема усвоена"
+                      : block.status === "repeat"
+                        ? "Стоит немного повторить"
+                        : "Нужно повторить"}
+                  </b>
+                </div>
+
                 <h3>{block.name}</h3>
-                <div className="mini-progress"><span style={{ width: `${block.percent}%` }} /></div>
+
+                <div className="mini-progress">
+                  <span
+                    style={{
+                      width: `${block.percent}%`,
+                    }}
+                  />
+                </div>
               </article>
             ))}
           </div>
         </section>
-<details className="mistakes result-section task-review">
-  <summary>
-    Посмотреть обзор решений <span>({questions.length})</span>
-  </summary>
 
-  <div>
-    {questions.map((question, index) => {
-      const questionStatus = status(question);
-      const answer = answers[question.id];
-
-      const studentAnswer = answer?.dontKnow
-        ? "Не знаю, как решить"
-        : answer?.value
-          ? answer.value.split(MULTI_SEPARATOR).join("; ")
-          : "Нет ответа";
-
-      return (
-        <article
-          className={`review-task ${questionStatus}`}
-          key={question.id}
-        >
-          <span>
-            Задание {index + 1} ·{" "}
-            {questionStatus === "correct"
-              ? "Верно"
-              : questionStatus === "incorrect"
-                ? "Есть ошибка"
-                : questionStatus === "dont_know"
-                  ? "Не знаю"
-                  : "Нет ответа"}
-          </span>
-
-          <h3>{question.eyebrow}</h3>
-
-          <p>{question.prompt}</p>
-
-          {question.expression && (
-            <div className="review-expression">
-              {renderMathText(question.expression)}
-            </div>
-          )}
-
-          <p>
-            Твой ответ: <b>{renderMathText(studentAnswer)}</b>
-          </p>
-
-          <p>
-            Правильный ответ:{" "}
-            <b>{renderMathText(getCorrectAnswer(question))}</b>
-          </p>
-        </article>
-      );
-    })}
-  </div>
-</details>
         <section className="result-section three-topic-panels grade-nine-groups">
-          {good.length > 0 && (
-            <article className="topic-panel strong-panel"><p className="kicker">Уверенная база</p><h2>С этим всё хорошо</h2><div className="topic-tags">{good.map((item) => <span key={item.name}>✓ {item.name}</span>)}</div></article>
-          )}
-          {repeat.length > 0 && (
-            <article className="topic-panel repeat-panel"><p className="kicker">Небольшое повторение</p><h2>Стоит немного повторить</h2><div className="topic-tags">{repeat.map((item) => <span key={item.name}>{item.name} · {item.percent}%</span>)}</div></article>
-          )}
-          {priority.length > 0 && (
-            <article className="topic-panel restore-panel"><p className="kicker">Начать отсюда</p><h2>Нужно повторить в первую очередь</h2><div className="topic-tags">{priority.map((item, index) => <span key={item.name}>{index + 1}. {item.name} · {item.percent}%</span>)}</div></article>
-          )}
+          <article className="topic-panel strong-panel">
+            <p className="kicker">
+              {good.length
+                ? "Уверенная база"
+                : "Пока без уверенных блоков"}
+            </p>
+            <h2>
+              {good.length
+                ? "С этим всё хорошо"
+                : "Начнём с восстановления базы"}
+            </h2>
+
+            <div className="topic-tags">
+              {good.length ? (
+                good.map((item) => (
+                  <span key={item.name}>
+                    ✓ {item.name}
+                  </span>
+                ))
+              ) : (
+                <p>
+                  Это не оценка: темы можно спокойно
+                  восстановить по порядку.
+                </p>
+              )}
+            </div>
+          </article>
+
+          <article className="topic-panel repeat-panel">
+            <p className="kicker">
+              {repeat.length
+                ? "Небольшое повторение"
+                : "Дополнительного повторения нет"}
+            </p>
+            <h2>
+              {repeat.length
+                ? "Стоит немного повторить"
+                : "Средних по приоритету тем нет"}
+            </h2>
+
+            <div className="topic-tags">
+              {repeat.length ? (
+                repeat.map((item) => (
+                  <span key={item.name}>
+                    {item.name} · {item.percent}%
+                  </span>
+                ))
+              ) : (
+                <p>
+                  Здесь не нужно придумывать темы для
+                  повторения.
+                </p>
+              )}
+            </div>
+          </article>
+
+          <article className="topic-panel restore-panel">
+            <p className="kicker">
+              {priority.length
+                ? "Начать отсюда"
+                : "Можно двигаться дальше"}
+            </p>
+            <h2>
+              {priority.length
+                ? "Нужно повторить в первую очередь"
+                : "Приоритетных пробелов нет"}
+            </h2>
+
+            <div className="topic-tags">
+              {priority.length ? (
+                priority.map((item, index) => (
+                  <span key={item.name}>
+                    {index + 1}. {item.name} ·{" "}
+                    {item.percent}%
+                  </span>
+                ))
+              ) : (
+                <p>
+                  Нет тем, которые требуется
+                  восстанавливать в первую очередь.
+                </p>
+              )}
+            </div>
+          </article>
         </section>
 
-        <section className="result-section result-explainer">
-          <p>Результат не является школьной оценкой. Диагностика помогает понять, какие темы стоит повторить, чтобы увереннее начать 9 класс.</p>
-          <div className="result-share-actions">
-            <button className="button secondary" onClick={copyResult}>Скопировать результат</button>
-            <a
-  className="button primary"
-  href={telegramUrl}
-  target="_blank"
-  rel="noreferrer"
->
-  Обсудить результат
-</a>
-            <button className="button secondary" onClick={restart}>Пройти ещё раз</button>
+        <section className="result-section">
+          <div className="section-heading">
+            <div>
+              <p className="kicker">Все задания</p>
+              <h2>Посмотри ответы и статусы</h2>
+            </div>
           </div>
-          {copyState && <p className="copy-toast" role="status">{copyState}</p>}
+
+          <div className="overview-grid result-overview-grid">
+            {questions.map((question, index) => {
+              const questionStatus = status(question);
+              const answer = answers[question.id];
+
+              const stateClass =
+                questionStatus === "correct"
+                  ? "correct"
+                  : questionStatus === "with_reference"
+                    ? "reference"
+                    : questionStatus === "incorrect"
+                      ? "wrong"
+                      : "unknown";
+
+              const studentAnswer = answer?.dontKnow
+                ? "Не знаю, как решить"
+                : answer?.value
+                  ? answer.value
+                      .split(MULTI_SEPARATOR)
+                      .join("; ")
+                  : "Нет ответа";
+
+              return (
+                <details
+                  className={`overview-item result-answer-item ${stateClass}`}
+                  key={question.id}
+                >
+                  <summary>
+                    <b>№{index + 1}</b>
+
+                    <span>
+                      {questionStatus === "correct"
+                        ? "Правильно"
+                        : questionStatus === "with_reference"
+                          ? "Со справочным"
+                          : questionStatus === "incorrect"
+                            ? "Неправильно"
+                            : "Не знаю"}
+                    </span>
+                  </summary>
+
+                  <div>
+                    <p>
+                      <b>Тема:</b> {question.block}
+                    </p>
+
+                    <p>
+                      <b>Твой ответ:</b>{" "}
+                      {renderMathText(studentAnswer)}
+                    </p>
+
+                    <p>
+                      <b>Правильный ответ:</b>{" "}
+                      {renderMathText(
+                        getCorrectAnswer(question),
+                      )}
+                    </p>
+
+                    {answer?.usedReference && (
+                      <p>
+                        <b>Справочный материал:</b>{" "}
+                        использован
+                      </p>
+                    )}
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="final-cta">
+          <div>
+            <p className="kicker">Следующий шаг</p>
+            <h2>
+              Хочешь подготовиться к 9 классу без стресса?
+            </h2>
+            <p>
+              Разберём только те темы, в которых
+              остались пробелы, без повторения всей
+              программы 8 класса.
+            </p>
+          </div>
+
+          <div className="cta-actions">
+            <button
+              className="button secondary"
+              onClick={() => copyResult()}
+            >
+              Скопировать результат
+            </button>
+
+            <button
+              className="button secondary"
+              onClick={downloadResult}
+            >
+              Скачать результат
+            </button>
+
+            <a
+              className="button primary"
+              href={telegramUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                copyResult(
+                  "Результат скопирован. Вставь его в сообщение",
+                )
+              }
+            >
+              Обсудить результат
+            </a>
+
+            <button
+              className="button secondary"
+              onClick={restart}
+            >
+              Пройти ещё раз
+            </button>
+          </div>
+
+          {copyState && (
+            <p className="copy-toast" role="status">
+              {copyState}
+            </p>
+          )}
+
+          {copyFallback && (
+            <div className="copy-fallback">
+              <textarea
+                readOnly
+                value={copyFallback}
+              />
+            </div>
+          )}
         </section>
       </main>
     );
@@ -835,77 +1772,231 @@ const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
 
   return (
     <main className="home-page grade-nine-page">
-<header className="site-header">
-  <a className="brand" href="/">
-    <span className="brand-mark">∿</span>
-    <span>Математика без стресса</span>
-  </a>
-</header>
+      <header className="site-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+      </header>
+
       <section className="hero">
         <div className="hero-copy">
-          <div className="soft-pill">Диагностика по программе 8 класса</div>
-          <h1>Что повторить<br />перед <em>9 классом?</em></h1>
-          <p className="hero-lead">Пройди диагностику и узнай, какие темы 8 класса стоит повторить перед началом учебного года.</p>
+          <div className="soft-pill">
+            Диагностика по программе 8 класса
+          </div>
+
+          <h1>
+            Что повторить
+            <br />
+            перед <em>9 классом?</em>
+          </h1>
+
+          <p className="hero-lead">
+            Пройди диагностику и узнай, какие темы
+            алгебры и геометрии 8 класса стоит
+            повторить перед началом нового учебного
+            этапа.
+          </p>
+
           <div className="diagnostic-facts">
-            <span><b>28</b> заданий</span><span>Алгебра и геометрия</span>
-            <span>Без оценки и таймера</span><span>Персональные рекомендации</span>
+            <span>
+              <b>28</b> заданий
+            </span>
+            <span>Алгебра и геометрия</span>
+            <span>Без оценки и таймера</span>
+            <span>Персональные рекомендации</span>
+          </div>
+
+          <div className="name-start-card">
+            <label htmlFor="student-name">
+              Как тебя зовут?
+            </label>
+
+            <input
+              id="student-name"
+              type="text"
+              value={name}
+              onChange={(event) =>
+                setName(event.target.value)
+              }
+              placeholder="Введи имя"
+              autoComplete="given-name"
+            />
+
+            <div className="start-guidance">
+              <h2>Перед началом</h2>
+
+              <ul>
+                <li>
+                  Приготовь лист бумаги для вычислений.
+                </li>
+                <li>
+                  Сначала попробуй решить задание
+                  самостоятельно.
+                </li>
+                <li>
+                  Если нужна формула, открой справочный
+                  материал и обязательно отметь это
+                  галочкой.
+                </li>
+                <li>
+                  Строгого ограничения времени нет.
+                </li>
+                <li>
+                  Если способ решения совсем незнаком,
+                  нажми «Не знаю, как решить».
+                </li>
+              </ul>
+
+              <label className="consent-check">
+                <input
+                  type="checkbox"
+                  checked={accepted}
+                  onChange={(event) =>
+                    setAccepted(event.target.checked)
+                  }
+                />
+
+                <span>
+                  Я прочитал(а) рекомендации и готов(а)
+                  начать
+                </span>
+              </label>
             </div>
-<div className="name-start-card">
-  <label htmlFor="student-name">Как тебя зовут?</label>
 
-  <div className="name-start-row">
-    <input
-      id="student-name"
-      type="text"
-      value={name}
-      onChange={(event) => setName(event.target.value)}
-      placeholder="Введи имя"
-      autoComplete="given-name"
-      onKeyDown={(event) => {
-        if (event.key === "Enter" && name.trim()) {
-          start();
-        }
-      }}
-    />
+            <button
+              className="button primary big"
+              onClick={start}
+              disabled={!name.trim() || !accepted}
+            >
+              Начать диагностику <span>→</span>
+            </button>
 
-    <button
-      className="button primary big"
-      onClick={start}
-      disabled={!name.trim()}
-    >
-      Начать диагностику <span>→</span>
-    </button>
-  </div>
+            <p className="name-start-meta">
+              <b>28 заданий</b>
+              <span>·</span> около 35–40 минут{" "}
+              <span>·</span> результат сразу
+            </p>
+          </div>
 
-  <p className="name-start-meta">
-    <b>28 заданий</b>
-    <span>·</span> около 35–40 минут <span>·</span> результат сразу
-  </p>
-</div>
-          <div className="calm-note"><span>♡</span><p>Если ты совсем не понимаешь, как выполнить задание, выбирай «Не знаю, как решить». Это поможет точнее определить темы для повторения.</p></div>
-          <p className="privacy-note">Без регистрации. Имя и ответы остаются только в браузере на этом устройстве.</p>
+          <div className="calm-note">
+            <span>♡</span>
+            <p>
+              Это не пробный ОГЭ и не школьная оценка.
+              Диагностика показывает, что стоит
+              повторить перед 9 классом.
+            </p>
+          </div>
+
+          <p className="privacy-note">
+            Без регистрации. Имя и ответы остаются
+            только в браузере на этом устройстве.
+          </p>
         </div>
+
         <Doodle />
       </section>
+
       <section className="how">
-        <div className="section-heading home-heading"><div><p className="kicker">Важно</p><h2>Это не пробный экзамен</h2></div><p>Проверяем программу 8 класса, а не готовность к ОГЭ</p></div>
+        <div className="section-heading home-heading">
+          <div>
+            <p className="kicker">Важно</p>
+            <h2>Это не пробный экзамен</h2>
+          </div>
+
+          <p>
+            Проверяем программу 8 класса, а не
+            готовность к ОГЭ
+          </p>
+        </div>
+
         <div className="steps">
-          <article className="step-card violet"><span>01</span><h3>Решаешь по одному</h3><p>18 заданий по алгебре и 10 по геометрии — в спокойном темпе.</p></article>
-          <article className="step-card blue"><span>02</span><h3>Отвечаешь честно</h3><p>Можно вернуться назад, изменить ответ или отметить незнакомый способ.</p></article>
-          <article className="step-card pink"><span>03</span><h3>Получаешь порядок</h3><p>Темы распределятся по трём группам и выстроятся в маршрут повторения.</p></article>
+          <article className="step-card violet">
+            <span>01</span>
+            <h3>Решаешь по одному</h3>
+            <p>
+              18 заданий по алгебре и 10 по геометрии
+              — в спокойном темпе.
+            </p>
+          </article>
+
+          <article className="step-card blue">
+            <span>02</span>
+            <h3>Можно пользоваться формулами</h3>
+            <p>
+              Открываешь справочный материал и
+              отмечаешь задания, где он понадобился.
+            </p>
+          </article>
+
+          <article className="step-card pink">
+            <span>03</span>
+            <h3>Получаешь маршрут</h3>
+            <p>
+              Видишь сильные темы, ошибки и задания,
+              выполненные со справочным материалом.
+            </p>
+          </article>
         </div>
       </section>
+
       <section className="class-section">
-        <div className="section-heading"><div><p className="kicker">Другие диагностики</p><h2>Выбери свой класс</h2></div></div>
+        <div className="section-heading">
+          <div>
+            <p className="kicker">
+              Другие диагностики
+            </p>
+            <h2>Выбери свой класс</h2>
+          </div>
+        </div>
+
         <div className="class-grid compact-class-grid">
-          <a className="class-card active" href="/"><span>Доступно</span><b>Перед 6 классом</b><i>Программа 5 класса →</i></a>
-          <a className="class-card active" href="/7"><span>Доступно</span><b>Перед 7 классом</b><i>Программа 6 класса →</i></a>
-          <a className="class-card active" href="/8"><span>Доступно</span><b>Перед 8 классом</b><i>Программа 7 класса →</i></a>
-          <button className="class-card active" onClick={() => setScreen("test")}><span>Ты здесь</span><b>Перед 9 классом</b><i>Программа 8 класса →</i></button>
-          <a className="class-card active" href="/oge"><span>Отдельная диагностика</span><b>Подготовка к ОГЭ</b><i>Определить стартовый уровень →</i></a>
+          <a className="class-card active" href="/">
+            <span>Доступно</span>
+            <b>Перед 6 классом</b>
+            <i>Программа 5 класса →</i>
+          </a>
+
+          <a className="class-card active" href="/7">
+            <span>Доступно</span>
+            <b>Перед 7 классом</b>
+            <i>Программа 6 класса →</i>
+          </a>
+
+          <a className="class-card active" href="/8">
+            <span>Доступно</span>
+            <b>Перед 8 классом</b>
+            <i>Программа 7 класса →</i>
+          </a>
+
+          <button
+            className="class-card active"
+            onClick={start}
+          >
+            <span>Ты здесь</span>
+            <b>Перед 9 классом</b>
+            <i>Программа 8 класса →</i>
+          </button>
+
+          <a
+            className="class-card active"
+            href="/oge"
+          >
+            <span>Отдельная диагностика</span>
+            <b>Подготовка к ОГЭ</b>
+            <i>Определить стартовый уровень →</i>
+          </a>
         </div>
       </section>
-      <footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Проверяем знания, а не ставим оценки ♡</p></footer>
+
+      <footer>
+        <div className="brand">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </div>
+
+        <p>Проверяем знания, а не ставим оценки ♡</p>
+      </footer>
     </main>
   );
 }
