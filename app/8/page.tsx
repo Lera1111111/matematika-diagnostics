@@ -176,7 +176,10 @@ const questions: Question[] = [
   },
   {
     id: 17, eyebrow: "Система линейных уравнений", prompt: "Реши систему:",
-    expression: "x + y = 11,\nx − y = 3", type: "system",
+   expression: String.raw`\begin{cases}
+x+y=11\\
+x-y=3
+\end{cases}`,
     topic: "Системы линейных уравнений", block: "Системы линейных уравнений",
     correctLabel: "x = 7, y = 4", solution: "Складываем уравнения: 2x = 14, x = 7. Тогда y = 11 − 7 = 4.",
     check: (answer) => {
@@ -817,7 +820,7 @@ ${rows}
                   className={`${stateClass} ${
                     index === current ? "current" : ""
                   }`}
-                  key={item.id}
+                  key={index + 1}
                   onClick={() => {
                     setCurrent(index);
                     setScreen("test");
@@ -1138,7 +1141,7 @@ ${rows}
                   });
                 }}
               >
-                <b>№{question.id}</b>
+                <b>№{index + 1}</b>
               </button>
             );
           })}
@@ -1455,7 +1458,7 @@ ${rows}
           </div>
 
           <div className="overview-grid result-overview-grid">
-            {questions.map((question) => {
+            {questions.map((question, index) => {
               const status = getStatus(question);
 
               const stateClass =
@@ -1471,7 +1474,7 @@ ${rows}
                   key={question.id}
                 >
                   <summary>
-                    <b>№{question.id}</b>
+                   <b>№{index + 1}</b>
                     <span>
                       {status === "correct"
                         ? "Правильно"
