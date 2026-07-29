@@ -3,6 +3,21 @@
 import { useEffect, useMemo, useState } from "react";
 import GeometryDiagram, { type DiagramKind } from "../components/GeometryDiagram";
 
+declare global {
+  interface Window {
+    katex?: {
+      render: (
+        expression: string,
+        element: HTMLElement,
+        options?: {
+          displayMode?: boolean;
+          throwOnError?: boolean;
+        },
+      ) => void;
+    };
+  }
+}
+
 type Answer = string;
 type StoredAnswer = { value: Answer; dontKnow: boolean };
 type Question = {
@@ -46,7 +61,7 @@ const equalsNumber = (target: number) => (answer: string) => asNumber(answer) ==
 const questions: Question[] = [
   {
     id: 1, eyebrow: "Действия с рациональными числами", prompt: "Вычисли:",
-    expression: "−3,6 + 2,4 · (−5) − (−7,2) : 3", type: "text",
+    expression: String.raw`-3{,}6+2{,}4\cdot(-5)-(-7{,}2):3`, type: "text",
     topic: "Действия с рациональными числами", block: "Вычисления и буквенные выражения",
     correctLabel: "−13,2",
     solution: "Сначала умножение и деление: 2,4 · (−5) = −12, (−7,2) : 3 = −2,4. Получаем −3,6 − 12 − (−2,4) = −13,2.",
@@ -54,14 +69,14 @@ const questions: Question[] = [
   },
   {
     id: 2, eyebrow: "Значение буквенного выражения", prompt: "Найди значение выражения, если a = −2, b = 5:",
-    expression: "2a² − 3b", type: "text",
+    expression: String.raw`2a^2-3b`, type: "text",
     topic: "Подстановка значений в буквенное выражение", block: "Вычисления и буквенные выражения",
     correctLabel: "−7", solution: "2 · (−2)² − 3 · 5 = 2 · 4 − 15 = −7.",
     check: equalsNumber(-7),
   },
   {
     id: 3, eyebrow: "Стандартный вид одночлена", prompt: "Приведи одночлен к стандартному виду:",
-    expression: "−3a²b · 4ab³", type: "choice",
+    expression: String.raw`-3a^2b\cdot4ab^3`, type: "choice",
     options: ["−12a²b³", "−12a³b⁴", "12a³b⁴", "−7a³b⁴"],
     topic: "Умножение одночленов", block: "Одночлены и многочлены",
     correctLabel: "−12a³b⁴", solution: "−3 · 4 = −12, a² · a = a³, b · b³ = b⁴.",
@@ -69,7 +84,7 @@ const questions: Question[] = [
   },
   {
     id: 5, eyebrow: "Вычитание многочленов", prompt: "Упрости выражение:",
-    expression: "(4x² − 3x + 7) − (x² + 5x − 2)", type: "choice",
+    expression: String.raw`(4x^2-3x+7)-(x^2+5x-2)`, type: "choice",
     options: ["3x² + 2x + 5", "3x² − 8x + 9", "5x² + 2x + 5", "3x² − 8x + 5"],
     topic: "Сложение и вычитание многочленов", block: "Одночлены и многочлены",
     correctLabel: "3x² − 8x + 9", solution: "Меняем знаки во вторых скобках и приводим подобные: 4x² − 3x + 7 − x² − 5x + 2 = 3x² − 8x + 9.",
@@ -77,7 +92,7 @@ const questions: Question[] = [
   },
   {
     id: 6, eyebrow: "Одночлен и многочлен", prompt: "Раскрой скобки:",
-    expression: "−3x(2x² − 5x + 4)", type: "choice",
+    expression: String.raw`-3x(2x^2-5x+4)`, type: "choice",
     options: ["−6x³ + 15x² − 12x", "−6x³ − 15x² − 12x", "−6x² + 15x − 12", "6x³ − 15x² + 12x"],
     topic: "Умножение одночлена на многочлен", block: "Одночлены и многочлены",
     correctLabel: "−6x³ + 15x² − 12x", solution: "Умножаем −3x на каждый член: −6x³ + 15x² − 12x.",
@@ -85,7 +100,7 @@ const questions: Question[] = [
   },
   {
     id: 7, eyebrow: "Умножение многочленов", prompt: "Выполни умножение:",
-    expression: "(x + 4)(2x − 3)", type: "choice",
+    expression: String.raw`(x+4)(2x-3)`, type: "choice",
     options: ["2x² + 5x − 12", "2x² + 11x − 12", "2x² − 5x − 12", "2x² + 5x + 12"],
     topic: "Умножение многочленов", block: "Одночлены и многочлены",
     correctLabel: "2x² + 5x − 12", solution: "2x² − 3x + 8x − 12 = 2x² + 5x − 12.",
@@ -93,7 +108,7 @@ const questions: Question[] = [
   },
   {
     id: 8, eyebrow: "Квадрат суммы", prompt: "Раскрой скобки:",
-    expression: "(2x + 3)²", type: "choice",
+    expression: String.raw`(2x+3)^2`, type: "choice",
     options: ["4x² + 9", "4x² + 6x + 9", "4x² + 12x + 9", "2x² + 12x + 9"],
     topic: "Квадрат суммы", block: "Формулы сокращённого умножения и разложение на множители",
     correctLabel: "4x² + 12x + 9", solution: "По формуле (a + b)² = a² + 2ab + b²: 4x² + 12x + 9.",
@@ -101,7 +116,7 @@ const questions: Question[] = [
   },
   {
     id: 9, eyebrow: "Квадрат разности", prompt: "Раскрой скобки:",
-    expression: "(3a − 2b)²", type: "choice",
+    expression: String.raw`(3a-2b)^2`, type: "choice",
     options: ["9a² − 4b²", "9a² − 12ab + 4b²", "9a² + 12ab + 4b²", "6a² − 12ab + 4b²"],
     topic: "Квадрат разности", block: "Формулы сокращённого умножения и разложение на множители",
     correctLabel: "9a² − 12ab + 4b²", solution: "По формуле (a − b)² = a² − 2ab + b²: 9a² − 12ab + 4b².",
@@ -109,7 +124,7 @@ const questions: Question[] = [
   },
   {
     id: 10, eyebrow: "Разность квадратов", prompt: "Разложи на множители:",
-    expression: "25x² − 16", type: "choice",
+    expression: String.raw`25x^2-16`, type: "choice",
     options: ["(5x − 4)²", "(25x − 16)(25x + 16)", "(5x − 4)(5x + 4)", "(5x − 8)(5x + 2)"],
     topic: "Разность квадратов", block: "Формулы сокращённого умножения и разложение на множители",
     correctLabel: "(5x − 4)(5x + 4)", solution: "25x² − 16 = (5x)² − 4² = (5x − 4)(5x + 4).",
@@ -117,7 +132,7 @@ const questions: Question[] = [
   },
   {
     id: 11, eyebrow: "Общий множитель", prompt: "Вынеси за скобки наибольший общий множитель:",
-    expression: "12x³ − 18x²", type: "choice",
+    expression: String.raw`12x^3-18x^2`, type: "choice",
     options: ["6x(2x² − 3x)", "6x²(2x − 3)", "3x²(4x − 6)", "6x²(2x + 3)"],
     topic: "Вынесение общего множителя за скобки", block: "Формулы сокращённого умножения и разложение на множители",
     correctLabel: "6x²(2x − 3)", solution: "Общий множитель — 6x². После вынесения остаётся 2x − 3.",
@@ -125,7 +140,7 @@ const questions: Question[] = [
   },
   {
     id: 12, eyebrow: "Способ группировки", prompt: "Разложи на множители:",
-    expression: "ax + ay + bx + by", type: "choice",
+    expression: String.raw`ax+ay+bx+by`, type: "choice",
     options: ["(a + b)(x + y)", "(a − b)(x − y)", "(a + x)(b + y)", "ab(x + y)"],
     topic: "Разложение на множители способом группировки", block: "Формулы сокращённого умножения и разложение на множители",
     correctLabel: "(a + b)(x + y)", solution: "Группируем: a(x + y) + b(x + y) = (a + b)(x + y).",
@@ -133,7 +148,7 @@ const questions: Question[] = [
   },
   {
     id: 13, eyebrow: "Свойства степеней", prompt: "Упрости выражение:",
-    expression: "a⁷ : a³ · a²", type: "choice",
+    expression: String.raw`a^7:a^3\cdot a^2`, type: "choice",
     options: ["a²", "a⁶", "a⁸", "a¹²"],
     topic: "Умножение и деление степеней", block: "Свойства степеней",
     correctLabel: "a⁶", solution: "a⁷ : a³ · a² = a⁷⁻³⁺² = a⁶.",
@@ -141,14 +156,14 @@ const questions: Question[] = [
   },
   {
     id: 14, eyebrow: "Линейное уравнение", prompt: "Реши уравнение:",
-    expression: "5(2x − 3) − 4 = 3x + 16", type: "text",
+    expression: String.raw`5(2x-3)-4=3x+16`, type: "text",
     topic: "Линейное уравнение со скобками", block: "Линейные уравнения и текстовые задачи",
     correctLabel: "x = 5", solution: "10x − 15 − 4 = 3x + 16. Тогда 7x = 35, поэтому x = 5.",
     check: equalsNumber(5),
   },
   {
     id: 15, eyebrow: "Уравнение с дробями", prompt: "Реши уравнение:",
-    expression: "x/3 − x/4 = 2", type: "text",
+    expression: String.raw`\frac{x}{3}-\frac{x}{4}=2`, type: "text",
     topic: "Линейное уравнение с дробными коэффициентами", block: "Линейные уравнения и текстовые задачи",
     correctLabel: "x = 24", solution: "Умножаем обе части на 12: 4x − 3x = 24, откуда x = 24.",
     check: equalsNumber(24),
@@ -267,34 +282,97 @@ const recommendations: Record<string, string> = {
 };
 
 function resultCopy(score: number) {
-  if (score <= 9) return {
-    title: "Давай восстановим базу вместе",
-    text: "Перед 8 классом особенно важно восстановить основные преобразования выражений, уравнения и геометрию 7 класса: углы, треугольники и параллельные прямые.",
-    extra: "Не нужно пытаться самостоятельно повторить весь учебник. Можно спокойно восстановить основные темы и начать учебный год увереннее.",
-    cta: "Повторить вместе",
-    card: "Вместе восстановим основные темы алгебры и геометрии 7 класса и подготовимся к новой программе.",
-  };
-  if (score <= 17) return {
-    title: "База есть, но остались пробелы",
-    text: "Основная база есть, но некоторые алгебраические и геометрические темы стоит повторить. Посмотри рекомендации ниже — они покажут, на чём сосредоточиться.",
-    extra: "Посмотри рекомендации ниже — повторять всё подряд не понадобится.",
-    cta: "Подтянуть сложные темы",
-    card: "Разберём только те алгебраические и геометрические темы, в которых остались пробелы.",
-  };
-  if (score <= 22) return {
-    title: "Ты хорошо готов к 8 классу",
-    text: "Ты хорошо готов к 8 классу. Осталось освежить отдельные правила по алгебре и геометрии, и можно двигаться дальше.",
-    extra: "Можно быстро закрыть оставшиеся пробелы и заранее познакомиться с темами 8 класса.",
-    cta: "Подготовиться к 8 классу",
-    card: "Быстро повторим сложные моменты и заранее познакомимся с программой 8 класса.",
-  };
+  if (score <= 9) {
+    return {
+      title: "Давай восстановим базу вместе",
+      text:
+        "Некоторые важные темы 7 класса пока вызывают трудности. Это нормально: их можно спокойно восстановить перед началом программы 8 класса.",
+      extra:
+        "Не нужно повторять весь учебник подряд. Лучше начать с основных пробелов и двигаться небольшими шагами.",
+      cta: "Повторить вместе",
+      card:
+        "Вместе восстановим основные темы алгебры и геометрии 7 класса и подготовимся к новой программе.",
+    };
+  }
+
+  if (score <= 17) {
+    return {
+      title: "База есть, но остались пробелы",
+      text:
+        "Часть программы 7 класса уже получается, но несколько важных алгебраических и геометрических тем стоит укрепить перед 8 классом.",
+      extra:
+        "Посмотри персональные рекомендации ниже — повторять всё подряд не понадобится.",
+      cta: "Подтянуть сложные темы",
+      card:
+        "Разберём только те темы, в которых остались пробелы, без повторения всего учебника.",
+    };
+  }
+
+  if (score <= 22) {
+    return {
+      title: "Ты хорошо готов к 8 классу",
+      text:
+        "У тебя хорошая база по алгебре и геометрии 7 класса. Достаточно разобрать отдельные ошибки и можно двигаться дальше.",
+      extra:
+        "Можно быстро закрыть оставшиеся пробелы и заранее познакомиться с темами 8 класса.",
+      cta: "Подготовиться к 8 классу",
+      card:
+        "Быстро повторим сложные моменты и заранее познакомимся с программой 8 класса.",
+    };
+  }
+
+  if (score <= 25) {
+    return {
+      title: "Отличная готовность к 8 классу",
+      text:
+        "У тебя крепкая база по алгебре и геометрии 7 класса. Осталось разобрать отдельные ошибки — и можно переходить к рациональным дробям, квадратным корням, четырёхугольникам и площадям.",
+      extra:
+        "Обязательного повторения всей программы не требуется.",
+      cta: "Начать темы 8 класса",
+      card:
+        "Разберём отдельные ошибки и начнём знакомиться с новыми темами.",
+    };
+  }
+
   return {
     title: "Отличный результат!",
-    text: "У тебя крепкая база по алгебре и геометрии 7 класса. Можно переходить к рациональным дробям, квадратным корням, четырёхугольникам и площадям.",
-    extra: "Ты готов двигаться дальше.",
+    text:
+      "Все задания выполнены правильно. У тебя крепкая база по алгебре и геометрии 7 класса — можно переходить к рациональным дробям, квадратным корням, четырёхугольникам и площадям.",
+    extra:
+      "Тем для обязательного повторения нет — можно спокойно двигаться дальше.",
     cta: "Начать темы 8 класса",
-    card: "Можно двигаться дальше и заранее изучать рациональные дроби, квадратные корни, четырёхугольники и площади.",
+    card:
+      "Обязательного повторения не требуется — можно переходить к программе 8 класса.",
   };
+}
+
+function MathFormula({ expression }: { expression: string }) {
+  const [element, setElement] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!element) return;
+
+    const renderFormula = () => {
+      if (!window.katex) return false;
+
+      window.katex.render(expression, element, {
+        displayMode: true,
+        throwOnError: false,
+      });
+
+      return true;
+    };
+
+    if (renderFormula()) return;
+
+    const timer = window.setInterval(() => {
+      if (renderFormula()) window.clearInterval(timer);
+    }, 100);
+
+    return () => window.clearInterval(timer);
+  }, [element, expression]);
+
+  return <div ref={setElement} />;
 }
 
 function MathDoodle() {
@@ -312,117 +390,515 @@ function MathDoodle() {
   );
 }
 
+function escapeHtml(value: string) {
+  return value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+      })[character] || character,
+  );
+}
+
+function formatAnswer(
+  answer?: StoredAnswer,
+  question?: Question,
+) {
+  if (!answer) return "Ответ не введён";
+  if (answer.dontKnow) return "Не знаю, как решить";
+
+  if (question?.type === "system") {
+    const [x, y] = answer.value.split("|");
+    return `x = ${x || "—"}, y = ${y || "—"}`;
+  }
+
+  return answer.value.trim() || "Ответ не введён";
+}
+
 export default function GradeEight() {
-  const [screen, setScreen] = useState<"home" | "test" | "geometry" | "review" | "result">("home");
+  const [screen, setScreen] =
+    useState<"home" | "test" | "geometry" | "review" | "result">("home");
   const [studentName, setStudentName] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, StoredAnswer>>({});
   const [notice, setNotice] = useState(false);
+  const [toast, setToast] = useState("");
+  const [copyFallback, setCopyFallback] = useState("");
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
+
       if (saved) {
         const parsed = JSON.parse(saved);
+
+        if (["home", "test", "geometry", "review"].includes(parsed.screen)) {
+          setScreen(parsed.screen);
+        }
+
+        setStudentName(parsed.studentName || "");
+        setAccepted(Boolean(parsed.accepted));
         setAnswers(parsed.answers || {});
-        setCurrent(Math.min(parsed.current || 0, questions.length - 1));
+        setCurrent(
+          Math.min(
+            Math.max(parsed.current || 0, 0),
+            questions.length - 1,
+          ),
+        );
       }
-    } catch {}
+    } catch {
+      // Повреждённое сохранение не мешает начать заново.
+    }
+
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated && screen !== "result") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, current }));
-    }
-  }, [answers, current, hydrated, screen]);
+    if (!hydrated || screen === "result") return;
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        screen,
+        studentName,
+        accepted,
+        answers,
+        current,
+      }),
+    );
+  }, [
+    screen,
+    studentName,
+    accepted,
+    answers,
+    current,
+    hydrated,
+  ]);
 
   const getStatus = (question: Question) => {
     const answer = answers[question.id];
+
     if (answer?.dontKnow) return "dont_know";
     if (!answer?.value.trim()) return "unanswered";
-    return question.check(answer.value) ? "correct" : "incorrect";
+
+    return question.check(answer.value)
+      ? "correct"
+      : "incorrect";
   };
 
   const score = useMemo(
-    () => questions.filter((question) => getStatus(question) === "correct").length,
+    () =>
+      questions.filter(
+        (question) =>
+          getStatus(question) === "correct",
+      ).length,
     [answers],
   );
-  const incorrectCount = questions.filter((q) => getStatus(q) === "incorrect").length;
-  const dontKnowCount = questions.filter((q) => getStatus(q) === "dont_know").length;
-  const answeredCount = questions.filter((q) => getStatus(q) !== "unanswered").length;
 
-  const goNext = () => {
-    setNotice(false);
-    if (current === 17) setScreen("geometry");
-    else if (current === questions.length - 1) setScreen("review");
-    else setCurrent((value) => value + 1);
+  const incorrectCount = questions.filter(
+    (question) =>
+      getStatus(question) === "incorrect",
+  ).length;
+
+  const dontKnowCount = questions.filter(
+    (question) =>
+      getStatus(question) === "dont_know",
+  ).length;
+
+  const answeredCount = questions.filter(
+    (question) =>
+      getStatus(question) !== "unanswered",
+  ).length;
+
+  const start = () => {
+    if (!studentName.trim() || !accepted) return;
+
+    setScreen("test");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-const start = () => {
-  if (!studentName.trim()) return;
 
-  setScreen("test");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
   const restart = () => {
+    const confirmed = window.confirm(
+      "Все сохранённые ответы будут удалены. Начать диагностику заново?",
+    );
+
+    if (!confirmed) return;
+
     localStorage.removeItem(STORAGE_KEY);
+    setStudentName("");
+    setAccepted(false);
     setAnswers({});
     setCurrent(0);
     setScreen("home");
     setNotice(false);
+    setToast("");
+    setCopyFallback("");
+
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const reportText = () => {
+    const copy = resultCopy(score);
+    const blocks = [
+      ...new Set(
+        questions.map((question) => question.block),
+      ),
+    ];
+
+    const blockLines = blocks.map((block) => {
+      const blockQuestions = questions.filter(
+        (question) => question.block === block,
+      );
+
+      const correct = blockQuestions.filter(
+        (question) =>
+          getStatus(question) === "correct",
+      ).length;
+
+      return `— ${block}: ${correct} из ${blockQuestions.length}`;
+    });
+
+    const strong = questions
+      .filter(
+        (question) =>
+          getStatus(question) === "correct",
+      )
+      .map((question) => question.topic);
+
+    const repeat = questions
+      .filter(
+        (question) =>
+          getStatus(question) === "incorrect",
+      )
+      .map((question) => question.topic);
+
+    const restore = questions
+      .filter(
+        (question) =>
+          getStatus(question) === "dont_know",
+      )
+      .map((question) => question.topic);
+
+    return [
+      "Диагностика «Что повторить перед 8 классом?»",
+      `Ученик: ${studentName.trim()}`,
+      `Результат: ${score} из ${questions.length}`,
+      `Ошибок: ${incorrectCount}`,
+      `Отмечено «Не знаю»: ${dontKnowCount}`,
+      `Вывод: ${copy.title}`,
+      `Результаты по разделам:\n${blockLines.join("\n")}`,
+      `Получается уверенно:\n${
+        strong.length
+          ? strong.map((topic) => `— ${topic}`).join("\n")
+          : "—"
+      }`,
+      `Стоит повторить:\n${
+        repeat.length
+          ? repeat.map((topic) => `— ${topic}`).join("\n")
+          : "— обычных ошибок нет"
+      }`,
+      `Стоит разобрать подробнее:\n${
+        restore.length
+          ? restore.map((topic) => `— ${topic}`).join("\n")
+          : "— нет тем, отмеченных как «Не знаю»"
+      }`,
+      `Работа выполнена: ${new Date().toLocaleString("ru-RU")}`,
+    ].join("\n\n");
+  };
+
+  const copyResult = async (
+    message = "Результат скопирован",
+  ) => {
+    try {
+      await navigator.clipboard.writeText(reportText());
+      setToast(message);
+      setCopyFallback("");
+    } catch {
+      setToast("Браузер запретил автоматическое копирование");
+      setCopyFallback(reportText());
+    }
+
+    window.setTimeout(() => setToast(""), 4000);
+  };
+
+  const downloadResult = () => {
+    const rows = questions
+      .map((question) => {
+        const status = getStatus(question);
+        const statusLabel =
+          status === "correct"
+            ? "Правильно"
+            : status === "incorrect"
+              ? "Неправильно"
+              : status === "dont_know"
+                ? "Не знаю"
+                : "Нет ответа";
+
+        return `<tr>
+          <td>${question.id}</td>
+          <td>${escapeHtml(question.topic)}</td>
+          <td>${escapeHtml(formatAnswer(answers[question.id], question))}</td>
+          <td>${escapeHtml(question.correctLabel)}</td>
+          <td>${statusLabel}</td>
+        </tr>`;
+      })
+      .join("");
+
+    const html = `<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>Результат диагностики</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1000px;margin:40px auto;padding:0 20px;color:#28222c}
+h1{color:#674fa6}
+pre{white-space:pre-wrap;background:#f6f1fa;padding:20px;border-radius:16px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:10px;border:1px solid #ddd;text-align:left;vertical-align:top}
+@media print{button{display:none}}
+</style>
+<body>
+<h1>Что повторить перед 8 классом?</h1>
+<pre>${escapeHtml(reportText())}</pre>
+<h2>Все задания</h2>
+<table>
+<tr>
+<th>№</th>
+<th>Тема</th>
+<th>Ответ ученика</th>
+<th>Правильный ответ</th>
+<th>Статус</th>
+</tr>
+${rows}
+</table>
+<button onclick="window.print()">Печать / сохранить как PDF</button>
+</body>
+</html>`;
+
+    const url = URL.createObjectURL(
+      new Blob([html], {
+        type: "text/html;charset=utf-8",
+      }),
+    );
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `Перед_8_классом_${
+      studentName.trim().replace(/\s+/g, "_") ||
+      "ученик"
+    }.html`;
+
+    link.click();
+
+    window.setTimeout(
+      () => URL.revokeObjectURL(url),
+      1000,
+    );
   };
 
   if (screen === "test") {
     const question = questions[current];
-    const stored = answers[question.id] || { value: "", dontKnow: false };
-    const hasResponse = question.type === "system"
-      ? stored.value.split("|").every((value) => value.trim())
-      : Boolean(stored.value.trim());
+    const stored =
+      answers[question.id] || {
+        value: "",
+        dontKnow: false,
+      };
+
+    const hasAnswer =
+      stored.dontKnow ||
+      (question.type === "system"
+        ? stored.value
+            .split("|")
+            .length >= 2 &&
+          stored.value
+            .split("|")
+            .every((value) => value.trim())
+        : stored.value.trim().length > 0);
+
+    const goNext = () => {
+      if (!hasAnswer) return;
+
+      setNotice(false);
+
+      if (current === 17) {
+        setScreen("geometry");
+      } else if (
+        current === questions.length - 1
+      ) {
+        setScreen("review");
+      } else {
+        setCurrent((value) => value + 1);
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    };
+
     return (
       <main className="test-shell">
         <header className="compact-header">
-          <a className="brand brand-button" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-          <button className="text-button" onClick={restart}>Начать сначала</button>
+          <a className="brand brand-button" href="/">
+            <span className="brand-mark">∿</span>
+            <span>Математика без стресса</span>
+          </a>
+
+          <button
+            className="text-button"
+            onClick={restart}
+          >
+            Начать сначала
+          </button>
         </header>
+
         <section className="test-wrap">
           <div className="progress-line">
-            <div><span>Задание {current + 1} из {questions.length}</span><small>{answeredCount} ответов сохранено</small></div>
-            <strong>{Math.round(((current + 1) / questions.length) * 100)}%</strong>
+            <div>
+              <span>
+                Задание {current + 1} из{" "}
+                {questions.length}
+              </span>
+              <small>
+                {answeredCount} ответов сохранено
+              </small>
+            </div>
+
+            <strong>
+              {Math.round(
+                ((current + 1) /
+                  questions.length) *
+                  100,
+              )}
+              %
+            </strong>
           </div>
-          <div className="progress-track" aria-label={`Прогресс: задание ${current + 1} из ${questions.length}`}>
-            <span style={{ width: `${((current + 1) / questions.length) * 100}%` }} />
+
+          <div
+            className="progress-track"
+            aria-label={`Прогресс: задание ${
+              current + 1
+            } из ${questions.length}`}
+          >
+            <span
+              style={{
+                width: `${
+                  ((current + 1) /
+                    questions.length) *
+                  100
+                }%`,
+              }}
+            />
           </div>
+
+          <nav
+            className="question-number-nav"
+            aria-label="Переход по заданиям"
+          >
+            {questions.map((item, index) => {
+              const status = getStatus(item);
+
+              const stateClass =
+                status === "dont_know"
+                  ? "unknown"
+                  : status === "unanswered"
+                    ? "empty"
+                    : "answered";
+
+              return (
+                <button
+                  type="button"
+                  className={`${stateClass} ${
+                    index === current ? "current" : ""
+                  }`}
+                  key={item.id}
+                  onClick={() => {
+                    setCurrent(index);
+                    setScreen("test");
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  {item.id}
+                </button>
+              );
+            })}
+          </nav>
+
           <article className="question-card grade-seven-question grade-eight-question">
-            <p className="question-eyebrow">{question.eyebrow}</p>
+            <p className="question-eyebrow">
+              {question.eyebrow}
+            </p>
+
             <h1>{question.prompt}</h1>
-            {question.expression && <div className="expression">{question.expression}</div>}
-            {question.diagram && <GeometryDiagram kind={question.diagram} />}
+
+            {question.expression && (
+              <div className="expression">
+                <MathFormula
+                  expression={question.expression}
+                />
+              </div>
+            )}
+
+            {question.diagram && (
+              <GeometryDiagram kind={question.diagram} />
+            )}
+
             {question.type === "text" && (
               <label className="answer-field">
                 <span>Твой ответ</span>
+
                 <span className="answer-with-suffix">
                   <input
                     autoFocus
-                    value={stored.dontKnow ? "" : stored.value}
-                    onChange={(event) =>
+                    value={
+                      stored.dontKnow
+                        ? ""
+                        : stored.value
+                    }
+                    onChange={(event) => {
                       setAnswers((previous) => ({
                         ...previous,
-                        [question.id]: { value: event.target.value, dontKnow: false },
-                      }))
-                    }
+                        [question.id]: {
+                          value: event.target.value,
+                          dontKnow: false,
+                        },
+                      }));
+                      setNotice(false);
+                    }}
                     placeholder="Введи ответ"
+                    onKeyDown={(event) => {
+                      if (
+                        event.key === "Enter" &&
+                        hasAnswer
+                      ) {
+                        goNext();
+                      }
+                    }}
                   />
-                  {question.suffix && <b>{question.suffix}</b>}
+
+                  {question.suffix && (
+                    <b>{question.suffix}</b>
+                  )}
                 </span>
               </label>
             )}
+
             {question.type === "system" && (
               <div className="system-fields">
                 {(["x", "y"] as const).map((variable, index) => {
-                  const values = stored.dontKnow ? ["", ""] : stored.value.split("|");
+                  const values = stored.dontKnow
+                    ? ["", ""]
+                    : stored.value.split("|");
+
                   return (
                     <label className="answer-field" key={variable}>
                       <span>{variable} =</span>
@@ -432,10 +908,15 @@ const start = () => {
                         onChange={(event) => {
                           const next = [...values];
                           next[index] = event.target.value;
+
                           setAnswers((previous) => ({
                             ...previous,
-                            [question.id]: { value: `${next[0] || ""}|${next[1] || ""}`, dontKnow: false },
+                            [question.id]: {
+                              value: `${next[0] || ""}|${next[1] || ""}`,
+                              dontKnow: false,
+                            },
                           }));
+                          setNotice(false);
                         }}
                         placeholder={`Значение ${variable}`}
                       />
@@ -444,55 +925,108 @@ const start = () => {
                 })}
               </div>
             )}
+
             {question.type === "choice" && (
               <div className="options">
                 {question.options?.map((option) => (
                   <button
-                    className={`option ${!stored.dontKnow && stored.value === option ? "selected" : ""}`}
+                    type="button"
+                    className={`option ${
+                      !stored.dontKnow &&
+                      stored.value === option
+                        ? "selected"
+                        : ""
+                    }`}
                     key={option}
-                    onClick={() =>
+                    onClick={() => {
                       setAnswers((previous) => ({
                         ...previous,
-                        [question.id]: { value: option, dontKnow: false },
-                      }))
-                    }
+                        [question.id]: {
+                          value: option,
+                          dontKnow: false,
+                        },
+                      }));
+                      setNotice(false);
+                    }}
                   >
-                    <span className="radio-dot" />{option}
+                    <span className="radio-dot" />
+                    {option}
                   </button>
                 ))}
               </div>
             )}
-            <p className="dont-know-hint">Не получается? Не угадывай — нажми «Не знаю, как решить». Это поможет точнее определить, что стоит повторить.</p>
+
+            <p className="dont-know-hint">
+              Не получается? Не угадывай — нажми
+              «Не знаю, как решить». Так рекомендации
+              получатся точнее.
+            </p>
+
             {notice && (
               <div className="kind-notice">
                 <span>♡</span>
-                <p>Ничего страшного — для этого ты и проходишь диагностику. Отметим эту тему в рекомендациях и пойдём дальше.</p>
+                <p>
+                  Ничего страшного — эту тему отметим
+                  в рекомендациях и пойдём дальше.
+                </p>
               </div>
             )}
+
             <div className="test-actions grade-seven-actions">
-              <button className="button secondary" disabled={current === 0 || notice} onClick={() => setCurrent((value) => value - 1)}>← Назад</button>
               <button
-  className="button dont-know-button"
-  onClick={() => {
-    setAnswers((previous) => ({
-      ...previous,
-      [question.id]: { value: "", dontKnow: true },
-    }));
-    setNotice(true);
-  }}
->
-  Не знаю, как решить
-</button>
+                className="button secondary"
+                disabled={current === 0}
+                onClick={() => {
+                  setCurrent((value) => value - 1);
+                  setNotice(false);
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                ← Назад
+              </button>
+
               <button
-  className="button primary"
-  disabled={!hasResponse && !stored.dontKnow}
-  onClick={goNext}
->
-  {stored.dontKnow ? "Продолжить →" : "Ответить и продолжить →"}
-</button>
+                className={`button dont-know-button ${
+                  stored.dontKnow
+                    ? "active-dont-know"
+                    : ""
+                }`}
+                onClick={() => {
+                  setAnswers((previous) => ({
+                    ...previous,
+                    [question.id]: {
+                      value: "",
+                      dontKnow: true,
+                    },
+                  }));
+                  setNotice(true);
+                }}
+              >
+                {stored.dontKnow
+                  ? "Отмечено: не знаю"
+                  : "Не знаю, как решить"}
+              </button>
+
+              <button
+                className="button primary"
+                disabled={!hasAnswer}
+                onClick={goNext}
+              >
+                {current === questions.length - 1
+                  ? "К обзору"
+                  : "Далее"}{" "}
+                →
+              </button>
             </div>
           </article>
-          <p className="save-note">Ответы сохраняются на этом устройстве автоматически</p>
+
+          <p className="save-note">
+            Ответы и прогресс сохраняются на этом
+            устройстве автоматически
+          </p>
         </section>
       </main>
     );
@@ -503,10 +1037,22 @@ const start = () => {
       <main className="center-screen">
         <section className="review-card bridge-card">
           <div className="review-icon">△</div>
-          <p className="kicker">Первая часть завершена</p>
+          <p className="kicker">
+            Первая часть завершена
+          </p>
           <h1>С алгеброй закончили!</h1>
-          <p>Теперь проверим основные темы геометрии 7 класса.</p>
-          <button className="button primary" onClick={() => { setCurrent(18); setScreen("test"); window.scrollTo({ top: 0 }); }}>
+          <p>
+            Теперь проверим основные темы геометрии 7 класса.
+          </p>
+
+          <button
+            className="button primary"
+            onClick={() => {
+              setCurrent(18);
+              setScreen("test");
+              window.scrollTo({ top: 0 });
+            }}
+          >
             Перейти к геометрии →
           </button>
         </section>
@@ -515,17 +1061,106 @@ const start = () => {
   }
 
   if (screen === "review") {
+    const missing = questions.filter(
+      (question) =>
+        getStatus(question) === "unanswered",
+    );
+
+    const markMissingUnknown = () => {
+      setAnswers((previous) => {
+        const next = { ...previous };
+
+        missing.forEach((question) => {
+          next[question.id] = {
+            value: "",
+            dontKnow: true,
+          };
+        });
+
+        return next;
+      });
+    };
+
+    const finish = () => {
+      const confirmed = window.confirm(
+        "После завершения изменить ответы будет нельзя. Узнать результат?",
+      );
+
+      if (!confirmed) return;
+
+      setScreen("result");
+      localStorage.removeItem(STORAGE_KEY);
+      window.scrollTo({ top: 0 });
+    };
+
     return (
-      <main className="center-screen">
-        <section className="review-card">
-          <div className="review-icon">✓</div>
-          <p className="kicker">Финишная прямая</p>
-          <h1>Все задания пройдены. Узнаем результат?</h1>
-          <p>Ты ответил на все 26 заданий. Результат покажет сильные темы и то, что стоит повторить по алгебре и геометрии.</p>
-          <div className="review-actions">
-            <button className="button secondary" onClick={() => { setCurrent(25); setScreen("test"); }}>Вернуться к тесту</button>
-            <button className="button primary" onClick={() => { setScreen("result"); localStorage.removeItem(STORAGE_KEY); window.scrollTo({ top: 0 }); }}>Узнать результат</button>
-          </div>
+      <main className="result-page review-overview">
+        <header className="compact-header">
+          <a className="brand" href="/">
+            <span className="brand-mark">∿</span>
+            <span>Математика без стресса</span>
+          </a>
+        </header>
+
+        <section className="result-section overview-heading">
+          <p className="kicker">
+            Перед завершением
+          </p>
+          <h1>Обзор всех 26 заданий</h1>
+          <p>
+            {missing.length
+              ? `Без ответа осталось: ${missing.length}. Вернись к ним или засчитай как «Не знаю, как решить».`
+              : "Все задания заполнены или отмечены как «Не знаю, как решить»."}
+          </p>
+        </section>
+
+        <section className="result-section overview-grid">
+          {questions.map((question, index) => {
+            const status = getStatus(question);
+
+            const stateClass =
+              status === "dont_know"
+                ? "unknown"
+                : status === "unanswered"
+                  ? "empty"
+                  : "answered";
+
+            return (
+              <button
+                className={`overview-item ${stateClass}`}
+                key={question.id}
+                onClick={() => {
+                  setCurrent(index);
+                  setScreen("test");
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                <b>№{question.id}</b>
+              </button>
+            );
+          })}
+        </section>
+
+        <section className="result-section review-finish">
+          {missing.length > 0 && (
+            <button
+              className="button secondary"
+              onClick={markMissingUnknown}
+            >
+              Засчитать пропуски как «Не знаю»
+            </button>
+          )}
+
+          <button
+            className="button primary"
+            disabled={missing.length > 0}
+            onClick={finish}
+          >
+            Узнать результат
+          </button>
         </section>
       </main>
     );
@@ -533,132 +1168,401 @@ const start = () => {
 
   if (screen === "result") {
     const copy = resultCopy(score);
-    const telegramMessage = encodeURIComponent(
-  `Здравствуйте! Меня зовут ${studentName.trim()}. ` +
-    `Результат моей диагностики перед 8 классом — ${score} из ${questions.length}. ` +
-    `Хочу узнать, какие темы лучше повторить.`,
-);
 
-const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
-    const blocks = [...new Set(questions.map((question) => question.block))];
-    const strong = questions.filter((q) => getStatus(q) === "correct").map((q) => q.topic);
-    const repeat = questions.filter((q) => getStatus(q) === "incorrect").map((q) => q.topic);
-    const restore = questions.filter((q) => getStatus(q) === "dont_know").map((q) => q.topic);
-    const algebraScore = questions.filter((q) => !q.part && getStatus(q) === "correct").length;
-    const geometryScore = questions.filter((q) => q.part === "geometry" && getStatus(q) === "correct").length;
+    const telegramMessage = encodeURIComponent(
+      `Здравствуйте! Меня зовут ${studentName.trim()}. ` +
+        `Результат моей диагностики перед 8 классом — ${score} из ${questions.length}. ` +
+        `Хочу обсудить план повторения.`,
+    );
+
+    const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
+
+    const blocks = [
+      ...new Set(
+        questions.map((question) => question.block),
+      ),
+    ];
+
+    const strong = questions
+      .filter(
+        (question) =>
+          getStatus(question) === "correct",
+      )
+      .map((question) => question.topic);
+
+    const repeat = questions
+      .filter(
+        (question) =>
+          getStatus(question) === "incorrect",
+      )
+      .map((question) => question.topic);
+
+    const restore = questions
+      .filter(
+        (question) =>
+          getStatus(question) === "dont_know",
+      )
+      .map((question) => question.topic);
+
+    const algebraScore = questions.filter(
+      (question) =>
+        !question.part &&
+        getStatus(question) === "correct",
+    ).length;
+
+    const geometryScore = questions.filter(
+      (question) =>
+        question.part === "geometry" &&
+        getStatus(question) === "correct",
+    ).length;
+
     return (
       <main className="result-page">
         <header className="compact-header result-header">
-          <a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-          <button className="text-button" onClick={restart}>Пройти ещё раз</button>
+          <a className="brand" href="/">
+            <span className="brand-mark">∿</span>
+            <span>Математика без стресса</span>
+          </a>
+
+          <button
+            className="text-button"
+            onClick={restart}
+          >
+            Пройти ещё раз
+          </button>
         </header>
+
         <section className="result-hero">
-          <div className="score-orbit"><strong>{score}</strong><span>из 26</span></div>
+          <div className="score-orbit">
+            <strong>{score}</strong>
+            <span>из {questions.length}</span>
+          </div>
+
           <div>
-            <p className="kicker">Диагностика завершена</p>
-           <h1>
-  {studentName.trim()}, {copy.title.toLowerCase()}
-</h1>
-            <p>{copy.text}</p><small>{copy.extra}</small>
+            <p className="kicker">
+              Диагностика завершена
+            </p>
+
+            <h1>
+              {studentName.trim()},{" "}
+              {copy.title.toLowerCase()}
+            </h1>
+
+            <p>{copy.text}</p>
+            <small>{copy.extra}</small>
           </div>
         </section>
+
         <section className="result-section result-stats">
-          <article><strong>{score}/26</strong><span>общий результат</span></article>
-          <article><strong>{algebraScore}/18</strong><span>алгебра</span></article>
-          <article><strong>{geometryScore}/8</strong><span>геометрия</span></article>
-          <article><strong>{incorrectCount}</strong><span>с ошибкой</span></article>
-          <article><strong>{dontKnowCount}</strong><span>«не знаю»</span></article>
+          <article>
+            <strong>{score}/{questions.length}</strong>
+            <span>общий результат</span>
+          </article>
+
+          <article>
+            <strong>{algebraScore}/18</strong>
+            <span>алгебра</span>
+          </article>
+
+          <article>
+            <strong>{geometryScore}/8</strong>
+            <span>геометрия</span>
+          </article>
+
+          <article>
+            <strong>{incorrectCount}</strong>
+            <span>с ошибкой</span>
+          </article>
+
+          <article>
+            <strong>{dontKnowCount}</strong>
+            <span>«не знаю»</span>
+          </article>
         </section>
+
         <section className="result-section">
           <div className="section-heading">
-            <div><p className="kicker">Персональный разбор</p><h2>Как обстоят дела по темам</h2></div>
-            <span>Рекомендации составлены по твоим ответам</span>
+            <div>
+              <p className="kicker">
+                Персональный разбор
+              </p>
+              <h2>Как обстоят дела по темам</h2>
+            </div>
+
+            <span>
+              Рекомендации составлены по твоим ответам
+            </span>
           </div>
+
           <div className="block-results">
             {blocks.map((block) => {
-              const blockQuestions = questions.filter((q) => q.block === block);
-              const correct = blockQuestions.filter((q) => getStatus(q) === "correct").length;
-              const unknown = blockQuestions.filter((q) => getStatus(q) === "dont_know").length;
-              const wrong = blockQuestions.filter((q) => getStatus(q) === "incorrect").length;
-              const ratio = correct / blockQuestions.length;
-              const singleStatus = getStatus(blockQuestions[0]);
-              const status = blockQuestions.length === 1
-                ? singleStatus === "correct" ? "Получается" : singleStatus === "dont_know" ? "Важно разобрать" : "Стоит повторить"
-                : ratio >= 0.8 ? "Получается отлично" : ratio >= 0.4 ? "Стоит немного повторить" : "Важно восстановить";
-              let detail = "Здесь всё уверенно — можно двигаться дальше.";
-              if (unknown && wrong) detail = "Часть заданий получилась, но некоторые правила стоит повторить, а отдельные моменты — разобрать подробнее.";
-              else if (unknown) detail = "Эту тему стоит разобрать с самого начала: пока сложно определить способ решения.";
-              else if (wrong) detail = "В этой теме есть ошибки. Возможно, стоит освежить правило и немного потренироваться.";
-              let recommendation = recommendations[block];
-              if (block === "Одночлены и многочлены" && unknown >= 2) {
-                recommendation = "Стоит заново разобрать, чем одночлен отличается от многочлена и как выполнять действия с ними. Эти темы будут использоваться почти в каждой главе 8 класса.";
+              const blockQuestions = questions.filter(
+                (question) => question.block === block,
+              );
+
+              const correct = blockQuestions.filter(
+                (question) =>
+                  getStatus(question) === "correct",
+              ).length;
+
+              const unknown = blockQuestions.filter(
+                (question) =>
+                  getStatus(question) === "dont_know",
+              ).length;
+
+              const wrong = blockQuestions.filter(
+                (question) =>
+                  getStatus(question) === "incorrect",
+              ).length;
+
+              const ratio =
+                correct / blockQuestions.length;
+
+              const isSingle =
+                blockQuestions.length === 1;
+
+              const status =
+                ratio === 1
+                  ? "Получается отлично"
+                  : isSingle
+                    ? "Стоит проверить тему"
+                    : ratio >= 0.5
+                      ? "Стоит немного повторить"
+                      : "Важно восстановить";
+
+              let detail =
+                "Здесь всё уверенно — можно двигаться дальше.";
+
+              if (unknown && wrong) {
+                detail =
+                  "Часть заданий получилась, но некоторые правила стоит повторить, а отдельные моменты — разобрать подробнее.";
+              } else if (unknown) {
+                detail =
+                  "Эту тему стоит разобрать с самого начала: пока сложно определить способ решения.";
+              } else if (wrong) {
+                detail = isSingle
+                  ? "В этом задании возникла трудность — стоит ещё раз проверить тему."
+                  : recommendations[block];
               }
-              if (block === "Формулы сокращённого умножения и разложение на множители" && unknown > 0) {
-                recommendation = "Начни с распознавания формул и вынесения общего множителя. Без этого будет сложно сокращать алгебраические дроби в начале 8 класса.";
-              }
-              if (block === "Углы") {
-                detail = unknown
-                  ? "Стоит заново разобрать расположение смежных и вертикальных углов и их основные свойства."
-                  : wrong
-                    ? recommendations[block]
-                    : "Ты уверенно работаешь со смежными и вертикальными углами.";
-              }
-              if (block === "Треугольники") {
-                detail = unknown
-                  ? "Стоит заново разобрать основные свойства треугольников. Они понадобятся при изучении четырёхугольников, площадей и подобных треугольников в 8 классе."
-                  : wrong
-                    ? recommendations[block]
-                    : "Ты хорошо помнишь основные свойства и элементы треугольников.";
-              }
-              if (block === "Параллельные прямые") {
-                detail = unknown
-                  ? "Стоит заново разобрать виды углов при параллельных прямых и секущей."
-                  : wrong
-                    ? recommendations[block]
-                    : "Ты уверенно находишь углы при параллельных прямых и секущей.";
-              }
+
               return (
-                <article className={`block-card ${ratio >= 0.8 ? "great" : ratio >= 0.4 ? "medium" : "restore"}`} key={block}>
-                  <div className="block-topline"><span>{correct}/{blockQuestions.length}</span><b>{status}</b></div>
+                <article
+                  className={`block-card ${
+                    ratio === 1
+                      ? "great"
+                      : ratio >= 0.5
+                        ? "medium"
+                        : "restore"
+                  }`}
+                  key={block}
+                >
+                  <div className="block-topline">
+                    <span>
+                      {correct}/{blockQuestions.length}
+                    </span>
+                    <b>{status}</b>
+                  </div>
+
                   <h3>{block}</h3>
                   <p>{detail}</p>
-                  {ratio < 0.8 && !["Углы", "Треугольники", "Параллельные прямые"].includes(block) && <p className="block-recommendation">{recommendation}</p>}
                 </article>
               );
             })}
           </div>
         </section>
+
         <section className="result-section three-topic-panels">
-          <article className="topic-panel strong-panel"><p className="kicker">Сильные темы</p><h2>Получается</h2><div className="topic-tags">{strong.map((topic) => <span key={topic}>✓ {topic}</span>)}{!strong.length && <p>Начнём с восстановления главного — без спешки.</p>}</div></article>
-          <article className="topic-panel repeat-panel"><p className="kicker">Освежить</p><h2>Повторить</h2><div className="topic-tags">{repeat.map((topic) => <span key={topic}>{topic}</span>)}{!repeat.length && <p>Обычных ошибок нет.</p>}</div></article>
-          <article className="topic-panel restore-panel"><p className="kicker">Разобрать</p><h2>Подробнее</h2><div className="topic-tags">{restore.map((topic) => <span key={topic}>{topic}</span>)}{!restore.length && <p>Нет тем, где способ решения совсем незнаком.</p>}</div></article>
+          <article className="topic-panel strong-panel">
+            <p className="kicker">Сильные темы</p>
+            <h2>Получается</h2>
+
+            <div className="topic-tags">
+              {strong.map((topic) => (
+                <span key={topic}>✓ {topic}</span>
+              ))}
+
+              {!strong.length && (
+                <p>
+                  Начнём с восстановления главного —
+                  без спешки.
+                </p>
+              )}
+            </div>
+          </article>
+
+          <article className="topic-panel repeat-panel">
+            <p className="kicker">
+              {repeat.length
+                ? "Освежить"
+                : "Обычных ошибок нет"}
+            </p>
+
+            <h2>
+              {repeat.length
+                ? "Повторить"
+                : "По выполненным заданиям всё верно"}
+            </h2>
+
+            <div className="topic-tags">
+              {repeat.length ? (
+                repeat.map((topic) => (
+                  <span key={topic}>{topic}</span>
+                ))
+              ) : (
+                <p>
+                  Здесь не нужно придумывать темы для
+                  повторения: ошибок в выполненных
+                  заданиях нет.
+                </p>
+              )}
+            </div>
+          </article>
+
+          <article className="topic-panel restore-panel">
+            <p className="kicker">
+              {restore.length
+                ? "Разобрать"
+                : "Можно двигаться дальше"}
+            </p>
+
+            <h2>
+              {restore.length
+                ? "Подробнее"
+                : "Незнакомых способов решения нет"}
+            </h2>
+
+            <div className="topic-tags">
+              {restore.length ? (
+                restore.map((topic) => (
+                  <span key={topic}>{topic}</span>
+                ))
+              ) : (
+                <p>
+                  Нет тем, отмеченных как «Не знаю, как
+                  решить».
+                </p>
+              )}
+            </div>
+          </article>
         </section>
-        <details className="mistakes result-section task-review">
-          <summary>Посмотреть разбор заданий <span>({questions.length})</span></summary>
-          <div>
-            {questions.map((question, index) => {
+
+        <section className="result-section">
+          <div className="section-heading">
+            <div>
+              <p className="kicker">Все задания</p>
+              <h2>Посмотри ответы и статусы</h2>
+            </div>
+          </div>
+
+          <div className="overview-grid result-overview-grid">
+            {questions.map((question) => {
               const status = getStatus(question);
-              const answer = answers[question.id];
+
+              const stateClass =
+                status === "correct"
+                  ? "correct"
+                  : status === "incorrect"
+                    ? "wrong"
+                    : "unknown";
+
               return (
-                <article className={`review-task ${status}`} key={question.id}>
-                  <span>Задание {index + 1} · {status === "correct" ? "Верно" : status === "incorrect" ? "Здесь есть ошибка" : "Эту тему стоит разобрать"}</span>
-                  <h3>{question.eyebrow}</h3>
-                  <p>{question.prompt} {question.expression}</p>
-                  {question.diagram && <GeometryDiagram kind={question.diagram} />}
-                  <p>Твой ответ: <b>{answer?.dontKnow ? "Не знаю, как решить" : question.type === "system" && answer?.value ? `x = ${answer.value.split("|")[0] || "—"}, y = ${answer.value.split("|")[1] || "—"}` : answer?.value || "—"}</b></p>
-                  <p>Правильный ответ: <b>{question.correctLabel}</b></p>
-                  <p className="solution">{question.solution}</p>
-                </article>
+                <details
+                  className={`overview-item result-answer-item ${stateClass}`}
+                  key={question.id}
+                >
+                  <summary>
+                    <b>№{question.id}</b>
+                    <span>
+                      {status === "correct"
+                        ? "Правильно"
+                        : status === "incorrect"
+                          ? "Неправильно"
+                          : "Не знаю"}
+                    </span>
+                  </summary>
+
+                  <div>
+                    <p>
+                      <b>Тема:</b> {question.topic}
+                    </p>
+
+                    <p>
+                      <b>Твой ответ:</b>{" "}
+                      {formatAnswer(answers[question.id], question)}
+                    </p>
+
+                    <p>
+                      <b>Правильный ответ:</b>{" "}
+                      {question.correctLabel}
+                    </p>
+
+                    <p className="solution">
+                      {question.solution}
+                    </p>
+                  </div>
+                </details>
               );
             })}
           </div>
-        </details>
+        </section>
+
         <section className="final-cta">
-          <div><p className="kicker">Следующий шаг</p><h2>Хочешь подготовиться к 8 классу без стресса?</h2><p>{copy.card}</p></div>
-          <div className="cta-actions">
-            <a className="button primary" href={telegramUrl} target="_blank" rel="noreferrer">Записаться на занятия</a>
-            <button className="button secondary" onClick={restart}>Пройти тест ещё раз</button>
+          <div>
+            <p className="kicker">Следующий шаг</p>
+            <h2>
+              Хочешь подготовиться к 8 классу без стресса?
+            </h2>
+            <p>{copy.card}</p>
           </div>
+
+          <div className="cta-actions">
+            <button
+              className="button secondary"
+              onClick={() => copyResult()}
+            >
+              Скопировать результат
+            </button>
+
+            <button
+              className="button secondary"
+              onClick={downloadResult}
+            >
+              Скачать результат
+            </button>
+
+            <a
+              className="button primary"
+              href={telegramUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                copyResult(
+                  "Результат скопирован. Вставь его в сообщение",
+                )
+              }
+            >
+              {copy.cta}
+            </a>
+
+            <button
+              className="button secondary"
+              onClick={restart}
+            >
+              Пройти тест ещё раз
+            </button>
+          </div>
+
+          {toast && (
+            <p className="copy-toast" role="status">
+              {toast}
+            </p>
+          )}
+
+          {copyFallback && (
+            <div className="copy-fallback">
+              <textarea readOnly value={copyFallback} />
+            </div>
+          )}
         </section>
       </main>
     );
@@ -667,75 +1571,206 @@ const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
   return (
     <main className="home-page">
       <header className="site-header">
-  <a className="brand" href="/">
-    <span className="brand-mark">∿</span>
-    <span>Математика без стресса</span>
-  </a>
-</header>
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+      </header>
+
       <section className="hero">
         <div className="hero-copy">
-          <div className="soft-pill">Диагностика после 7 класса</div>
-          <h1>Что повторить<br />перед <em>8 классом?</em></h1>
-          <p className="hero-lead">Пройди диагностику и узнай, какие темы 7 класса ты помнишь, а что стоит повторить перед началом нового учебного года.</p>
-          <div className="calm-note"><span>♡</span><p>Это не контрольная и не экзамен. Здесь нет школьных оценок — только понятный результат и персональные рекомендации.</p></div>
+          <div className="soft-pill">
+            Диагностика после 7 класса
+          </div>
+
+          <h1>
+            Что повторить
+            <br />
+            перед <em>8 классом?</em>
+          </h1>
+
+          <p className="hero-lead">
+            Пройди диагностику и узнай, какие темы
+            алгебры и геометрии 7 класса ты помнишь,
+            а что стоит повторить перед 8 классом.
+          </p>
+
+          <div className="calm-note">
+            <span>♡</span>
+            <p>
+              Это не контрольная и не экзамен. Здесь
+              нет школьных оценок — только понятный
+              результат и рекомендации.
+            </p>
+          </div>
+
           <div className="name-start-card">
-  <label htmlFor="student-name">Как тебя зовут?</label>
+            <label htmlFor="student-name">
+              Как тебя зовут?
+            </label>
 
-  <div className="name-start-row">
-    <input
-      id="student-name"
-      type="text"
-      value={studentName}
-      onChange={(event) => setStudentName(event.target.value)}
-      placeholder="Введи имя"
-      autoComplete="given-name"
-      onKeyDown={(event) => {
-        if (event.key === "Enter" && studentName.trim()) {
-          start();
-        }
-      }}
-    />
+            <input
+              id="student-name"
+              type="text"
+              value={studentName}
+              onChange={(event) =>
+                setStudentName(event.target.value)
+              }
+              placeholder="Введи имя"
+              autoComplete="given-name"
+            />
 
-    <button
-      className="button primary big"
-      onClick={start}
-      disabled={!studentName.trim()}
-    >
-      Начать диагностику <span>→</span>
-    </button>
-  </div>
+            <div className="start-guidance">
+              <h2>Перед началом</h2>
 
-  <p className="name-start-meta">
-    <b>26 заданий</b>
-    <span>·</span> около 30–35 минут <span>·</span> результат сразу
-  </p>
-</div>
-          <p className="hero-dont-know">Решай самостоятельно, без калькулятора и подсказок. Если не знаешь, как выполнить задание, не угадывай — нажми «Не знаю, как решить».</p>
+              <ul>
+                <li>
+                  Приготовь лист бумаги для вычислений.
+                </li>
+                <li>
+                  Решай самостоятельно, без калькулятора,
+                  учебника и подсказок.
+                </li>
+                <li>
+                  Строгого ограничения времени нет.
+                </li>
+                <li>
+                  Если не знаешь способ решения, не
+                  угадывай — нажми «Не знаю, как решить».
+                </li>
+                <li>
+                  Это не оценка, а способ понять, что
+                  стоит повторить перед новым учебным
+                  этапом.
+                </li>
+              </ul>
+
+              <label className="consent-check">
+                <input
+                  type="checkbox"
+                  checked={accepted}
+                  onChange={(event) =>
+                    setAccepted(event.target.checked)
+                  }
+                />
+
+                <span>
+                  Я прочитал(а) рекомендации и готов(а)
+                  начать
+                </span>
+              </label>
+            </div>
+
+            <button
+              className="button primary big"
+              onClick={start}
+              disabled={
+                !studentName.trim() || !accepted
+              }
+            >
+              Начать диагностику <span>→</span>
+            </button>
+
+            <p className="name-start-meta">
+              <b>26 заданий</b>
+              <span>·</span> около 30–35 минут{" "}
+              <span>·</span> результат сразу
+            </p>
+          </div>
         </div>
+
         <MathDoodle />
       </section>
+
       <section className="how">
         <div className="section-heading home-heading">
-          <div><p className="kicker">Всё просто</p><h2>Как это работает</h2></div>
-          <p>Без регистрации, школьных оценок и лишнего волнения</p>
+          <div>
+            <p className="kicker">Всё просто</p>
+            <h2>Как это работает</h2>
+          </div>
+
+          <p>
+            Без регистрации, школьных оценок и лишнего
+            волнения
+          </p>
         </div>
+
         <div className="steps">
-          <article className="step-card violet"><span>01</span><h3>Решаешь задания</h3><p>Проверяешь базовые навыки по алгебре и геометрии 7 класса.</p></article>
-          <article className="step-card blue"><span>02</span><h3>Можно честно не знать</h3><p>Отмечаешь незнакомые способы решения — без случайных догадок.</p></article>
-          <article className="step-card pink"><span>03</span><h3>Получаешь маршрут</h3><p>Видишь сильные темы и то, что стоит повторить подробнее.</p></article>
+          <article className="step-card violet">
+            <span>01</span>
+            <h3>Решаешь задания</h3>
+            <p>
+              Проверяешь базовые навыки по алгебре и геометрии 7 класса.
+            </p>
+          </article>
+
+          <article className="step-card blue">
+            <span>02</span>
+            <h3>Можно честно не знать</h3>
+            <p>
+              Отмечаешь незнакомые способы решения —
+              без случайных догадок.
+            </p>
+          </article>
+
+          <article className="step-card pink">
+            <span>03</span>
+            <h3>Получаешь маршрут</h3>
+            <p>
+              Видишь сильные темы и то, что стоит
+              повторить подробнее.
+            </p>
+          </article>
         </div>
-        <div className="tip"><span>✦</span><p><b>Главное — честный результат.</b> Он нужен не для оценки, а чтобы не повторять весь учебник подряд.</p></div>
       </section>
+
       <section className="class-section">
-        <div className="section-heading"><div><p className="kicker">Другие диагностики</p><h2>Выбери свой класс</h2></div></div>
+        <div className="section-heading">
+          <div>
+            <p className="kicker">
+              Другие диагностики
+            </p>
+            <h2>Выбери свой класс</h2>
+          </div>
+        </div>
+
         <div className="class-grid compact-class-grid">
-          <a className="class-card active" href="/"><span>Доступно сейчас</span><b>Перехожу в 6 класс</b><i>Программа 5 класса →</i></a>
-          <a className="class-card active" href="/7"><span>Доступно сейчас</span><b>Перехожу в 7 класс</b><i>Программа 6 класса →</i></a>
-          <button className="class-card active" onClick={() => setScreen("test")}><span>Доступно сейчас</span><b>Перехожу в 8 класс</b><i>Программа 7 класса →</i></button>
-          <a className="class-card active" href="/9"><span>Доступно сейчас</span><b>Перехожу в 9 класс</b><i>Программа 8 класса →</i></a>
+          <a className="class-card active" href="/">
+            <span>Доступно сейчас</span>
+            <b>Перехожу в 6 класс</b>
+            <i>Программа 5 класса →</i>
+          </a>
+
+          <a className="class-card active" href="/7">
+            <span>Доступно сейчас</span>
+            <b>Перехожу в 7 класс</b>
+            <i>Программа 6 класса →</i>
+          </a>
+
+          <button
+            className="class-card active grade-eight-card"
+            onClick={start}
+          >
+            <span>Доступно сейчас</span>
+            <b>Перехожу в 8 класс</b>
+            <i>Программа 7 класса →</i>
+          </button>
+
+          <a className="class-card active" href="/9">
+            <span>Доступно сейчас</span>
+            <b>Перехожу в 9 класс</b>
+            <i>Программа 8 класса →</i>
+          </a>
         </div>
       </section>
-      <footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Проверяем знания, а не ставим оценки ♡</p></footer>
+
+      <footer>
+        <div className="brand">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </div>
+        <p>Проверяем знания, а не ставим оценки ♡</p>
+      </footer>
     </main>
   );
 }
