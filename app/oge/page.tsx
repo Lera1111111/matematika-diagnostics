@@ -2,13 +2,27 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+declare global {
+  interface Window {
+    katex?: {
+      render: (
+        expression: string,
+        element: HTMLElement,
+        options?: {
+          displayMode?: boolean;
+          throwOnError?: boolean;
+        },
+      ) => void;
+    };
+  }
+}
+
 type Photo = { id: string; name: string; type: string; data: string; bucket: string };
 type StoredAnswer = {
   value: string;
   extra?: string;
   explanation?: string;
   dontKnow: boolean;
-  reference: boolean;
 };
 type Question = {
   id: number;
@@ -26,11 +40,10 @@ type AutoItem = {
   topic: string;
   block: "A" | "B";
   correct: boolean;
-  reference: boolean;
   dontKnow: boolean;
 };
 
-const STORAGE_KEY = "oge-entry-diagnostic-v1";
+const STORAGE_KEY = "oge-entry-diagnostic-v2";
 const TELEGRAM_URL = "https://t.me/m/8wQr09o1NDEy";
 const DB_NAME = "oge-diagnostic-photos";
 const PHOTO_STORE = "photos";
@@ -38,22 +51,22 @@ const initialOrder = ["−√5", "−2,4", "−7/3"];
 const correctOrder = ["−2,4", "−7/3", "−√5"];
 
 const questions: Question[] = [
-  { id: 1, block: "Блок А", topic: "Вычисления", prompt: "Вычислите:", expression: "(−1,2 + 0,45) : 3/4", type: "number" },
+  { id: 1, block: "Блок А", topic: "Вычисления", prompt: "Вычислите:", expression: String.raw`(-1{,}2+0{,}45):\frac34`, type: "number" },
   { id: 2, block: "Блок А", topic: "Проценты", prompt: "После увеличения на 20% число стало равно 96. Найдите первоначальное число.", type: "number" },
-  { id: 3, block: "Блок А", topic: "Степени и корни", prompt: "Вычислите:", expression: "(25 · 2⁻²) / √16", type: "number" },
-  { id: 4, block: "Блок А", topic: "Преобразование выражений", prompt: "Упростите выражение:", expression: "(x − 3)² − x(x − 6)", type: "number" },
-  { id: 5, block: "Блок А", topic: "Уравнения", prompt: "Решите уравнения. Оба ответа проверяются отдельно.", expression: "а) 5 − 2(x + 1) = 9\nб) x² − 5x + 6 = 0", type: "double" },
-  { id: 6, block: "Блок А", topic: "Числа и координатная прямая", prompt: "Расположите числа в порядке возрастания:", expression: "−2,4;   −7/3;   −√5", type: "order" },
+  { id: 3, block: "Блок А", topic: "Степени и корни", prompt: "Вычислите:", expression: String.raw`\frac{25\cdot2^{-2}}{\sqrt{16}}`, type: "number" },
+  { id: 4, block: "Блок А", topic: "Преобразование выражений", prompt: "Упростите выражение:", expression: String.raw`(x-3)^2-x(x-6)`, type: "number" },
+  { id: 5, block: "Блок А", topic: "Уравнения", prompt: "Решите уравнения. Оба ответа проверяются отдельно.", expression: String.raw`\begin{aligned}\text{а)}\;&5-2(x+1)=9\\\text{б)}\;&x^2-5x+6=0\end{aligned}`, type: "double" },
+  { id: 6, block: "Блок А", topic: "Числа и координатная прямая", prompt: "Расположите числа в порядке возрастания:", expression: String.raw`-2{,}4;\quad-\frac73;\quad-\sqrt5`, type: "order" },
   { id: 7, block: "Блок А", topic: "Подстановка в формулу", prompt: "Путь тела вычисляется по формуле s = v₀t + at²/2. Найдите s, если v₀ = 3, t = 4, a = 2.", type: "number" },
   { id: 8, block: "Блок А", topic: "Прямоугольный треугольник", prompt: "В прямоугольном треугольнике гипотенуза равна 10, а один из катетов равен 8. Найдите площадь треугольника.", type: "number", diagram: "right-triangle" },
   { id: 9, block: "Блок Б", topic: "Практические задачи", prompt: "В месяц ученику требуется 18 ГБ интернета. Какой тариф окажется самым дешёвым и сколько рублей придётся заплатить?", type: "tariff" },
   { id: 10, block: "Блок Б", topic: "Функции и графики", prompt: "На рисунке изображён график линейной функции. Выберите формулу, которая задаёт эту функцию.", type: "choice", diagram: "line-graph", options: ["y = x + 1", "y = −x + 1", "y = x − 1", "y = −x − 1"] },
-  { id: 11, block: "Блок Б", topic: "Системы неравенств", prompt: "Решите систему неравенств. Ответ запишите в виде числового промежутка.", expression: "2x − 6 > 0,\n5 − x ≥ 1.", type: "interval" },
+  { id: 11, block: "Блок Б", topic: "Системы неравенств", prompt: "Решите систему неравенств. Ответ запишите в виде числового промежутка.", expression: String.raw`\begin{cases}2x-6>0\\5-x\ge1\end{cases}`, type: "interval" },
   { id: 12, block: "Блок Б", topic: "Вероятность", prompt: "Ученик подготовил 19 из 25 экзаменационных билетов. Билет выбирается случайным образом. Найдите вероятность того, что ученику достанется подготовленный билет.", type: "number" },
-  { id: 13, block: "Блок Б", topic: "Арифметическая прогрессия", prompt: "Дана арифметическая прогрессия. Найдите её двенадцатый член.", expression: "−5; −2; 1; 4; …", type: "number" },
+  { id: 13, block: "Блок Б", topic: "Арифметическая прогрессия", prompt: "Дана арифметическая прогрессия. Найдите её двенадцатый член.", expression: String.raw`-5;\ -2;\ 1;\ 4;\ \ldots`, type: "number" },
   { id: 14, block: "Блок Б", topic: "Текстовые задачи на движение", prompt: "Автобус выехал из города со скоростью 60 км/ч. Через 30 минут вслед за ним по той же дороге выехал автомобиль со скоростью 90 км/ч. Через сколько часов после своего выезда автомобиль догонит автобус?", type: "number" },
   { id: 15, block: "Блок Б", topic: "Подобие треугольников", prompt: "В треугольнике ABC точки D и E лежат на сторонах AB и AC соответственно, причём DE ∥ BC. Известно: AD = 4, DB = 6, DE = 8. Найдите BC.", type: "number", diagram: "similarity" },
-  { id: 16, block: "Блок В", topic: "Уравнения высокого уровня", prompt: "Решите уравнение:", expression: "(x² − 5x)² + 10(x² − 5x) + 24 = 0", type: "advanced16" },
+  { id: 16, block: "Блок В", topic: "Уравнения высокого уровня", prompt: "Решите уравнение:", expression: String.raw`(x^2-5x)^2+10(x^2-5x)+24=0`, type: "advanced16" },
   { id: 17, block: "Блок В", topic: "Текстовые задачи второй части", prompt: "Первый рабочий изготавливает 120 деталей на 2 часа быстрее второго. За один час первый рабочий изготавливает на 10 деталей больше второго. Сколько деталей в час изготавливает каждый рабочий?", type: "advanced17" },
   { id: 18, block: "Блок В", topic: "Геометрическое доказательство", prompt: "В параллелограмме ABCD биссектриса угла A пересекает сторону DC в точке E. 1. Докажите, что AD = DE. 2. Найдите периметр параллелограмма, если AB = 6, EC = 4.", type: "advanced18", diagram: "parallelogram-proof" },
 ];
@@ -166,6 +179,43 @@ function fileToPhoto(file: File, bucket: string) {
   });
 }
 
+
+function MathFormula({
+  expression,
+}: {
+  expression: string;
+}) {
+  const [element, setElement] =
+    useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!element) return;
+
+    const renderFormula = () => {
+      if (!window.katex) return false;
+
+      window.katex.render(expression, element, {
+        displayMode: true,
+        throwOnError: false,
+      });
+
+      return true;
+    };
+
+    if (renderFormula()) return;
+
+    const timer = window.setInterval(() => {
+      if (renderFormula()) {
+        window.clearInterval(timer);
+      }
+    }, 100);
+
+    return () => window.clearInterval(timer);
+  }, [element, expression]);
+
+  return <div ref={setElement} />;
+}
+
 function OgeDiagram({ kind }: { kind: NonNullable<Question["diagram"]> }) {
   return (
     <div className="geometry-diagram oge-diagram">
@@ -261,7 +311,7 @@ function PhotoUploader({
 }
 
 function defaultAnswer(): StoredAnswer {
-  return { value: "", extra: "", explanation: "", dontKnow: false, reference: false };
+  return { value: "", extra: "", explanation: "", dontKnow: false };
 }
 
 export default function OgeEntryDiagnostic() {
@@ -347,7 +397,6 @@ export default function OgeEntryDiagnostic() {
   const autoItems = useMemo<AutoItem[]>(() => {
     const item = (key: string, questionId: number, topic: string, block: "A" | "B", correct: boolean): AutoItem => ({
       key, questionId, topic, block, correct,
-      reference: Boolean(answers[questionId]?.reference),
       dontKnow: Boolean(answers[questionId]?.dontKnow),
     });
     return [
@@ -414,8 +463,7 @@ export default function OgeEntryDiagnostic() {
   const reportText = () => {
     const scoreA = autoItems.filter((item) => item.block === "A" && item.correct).length;
     const scoreB = autoItems.filter((item) => item.block === "B" && item.correct).length;
-    const self = autoItems.filter((item) => item.correct && !item.reference).map((item) => item.topic);
-    const reference = autoItems.filter((item) => item.correct && item.reference).map((item) => item.topic);
+    const strong = autoItems.filter((item) => item.correct).map((item) => item.topic);
     const repeat = autoItems.filter((item) => !item.correct).map((item) => item.topic);
     return [
       "Входная диагностика по математике",
@@ -440,7 +488,6 @@ export default function OgeEntryDiagnostic() {
         answer.value && `Ответ: ${escapeHtml(answer.value)}`,
         answer.extra && `Дополнительный ответ: ${escapeHtml(answer.extra)}`,
         answer.explanation && `Ход решения: ${escapeHtml(answer.explanation)}`,
-        answer.reference && "Использованы справочные материалы",
         answer.dontKnow && "Не знаю, как решить",
         photos.some((photo) => photo.bucket === `q${question.id}`) && `Фотографий: ${photos.filter((photo) => photo.bucket === `q${question.id}`).length}`,
       ].filter(Boolean).join("<br>");
@@ -481,14 +528,58 @@ export default function OgeEntryDiagnostic() {
         </header>
         <section className="test-wrap">
           <div className="progress-line">
-            <div><span>Задание {question.id} из 18</span><small>{question.block} · {question.topic}</small></div>
-            <strong>{Math.round((question.id / 18) * 100)}%</strong>
+            <div><span>Задание {current + 1} из {questions.length}</span><small>{question.block} · {question.topic}</small></div>
+            <strong>{Math.round(((current + 1) / questions.length) * 100)}%</strong>
           </div>
-          <div className="progress-track"><span style={{ width: `${(question.id / 18) * 100}%` }} /></div>
+          <div className="progress-track">
+            <span
+              style={{
+                width: `${((current + 1) / questions.length) * 100}%`,
+              }}
+            />
+          </div>
+
+          <nav
+            className="question-number-nav"
+            aria-label="Переход по заданиям"
+          >
+            {questions.map((item, index) => {
+              const itemAnswer = answers[item.id];
+              const stateClass = itemAnswer?.dontKnow
+                ? "unknown"
+                : answerHasContent(item)
+                  ? "answered"
+                  : "empty";
+
+              return (
+                <button
+                  type="button"
+                  className={`${stateClass} ${
+                    index === current ? "current" : ""
+                  }`}
+                  key={item.id}
+                  onClick={() => {
+                    setCurrent(index);
+                    setScreen("test");
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </nav>
           <article className="question-card oge-question">
             <div className="question-meta"><span>{question.block}</span><span>{question.topic}</span></div>
             <h1>{question.prompt}</h1>
-            {question.expression && <div className="expression oge-expression">{question.expression}</div>}
+            {question.expression && (
+              <div className="expression oge-expression">
+                <MathFormula expression={question.expression} />
+              </div>
+            )}
             {question.id === 9 && (
               <div className="tariff-table">
                 <div className="tariff-head"><b>Тариф</b><b>Плата</b><b>Включено</b><b>Сверх пакета</b></div>
@@ -586,11 +677,19 @@ export default function OgeEntryDiagnostic() {
               </div>
             )}
 
-            <label className="reference-check"><input type="checkbox" checked={answer.reference} onChange={(e) => setAnswers((prev) => ({ ...prev, [question.id]: { ...(prev[question.id] || defaultAnswer()), reference: e.target.checked } }))} /><span>Использовал(а) справочные материалы</span></label>
             <div className="test-actions grade-seven-actions">
               <button className="button secondary" disabled={current === 0} onClick={() => { setCurrent((value) => value - 1); window.scrollTo({ top: 0 }); }}>← Назад</button>
               <button className={`button dont-know-button ${answer.dontKnow ? "active-dont-know" : ""}`} onClick={() => markDontKnow(question)}>{answer.dontKnow ? "Отмечено: не знаю" : "Не знаю, как решить"}</button>
-              <button className="button primary" onClick={goNext}>Далее →</button>
+              <button
+                className="button primary"
+                disabled={!ready}
+                onClick={goNext}
+              >
+                {current === questions.length - 1
+                  ? "К загрузке решений"
+                  : "Далее"}{" "}
+                →
+              </button>
             </div>
           </article>
           <p className="save-note">Ответы и прогресс сохраняются только на этом устройстве</p>
@@ -646,7 +745,7 @@ export default function OgeEntryDiagnostic() {
         <section className="result-section overview-grid">
           {questions.map((question, index) => (
             <button className={`overview-item ${answers[question.id]?.dontKnow ? "unknown" : answerHasContent(question) ? "answered" : "empty"}`} key={question.id} onClick={() => { setCurrent(index); setScreen("test"); window.scrollTo({ top: 0 }); }}>
-              <b>№{question.id}</b><span>{status(question)}</span>{answers[question.id]?.reference && <small>Со справочными материалами</small>}
+              <b>№{question.id}</b><span>{status(question)}</span>
             </button>
           ))}
         </section>
@@ -668,8 +767,7 @@ export default function OgeEntryDiagnostic() {
     const scoreA = autoItems.filter((item) => item.block === "A" && item.correct).length;
     const scoreB = autoItems.filter((item) => item.block === "B" && item.correct).length;
     const total = scoreA + scoreB;
-    const self = autoItems.filter((item) => item.correct && !item.reference);
-    const withReference = autoItems.filter((item) => item.correct && item.reference);
+    const strong = autoItems.filter((item) => item.correct);
     const repeat = autoItems.filter((item) => !item.correct);
     const percentA = scoreA / 9;
     const percentB = scoreB / 7;
@@ -693,13 +791,21 @@ export default function OgeEntryDiagnostic() {
           <article><strong>{total}/16</strong><span>автоматическая часть</span></article>
           <article><strong>{scoreA}/9</strong><span>блок А</span></article>
           <article><strong>{scoreB}/7</strong><span>блок Б</span></article>
-          <article><strong>{questions.filter((q) => answers[q.id]?.reference).length}</strong><span>со справочными материалами</span></article>
           <article><strong>{questions.filter((q) => answers[q.id]?.dontKnow).length}</strong><span>«не знаю»</span></article>
           <article><strong>Ожидает</strong><span>проверка блока В</span></article>
         </section>
         <section className="result-section three-topic-panels oge-topic-panels">
-          {self.length > 0 && <article className="topic-panel strong-panel"><p className="kicker">Без подсказок</p><h2>Получилось самостоятельно</h2><div className="topic-tags">{self.map((item) => <span key={item.key}>✓ {item.topic}</span>)}</div></article>}
-          {withReference.length > 0 && <article className="topic-panel repeat-panel"><p className="kicker">С опорой</p><h2>Получилось со справочными материалами</h2><div className="topic-tags">{withReference.map((item) => <span key={item.key}>{item.topic}</span>)}</div></article>}
+          {strong.length > 0 && (
+            <article className="topic-panel strong-panel">
+              <p className="kicker">Сильные темы</p>
+              <h2>Получилось</h2>
+              <div className="topic-tags">
+                {strong.map((item) => (
+                  <span key={item.key}>✓ {item.topic}</span>
+                ))}
+              </div>
+            </article>
+          )}
           {repeat.length > 0 && <article className="topic-panel restore-panel"><p className="kicker">Для программы</p><h2>Стоит повторить</h2><div className="topic-tags">{repeat.map((item) => <span key={item.key}>{item.topic}</span>)}</div></article>}
         </section>
         <section className="result-section manual-block">
@@ -740,7 +846,7 @@ export default function OgeEntryDiagnostic() {
             <ul>
               <li>Выполняй работу самостоятельно и за один подход.</li>
               <li>Строгого ограничения по времени нет, обычно нужно около 45 минут.</li>
-              <li>Можно пользоваться только справочными материалами ОГЭ — обязательно отмечай это в задании.</li>
+              <li>Можно пользоваться только официальными справочными материалами ОГЭ.</li>
               <li>Калькулятор, интернет, учебник, конспекты и подсказки использовать нельзя.</li>
               <li>Не стирай неудачные попытки на бумаге: они тоже помогают увидеть пробелы.</li>
               <li>Если задание не получается, переходи дальше — позже можно вернуться.</li>
