@@ -1116,10 +1116,12 @@ if (screen === "result") {
   </section>
 )}
 
-      <section className="final-cta oge-final">
+     <section className="final-cta oge-final">
   <div>
     <p className="kicker">
-      {advancedSkipped ? "Следующий шаг" : "Получить разбор и план повторения"}
+      {advancedSkipped
+        ? "Следующий шаг"
+        : "Получить разбор и план повторения"}
     </p>
 
     <h2>
@@ -1135,68 +1137,66 @@ if (screen === "result") {
     </p>
   </div>
 
-          <p>
-            Я посмотрю не только ответы, но и ход работы, отмечу сильные
-            стороны и темы для повторения, а затем предложу подходящий план.
-          </p>
-        </div>
+  <div className="cta-actions oge-cta-actions">
+    <button
+      className="button secondary"
+      onClick={() => copyResult()}
+    >
+      Скопировать результат
+    </button>
 
-        <div className="cta-actions oge-cta-actions">
-          <button
-            className="button secondary"
-            onClick={() => copyResult()}
-          >
-            Скопировать результат
-          </button>
+    <button
+      className="button secondary"
+      onClick={download}
+    >
+      Скачать результат
+    </button>
 
-          <button
-            className="button secondary"
-            onClick={download}
-          >
-            Скачать результат
-          </button>
+    <a
+      className="button primary"
+      href={TELEGRAM_URL}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() =>
+        copyResult(
+          advancedSkipped
+            ? "Результат скопирован. Вставь его в сообщение"
+            : "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
+        )
+      }
+    >
+      {advancedSkipped
+        ? "Обсудить план повторения"
+        : "Открыть Telegram Леры"}
+    </a>
 
-          <a
-            className="button primary"
-            href={TELEGRAM_URL}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() =>
-              copyResult(
-                "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
-              )
-            }
-          >
-            Открыть Telegram Леры
-          </a>
+    <button
+      className="button secondary"
+      onClick={restart}
+    >
+      Пройти ещё раз
+    </button>
+  </div>
 
-          <button
-            className="button secondary"
-            onClick={restart}
-          >
-            Пройти ещё раз
-          </button>
-        </div>
+  {toast && (
+    <p className="copy-toast" role="status">
+      {toast}
+    </p>
+  )}
 
-        {toast && (
-          <p className="copy-toast" role="status">
-            {toast}
-          </p>
-        )}
+  {copyFallback && (
+    <div className="copy-fallback">
+      <textarea readOnly value={copyFallback} />
 
-        {copyFallback && (
-          <div className="copy-fallback">
-            <textarea readOnly value={copyFallback} />
-
-            <button
-              className="button secondary"
-              onClick={() => copyResult()}
-            >
-              Скопировать вручную
-            </button>
-          </div>
-        )}
-      </section>
+      <button
+        className="button secondary"
+        onClick={() => copyResult()}
+      >
+        Скопировать вручную
+      </button>
+    </div>
+  )}
+</section>
     </main>
   );
 }
