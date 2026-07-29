@@ -889,7 +889,7 @@ if (screen === "bridgeC") {
     return <main className="result-page after9-page review-overview"><header className="compact-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a></header><section className="result-section overview-heading"><p className="kicker">Перед завершением</p><h1>Обзор всех 24 заданий</h1><p>{unanswered.length?`Без ответа осталось: ${unanswered.length}. Вернись к ним или засчитай как «Не знаю, как решить».`:"Все задания заполнены или отмечены как «Не знаю, как решить»."}</p></section><section className="result-section overview-grid">{questions.map((q,index)=><button className={`overview-item ${answer(q.id).dontKnow?"unknown":hasContent(q)?"answered":"empty"}`} key={q.id} onClick={()=>{setCurrent(index);setScreen("test");window.scrollTo({top:0})}}><b>№{q.id}</b>}</button>)}</section><section className="result-section review-finish">{unanswered.length>0&&<button className="button secondary" onClick={()=>setAnswers((prev)=>{const next={...prev};unanswered.forEach(q=>{next[q.id]={...(next[q.id]||blank()),value:"",extra:"",parts:[],explanation:"",dontKnow:true}});return next})}>Засчитать пропуски как «Не знаю»</button>}<button className="button primary" disabled={unanswered.length>0} onClick={()=>{if(!window.confirm("После завершения ответы будут проверены, и изменить их уже не получится. Завершить диагностику?"))return;setScreen("result");localStorage.removeItem(STORAGE_KEY);window.scrollTo({top:0})}}>Завершить диагностику</button></section></main>;
   }
 
-  if (screen === "result") {
+if (screen === "result") {
   const scoreA = questions
     .slice(0, 10)
     .filter((q) => questionCorrect(q.id)).length;
@@ -903,174 +903,192 @@ if (screen === "bridgeC") {
 
   const pa = scoreA / 10;
   const pb = scoreB / 10;
-    let conclusion=pa<.5?"Сначала стоит укрепить базовые вычислительные и алгебраические навыки. Они понадобятся практически в каждой теме старшей школы или колледжа":pa<.8?"Основная база уже есть, но некоторые вычислительные и алгебраические навыки стоит повторить перед началом новой программы":pb<.7?"Базовые навыки сформированы. Основное внимание стоит уделить отдельным темам программы 7–9 классов":pb>=.8?"Большая часть опорных знаний из программы 5–9 классов сохранилась. После проверки сложных заданий можно будет составить точный план повторения":"Базовые навыки сформированы. Отдельные темы программы 7–9 классов стоит повторить перед началом новой программы";
-    if(Math.abs(pa-pb)>=.4) conclusion+=pa>pb?" Базовые навыки оказались увереннее, чем темы программы 7–9 классов.":" Темы 7–9 классов оказались увереннее базовых вычислительных навыков.";
-return (
-  <main className="result-page after9-page">
-    <header className="compact-header result-header">
-      <a className="brand" href="/">
-        <span className="brand-mark">∿</span>
-        <span>Математика без стресса</span>
-      </a>
 
-      <button className="text-button" onClick={restart}>
-        Пройти ещё раз
-      </button>
-    </header>
+  let conclusion =
+    pa < 0.5
+      ? "Сначала стоит укрепить базовые вычислительные и алгебраические навыки. Они понадобятся практически в каждой теме старшей школы или колледжа"
+      : pa < 0.8
+        ? "Основная база уже есть, но некоторые вычислительные и алгебраические навыки стоит повторить перед началом новой программы"
+        : pb < 0.7
+          ? "Базовые навыки сформированы. Основное внимание стоит уделить отдельным темам программы 7–9 классов"
+          : pb >= 0.8
+            ? "Большая часть опорных знаний из программы 5–9 классов сохранилась. После проверки сложных заданий можно будет составить точный план повторения"
+            : "Базовые навыки сформированы. Отдельные темы программы 7–9 классов стоит повторить перед началом новой программы";
 
-    <section className="result-hero">
-      <div className="score-orbit">
-        <strong>{scoreA + scoreB}</strong>
-        <span>из 20</span>
-      </div>
+  if (Math.abs(pa - pb) >= 0.4) {
+    conclusion +=
+      pa > pb
+        ? " Базовые навыки оказались увереннее, чем темы программы 7–9 классов."
+        : " Темы 7–9 классов оказались увереннее базовых вычислительных навыков.";
+  }
 
-      <div>
-        <p className="kicker">Предварительный результат</p>
-        <h1>{name}, вот твой результат</h1>
-        <p>{conclusion}</p>
-        <small>Дальнейшее обучение: {destination}</small>
-      </div>
-    </section>
-
-    <section className="result-section result-stats oge-stats">
-      <article>
-        <strong>{scoreA + scoreB}/20</strong>
-        <span>автоматическая часть</span>
-      </article>
-
-      <article>
-        <strong>{scoreA}/10</strong>
-        <span>блок А</span>
-      </article>
-
-      <article>
-        <strong>{scoreB}/10</strong>
-        <span>блок Б</span>
-      </article>
-
-      <article>
-        <strong>
-          {questions.filter((q) => answer(q.id).dontKnow).length}
-        </strong>
-        <span>«не знаю»</span>
-      </article>
-
-      <article>
-        <strong>Ожидает</strong>
-        <span>проверка блока В</span>
-      </article>
-    </section>
-
-    <section className="result-section three-topic-panels oge-topic-panels">
-      {self.length > 0 && (
-        <article className="topic-panel strong-panel">
-          <p className="kicker">Без подсказок</p>
-          <h2>Получилось самостоятельно</h2>
-
-          <div className="topic-tags">
-            {self.map((s) => (
-              <span key={s.key}>✓ {s.name}</span>
-            ))}
-          </div>
-        </article>
-      )}
-
-      {repeat.length > 0 && (
-        <article className="topic-panel restore-panel">
-          <p className="kicker">Для повторения</p>
-          <h2>Стоит повторить</h2>
-
-          <div className="topic-tags">
-            {repeat.map((s) => (
-              <span key={s.key}>{s.name}</span>
-            ))}
-          </div>
-        </article>
-      )}
-    </section>
-
-    <section className="result-section manual-block">
-      <p className="kicker">Блок В</p>
-      <h2>Задания №21–24 ожидают проверки преподавателя</h2>
-
-      <div>
-        {[21, 22, 23, 24].map((id) => (
-          <span key={id}>
-            №{id} — {manualStatus(id)}
-          </span>
-        ))}
-      </div>
-    </section>
-
-    <section className="final-cta oge-final">
-      <div>
-        <p className="kicker">Получить разбор и план повторения</p>
-        <h2>Отправь результат и фотографии решений Лере</h2>
-
-        <p>
-          Я посмотрю не только ответы, но и ход работы, отмечу сильные
-          стороны и темы для повторения, а затем предложу подходящий план.
-        </p>
-      </div>
-
-      <div className="cta-actions oge-cta-actions">
-        <button
-          className="button secondary"
-          onClick={() => copyResult()}
-        >
-          Скопировать результат
-        </button>
-
-        <button
-          className="button secondary"
-          onClick={download}
-        >
-          Скачать результат
-        </button>
-
-        <a
-          className="button primary"
-          href={TELEGRAM_URL}
-          target="_blank"
-          rel="noreferrer"
-          onClick={() =>
-            copyResult(
-              "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
-            )
-          }
-        >
-          Открыть Telegram Леры
+  return (
+    <main className="result-page after9-page">
+      <header className="compact-header result-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
         </a>
 
-        <button
-          className="button secondary"
-          onClick={restart}
-        >
+        <button className="text-button" onClick={restart}>
           Пройти ещё раз
         </button>
-      </div>
+      </header>
 
-      {toast && (
-        <p className="copy-toast" role="status">
-          {toast}
-        </p>
-      )}
+      <section className="result-hero">
+        <div className="score-orbit">
+          <strong>{scoreA + scoreB}</strong>
+          <span>из 20</span>
+        </div>
 
-      {copyFallback && (
-        <div className="copy-fallback">
-          <textarea readOnly value={copyFallback} />
+        <div>
+          <p className="kicker">Предварительный результат</p>
+          <h1>{name}, вот твой результат</h1>
+          <p>{conclusion}</p>
+          <small>Дальнейшее обучение: {destination}</small>
+        </div>
+      </section>
 
+      <section className="result-section result-stats oge-stats">
+        <article>
+          <strong>{scoreA + scoreB}/20</strong>
+          <span>автоматическая часть</span>
+        </article>
+
+        <article>
+          <strong>{scoreA}/10</strong>
+          <span>блок А</span>
+        </article>
+
+        <article>
+          <strong>{scoreB}/10</strong>
+          <span>блок Б</span>
+        </article>
+
+        <article>
+          <strong>
+            {questions.filter((q) => answer(q.id).dontKnow).length}
+          </strong>
+          <span>«не знаю»</span>
+        </article>
+
+        <article>
+          <strong>Ожидает</strong>
+          <span>проверка блока В</span>
+        </article>
+      </section>
+
+      <section className="result-section three-topic-panels oge-topic-panels">
+        {self.length > 0 && (
+          <article className="topic-panel strong-panel">
+            <p className="kicker">Без подсказок</p>
+            <h2>Получилось самостоятельно</h2>
+
+            <div className="topic-tags">
+              {self.map((s) => (
+                <span key={s.key}>✓ {s.name}</span>
+              ))}
+            </div>
+          </article>
+        )}
+
+        {repeat.length > 0 && (
+          <article className="topic-panel restore-panel">
+            <p className="kicker">Для повторения</p>
+            <h2>Стоит повторить</h2>
+
+            <div className="topic-tags">
+              {repeat.map((s) => (
+                <span key={s.key}>{s.name}</span>
+              ))}
+            </div>
+          </article>
+        )}
+      </section>
+
+      <section className="result-section manual-block">
+        <p className="kicker">Блок В</p>
+        <h2>Задания №21–24 ожидают проверки преподавателя</h2>
+
+        <div>
+          {[21, 22, 23, 24].map((id) => (
+            <span key={id}>
+              №{id} — {manualStatus(id)}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="final-cta oge-final">
+        <div>
+          <p className="kicker">Получить разбор и план повторения</p>
+          <h2>Отправь результат и фотографии решений Лере</h2>
+
+          <p>
+            Я посмотрю не только ответы, но и ход работы, отмечу сильные
+            стороны и темы для повторения, а затем предложу подходящий план.
+          </p>
+        </div>
+
+        <div className="cta-actions oge-cta-actions">
           <button
             className="button secondary"
             onClick={() => copyResult()}
           >
-            Скопировать вручную
+            Скопировать результат
+          </button>
+
+          <button
+            className="button secondary"
+            onClick={download}
+          >
+            Скачать результат
+          </button>
+
+          <a
+            className="button primary"
+            href={TELEGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() =>
+              copyResult(
+                "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
+              )
+            }
+          >
+            Открыть Telegram Леры
+          </a>
+
+          <button
+            className="button secondary"
+            onClick={restart}
+          >
+            Пройти ещё раз
           </button>
         </div>
-      )}
-    </section>
-  </main>
-);  }
+
+        {toast && (
+          <p className="copy-toast" role="status">
+            {toast}
+          </p>
+        )}
+
+        {copyFallback && (
+          <div className="copy-fallback">
+            <textarea readOnly value={copyFallback} />
+
+            <button
+              className="button secondary"
+              onClick={() => copyResult()}
+            >
+              Скопировать вручную
+            </button>
+          </div>
+        )}
+      </section>
+    </main>
+  );
+}
 
   return <main className="home-page after9-page"><header className="site-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a></header><section className="hero oge-hero"><div className="hero-copy"><div className="soft-pill">После основной школы</div><h1>Что повторить<br/><em>перед 10 классом или колледжем?</em></h1><p className="hero-lead">Проверим знания из программы 5–9 классов и определим, что стоит повторить перед 10 классом или колледжем.</p><div className="diagnostic-facts oge-facts"><span><b>24</b> задания</span><span>Три уровня сложности</span><span>Около 60 минут</span><span>Без школьной оценки</span><span>Разбор по темам</span><span>Блок В проверит преподаватель</span></div><label className="name-field"><span>Имя и фамилия ученика</span><input value={name} onChange={e=>setName(e.target.value)} placeholder="Введите имя и фамилию"/></label><fieldset className="destination-choice"><legend>Где ты продолжишь обучение?</legend>{["10 класс","колледж","пока не определился","другое"].map(v=><label key={v}><input type="radio" name="destination" checked={destination===v} onChange={()=>setDestination(v)}/>{v}</label>)}</fieldset><div className="start-guidance"><h2>Перед началом</h2><p className="paper-reminder">Приготовь несколько листов бумаги для вычислений и решений.</p><ul><li>Выполняй работу самостоятельно и по возможности за один подход.</li><li>Обычно нужно около 60 минут, но строгого ограничения нет.</li><li>Не используй калькулятор, интернет, учебник, конспекты и подсказки.</li><li>Не стирай неудачные попытки — они тоже помогают увидеть пробелы.</li><li>Если задание не получается, переходи дальше и вернись позже.</li><li>Блок В сложнее остальных. Если он пока не получается, это нормально.</li></ul><p>Эта работа нужна не для оценки, а для определения тем, которые стоит повторить перед дальнейшим изучением математики.</p><label className="consent-check"><input type="checkbox" checked={accepted} onChange={e=>setAccepted(e.target.checked)}/><span>Я прочитал(а) рекомендации и готов(а) начать</span></label></div><button className="button primary big" disabled={!name.trim()||!destination||!accepted} onClick={()=>setScreen("test")}>Начать диагностику →</button><p className="privacy-note">Имя, ответы и фотографии сохраняются только в этом браузере.</p></div><div className="doodle oge-doodle" aria-hidden="true"><span className="doodle-plus">10</span><span className="doodle-pi">x²</span><span className="doodle-frac"><b>5</b><i/><b>9</b></span><div className="doodle-paper"><div/><div/><div/><span>✓</span></div><span className="doodle-dot dot-one"/><span className="doodle-dot dot-two"/></div></section><footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Проверяем опорные знания, а не ставим оценку ♡</p></footer></main>;
 }
