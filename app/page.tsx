@@ -211,26 +211,6 @@ export default function HomePage() {
               <i>{diagnostic.meta} →</i>
             </a>
           ))}
-
-          <div className="class-card soon">
-            <span>Скоро</span>
-            <b>Старшая школа</b>
-            <p>
-              Диагностики по отдельным изученным разделам программы 10–11
-              классов
-            </p>
-            <i>Раздел готовится</i>
-          </div>
-
-          <div className="class-card soon college">
-            <span>Скоро</span>
-            <b>Колледж</b>
-            <p>
-              Тематические тесты и диагностики с выбором уже изученных тем
-            </p>
-            <i>Раздел готовится</i>
-          </div>
-        </div>
       </section>
 
       <section className="final-cta">
