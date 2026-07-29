@@ -45,7 +45,7 @@ const diagnostics = [
   meta: "Программа 5–9 классов",
   className: "after-nine-card",
 },
-  {
+{
   href: "/11",
   label: "Перед 11 классом",
   description: "Диагностика по уже изученным темам 10–11 классов",
