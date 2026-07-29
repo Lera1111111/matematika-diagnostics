@@ -682,13 +682,25 @@ export default function AfterGradeNineDiagnostic() {
       `Не получилось выполнить: ${questions.filter((q) => answer(q.id).dontKnow).length}`,
       `Получилось самостоятельно:\n${self.length ? self.map((item) => `— ${item}`).join("\n") : "—"}`,
       `Стоит повторить:\n${repeat.length ? repeat.map((item) => `— ${item}`).join("\n") : "—"}`,
-      `Блок В. Готовность к дальнейшему обучению:\n${[21,22,23,24].map((id) => `№${id} — ${manualStatus(id)}`).join("\n")}`,
-      `Фотографии решений: ${photos.length ? "приложены" : "не приложены"}`, `Работа выполнена: ${new Date().toLocaleString("ru-RU")}`,
+     ...(!advancedSkipped
+  ? [
+      `Блок В. Готовность к дальнейшему обучению:\n${[21, 22, 23, 24]
+        .map((id) => `№${id} — ${manualStatus(id)}`)
+        .join("\n")}`,
+      `Фотографии решений: ${
+        photos.length ? "приложены" : "не приложены"
+      }`,
+    ]
+  : []),
     ].join("\n\n");
   };
 
   const download = () => {
-    const rows = questions.map((q) => {
+   const questionsForDownload = advancedSkipped
+  ? questions.slice(0, 20)
+  : questions;
+
+const rows = questionsForDownload.map((q) => {
       const a = answer(q.id);
       const content = [a.value && `Ответ: ${escapeHtml(a.value)}`, a.extra && `Дополнительный ответ: ${escapeHtml(a.extra)}`,
         a.parts.filter(Boolean).length && `Другие пункты: ${a.parts.map(escapeHtml).join("; ")}`,
@@ -696,8 +708,7 @@ export default function AfterGradeNineDiagnostic() {
         a.dontKnow && "Не знаю, как решить", photos.some((p) => p.bucket === `q${q.id}`) && `Фотографий: ${photos.filter((p) => p.bucket === `q${q.id}`).length}`].filter(Boolean).join("<br>");
       return `<tr><td>${q.id}</td><td>${escapeHtml(q.topic)}</td><td>${content || "Ответ не заполнен"}</td></tr>`;
     }).join("");
-    const html = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Результат диагностики</title><style>body{font-family:Arial,sans-serif;max-width:920px;margin:40px auto;padding:0 20px;color:#28222c}h1{color:#674fa6}pre{white-space:pre-wrap;background:#f6f1fa;padding:20px;border-radius:16px}table{width:100%;border-collapse:collapse}td,th{padding:10px;border:1px solid #ddd;text-align:left;vertical-align:top}@media print{button{display:none}}</style><body><h1>Что повторить перед 10 классом или колледжем?</h1><pre>${escapeHtml(reportText())}</pre><h2>Все ответы</h2><table><tr><th>№</th><th>Тема</th><th>Ответ</th></tr>${rows}</table><p><b>Фотографии:</b> хранятся только в браузере. Отправьте оригиналы Лере в Telegram вместе с результатом.</p><button onclick="window.print()">Печать / сохранить как PDF</button></body></html>`;
-    const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
+const html = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Результат диагностики</title><style>body{font-family:Arial,sans-serif;max-width:920px;margin:40px auto;padding:0 20px;color:#28222c}h1{color:#674fa6}pre{white-space:pre-wrap;background:#f6f1fa;padding:20px;border-radius:16px}table{width:100%;border-collapse:collapse}td,th{padding:10px;border:1px solid #ddd;text-align:left;vertical-align:top}@media print{button{display:none}}</style><body><h1>Что повторить перед 10 классом или колледжем?</h1><pre>${escapeHtml(reportText())}</pre><h2>Все ответы</h2><table><tr><th>№</th><th>Тема</th><th>Ответ</th></tr>${rows}</table>${advancedSkipped ? "" : "<p><b>Фотографии:</b> хранятся только в браузере. Отправьте оригиналы Лере в Telegram вместе с результатом.</p>"}<button onclick="window.print()">Печать / сохранить как PDF</button></body></html>`;    const url = URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" }));
     const link = document.createElement("a"); link.href = url; link.download = `Перед_10_классом_или_колледжем_${name.replace(/\s+/g, "_") || "ученик"}.html`; link.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
