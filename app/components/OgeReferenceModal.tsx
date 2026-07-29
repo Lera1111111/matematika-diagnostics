@@ -90,10 +90,10 @@ function TrapezoidMidlineDiagram() {
       <text x="218" y="29">C</text>
       <text x="51" y="96">M</text>
       <text x="239" y="96">N</text>
-      <line x1="72" y1="110" x2="80" y2="115" className="tick" />
-      <line x1="58" y1="132" x2="66" y2="137" className="tick" />
-      <line x1="220" y1="115" x2="228" y2="110" className="tick double" />
-      <line x1="234" y1="137" x2="242" y2="132" className="tick double" />
+     <line x1="57" y1="108" x2="67" y2="112" className="tick" />
+<line x1="50" y1="132" x2="60" y2="136" className="tick" />
+<line x1="233" y1="112" x2="243" y2="108" className="tick double" />
+<line x1="240" y1="136" x2="250" y2="132" className="tick double" />
     </svg>
   );
 }
@@ -215,8 +215,8 @@ function RightTriangleTrigDiagram() {
     <svg viewBox="0 0 270 190" role="img" aria-label="Прямоугольный треугольник для синуса, косинуса и тангенса">
       <polygon points="35,155 225,155 225,30" />
       <path d="M209 139 h16 v16" className="marker" />
-      <path d="M70 155 A35 35 0 0 1 63 134" className="angle-arc" />
-      <text x="72" y="143">α</text>
+      <path d="M68 155 A33 33 0 0 0 63 137" className="angle-arc" />
+<text x="56" y="148">α</text>
       <text x="127" y="176">b</text>
       <text x="232" y="98">a</text>
       <text x="129" y="85">c</text>
