@@ -6,6 +6,7 @@ import GradeEightPage from "../app/8/page";
 import GradeNinePage from "../app/9/page";
 import OgePage from "../app/oge/page";
 import AfterNinePage from "../app/after9/page";
+import GradeElevenPage from "../app/11/page";
 
 const pageByRoute: Record<string, React.ComponentType> = {
   "/": HomePage,
@@ -15,6 +16,7 @@ const pageByRoute: Record<string, React.ComponentType> = {
   "/9": GradeNinePage,
   "/oge": OgePage,
   "/after9": AfterNinePage,
+    "/11": GradeElevenPage,
 };
 
 const titleByRoute: Record<string, string> = {
@@ -25,6 +27,7 @@ const titleByRoute: Record<string, string> = {
   "/9": "Что повторить перед 9 классом?",
   "/oge": "Входная диагностика для подготовки к ОГЭ",
   "/after9": "Что повторить после 9 класса?",
+    "/11": "Что повторить перед 11 классом?",
 };
 
 function normalizedBase() {
