@@ -90,10 +90,56 @@ function TrapezoidMidlineDiagram() {
       <text x="218" y="29">C</text>
       <text x="51" y="96">M</text>
       <text x="239" y="96">N</text>
-     <line x1="57" y1="108" x2="67" y2="112" className="tick" />
-<line x1="50" y1="132" x2="60" y2="136" className="tick" />
-<line x1="233" y1="112" x2="243" y2="108" className="tick double" />
-<line x1="240" y1="136" x2="250" y2="132" className="tick double" />
+    {/* BM и MA — по одной отметке */}
+<line
+  x1="69"
+  y1="66"
+  x2="81"
+  y2="69"
+  className="tick"
+/>
+
+<line
+  x1="49"
+  y1="131"
+  x2="61"
+  y2="134"
+  className="tick"
+/>
+
+{/* CN — две отметки */}
+<line
+  x1="218"
+  y1="66"
+  x2="230"
+  y2="63"
+  className="tick"
+/>
+
+<line
+  x1="220"
+  y1="72"
+  x2="232"
+  y2="69"
+  className="tick"
+/>
+
+{/* ND — две отметки */}
+<line
+  x1="238"
+  y1="131"
+  x2="250"
+  y2="128"
+  className="tick"
+/>
+
+<line
+  x1="240"
+  y1="137"
+  x2="252"
+  y2="134"
+  className="tick"
+/>
     </svg>
   );
 }
