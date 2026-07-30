@@ -688,7 +688,7 @@ const sections: Section[] = [
         eyebrow: "Сложение векторов",
         prompt: "Найдите координаты вектора a + b.",
         expression: String.raw`\vec a=(2;-1;3),\qquad \vec b=(-1;4;2)`,
-        fields: [{ id: "answer", type: "vector", vector: [1, 3, 5], note: "Например: 1; 3; 5" }],
+fields: [{ id: "answer", type: "vector", vector: [1, 3, 5] }],
       },
       {
         id: 32,
@@ -730,34 +730,79 @@ function Diagram({ kind }: { kind: DiagramKind }) {
       <svg viewBox="0 0 440 280" role="img" aria-label="Схема к заданию">
         {kind === "tetrahedron" && (
           <>
-            <path d="M220 32 L72 224 L360 224 Z" />
-            <path d="M220 32 L286 132 L72 224 M286 132 L360 224" className="diagram-dashed" />
-            <line x1="146" y1="128" x2="290" y2="128" className="diagram-highlight" />
-            <circle cx="146" cy="128" r="5" /><circle cx="290" cy="128" r="5" />
-            <text x="214" y="24">A</text><text x="55" y="243">B</text><text x="365" y="243">C</text><text x="292" y="128">D</text>
-            <text x="130" y="120">M</text><text x="298" y="120">N</text>
+            {/* Основание */}
+            <line x1="95" y1="210" x2="345" y2="210" className="edge-solid" />
+            <line x1="95" y1="210" x2="220" y2="70" className="edge-solid" />
+            <line x1="345" y1="210" x2="220" y2="70" className="edge-solid" />
+
+            {/* Вершина D сзади */}
+            <line x1="220" y1="70" x2="275" y2="125" className="edge-dashed" />
+            <line x1="95" y1="210" x2="275" y2="125" className="edge-solid" />
+            <line x1="345" y1="210" x2="275" y2="125" className="edge-solid" />
+
+            {/* M и N — середины AB и AC */}
+            <line x1="157.5" y1="140" x2="282.5" y2="140" className="edge-highlight" />
+            <circle cx="157.5" cy="140" r="4.5" className="point-mark" />
+            <circle cx="282.5" cy="140" r="4.5" className="point-mark" />
+
+            {/* Подписи */}
+            <text x="214" y="58">A</text>
+            <text x="80" y="232">B</text>
+            <text x="352" y="232">C</text>
+            <text x="284" y="122">D</text>
+            <text x="142" y="134">M</text>
+            <text x="288" y="136">N</text>
           </>
         )}
+
         {kind === "plane-perpendicular" && (
           <>
-            <polygon points="65,190 305,235 390,120 150,78" className="plane-shape" />
-            <line x1="220" y1="30" x2="220" y2="166" className="diagram-highlight" />
-            <line x1="220" y1="30" x2="334" y2="169" />
-            <line x1="220" y1="166" x2="334" y2="169" />
-            <path d="M220 147 h18 v18" className="marker" />
-            <text x="210" y="22">A</text><text x="208" y="185">H</text><text x="340" y="170">B</text><text x="88" y="203">α</text>
-            <text x="184" y="101" className="value-label">6</text><text x="280" y="87" className="value-label">10</text>
+            {/* Плоскость */}
+            <polygon points="75,195 275,230 370,145 170,110" className="plane-shape" />
+
+            {/* AH */}
+            <line x1="220" y1="45" x2="220" y2="175" className="edge-highlight" />
+
+            {/* AB и HB */}
+            <line x1="220" y1="45" x2="320" y2="170" className="edge-solid" />
+            <line x1="220" y1="175" x2="320" y2="170" className="edge-solid" />
+
+            {/* прямой угол */}
+            <path d="M220 157 h16 v16" className="marker" />
+
+            {/* подписи */}
+            <text x="213" y="34">A</text>
+            <text x="210" y="194">H</text>
+            <text x="327" y="173">B</text>
+            <text x="95" y="205">α</text>
+
+            {/* значения */}
+            <text x="184" y="110" className="value-label">6</text>
+            <text x="275" y="96" className="value-label">10</text>
           </>
         )}
+
         {kind === "triangular-prism" && (
           <>
-            <polygon points="90,210 90,85 205,210" />
-            <polygon points="230,165 230,40 345,165" />
-            <line x1="90" y1="210" x2="230" y2="165" />
-            <line x1="90" y1="85" x2="230" y2="40" />
-            <line x1="205" y1="210" x2="345" y2="165" />
-            <path d="M90 190 h20 v20" className="marker" />
-            <text x="60" y="150" className="value-label">3</text><text x="140" y="233" className="value-label">4</text><text x="158" y="124" className="value-label">6</text>
+            {/* Переднее основание */}
+            <polygon points="120,205 120,120 225,205" className="edge-solid-fill-none" />
+            <path d="M120 187 h18 v18" className="marker" />
+
+            {/* Заднее основание */}
+            <polygon points="250,170 250,85 355,170" className="edge-solid-fill-none" />
+
+            {/* Боковые рёбра */}
+            <line x1="120" y1="205" x2="250" y2="170" className="edge-solid" />
+            <line x1="120" y1="120" x2="250" y2="85" className="edge-solid" />
+            <line x1="225" y1="205" x2="355" y2="170" className="edge-solid" />
+
+            {/* Скрытое ребро */}
+            <line x1="120" y1="120" x2="225" y2="205" className="edge-dashed" />
+
+            {/* Подписи */}
+            <text x="92" y="165" className="value-label">3</text>
+            <text x="165" y="226" className="value-label">4</text>
+            <text x="188" y="146" className="value-label">6</text>
           </>
         )}
       </svg>
@@ -1761,14 +1806,7 @@ export default function GradeElevenDiagnostic() {
         .question-number-nav .partial,.overview-item.partial{background:#efe4fb;color:#6f4aa8;border-color:#b99ad9}
         .selection-disclaimer{margin-top:12px;font-weight:600}
         .result-field-line{padding:12px 0;border-top:1px solid #eee}
-        .grade-eleven-diagram svg{width:100%;max-width:520px}
-        .grade-eleven-diagram svg path,.grade-eleven-diagram svg line,.grade-eleven-diagram svg polygon{fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round}
-        .grade-eleven-diagram .plane-shape{fill:#f4eef9;stroke:#8064a8}
-        .grade-eleven-diagram .diagram-dashed{stroke-dasharray:8 7}
-        .grade-eleven-diagram .diagram-highlight{stroke:#6a4fa3;stroke-width:5}
-        .grade-eleven-diagram .marker{stroke-width:2}
-        .grade-eleven-diagram text{font-size:18px;fill:currentColor}
-        .grade-eleven-diagram circle{fill:#6a4fa3}
+        .grade-eleven-diagram
         .selected-result-sections{margin-top:0}
 
         @media(max-width:980px){
@@ -1852,6 +1890,28 @@ export default function GradeElevenDiagnostic() {
             min-width:0;
           }
         }
+        .diagram-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f6f0fc;
+  border: 1px solid #e2d5f3;
+  color: #6b4ea3;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.section-choice input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #8b6bc3;
+  flex: 0 0 auto;
+}
+
+.section-choice span {
+  line-height: 1.35;
+}
       `}</style>
 
       <header className="site-header">
