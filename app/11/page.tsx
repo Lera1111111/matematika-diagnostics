@@ -779,6 +779,31 @@ function emptyFieldAnswer(): StoredFieldAnswer {
   return { value: "", dontKnow: false };
 }
 
+
+function GradeElevenDoodle() {
+  return (
+    <div className="grade-eleven-doodle" aria-hidden="true">
+      <div className="eleven-orbit orbit-one" />
+      <div className="eleven-orbit orbit-two" />
+
+      <div className="eleven-sheet">
+        <span className="sheet-label">11</span>
+        <div className="sheet-formula">log₂ 8 = 3</div>
+        <div className="sheet-line wide" />
+        <div className="sheet-line medium" />
+        <div className="sheet-line short" />
+        <div className="sheet-check">✓</div>
+      </div>
+
+      <div className="formula-bubble bubble-one">x²</div>
+      <div className="formula-bubble bubble-two">sin x</div>
+      <div className="formula-bubble bubble-three">V</div>
+      <div className="formula-dot dot-one" />
+      <div className="formula-dot dot-two" />
+    </div>
+  );
+}
+
 export default function GradeElevenDiagnostic() {
   const [screen, setScreen] = useState<"home" | "test" | "review" | "result">("home");
   const [name, setName] = useState("");
@@ -1223,79 +1248,807 @@ export default function GradeElevenDiagnostic() {
   }
 
   return (
-    <main className="home-page grade-eleven-page">
+    <main className="home-page grade-eleven-page grade-eleven-home">
       <style>{`
-        .section-picker{display:grid;gap:18px;margin:24px 0}.section-group{border:1px solid #e7def0;border-radius:22px;padding:20px;background:#fff}.section-group-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:14px}.section-group-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-action{border:0;background:#f3edf8;color:#604a91;padding:8px 12px;border-radius:999px;cursor:pointer}.section-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.section-choice{display:flex;gap:10px;align-items:flex-start;border:1px solid #ece5f2;border-radius:14px;padding:12px;cursor:pointer}.section-choice.selected{border-color:#8d6bc2;background:#f7f1fc}.selection-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.selection-summary span{background:#f5f1f8;border-radius:14px;padding:12px;text-align:center}.compound-fields{display:grid;gap:18px;margin-top:22px}.compound-field{border-top:1px solid #eee3f4;padding-top:18px}.compound-field:first-child{border-top:0;padding-top:0}.compound-field h2{font-size:1.05rem;margin-bottom:12px}.field-dont-know{margin-top:12px}.question-number-nav .partial,.overview-item.partial{background:#efe4fb;color:#6f4aa8;border-color:#b99ad9}.selection-disclaimer{margin-top:12px;font-weight:600}.result-field-line{padding:12px 0;border-top:1px solid #eee}.grade-eleven-diagram svg{width:100%;max-width:520px}.grade-eleven-diagram svg path,.grade-eleven-diagram svg line,.grade-eleven-diagram svg polygon{fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round}.grade-eleven-diagram .plane-shape{fill:#f4eef9;stroke:#8064a8}.grade-eleven-diagram .diagram-dashed{stroke-dasharray:8 7}.grade-eleven-diagram .diagram-highlight{stroke:#6a4fa3;stroke-width:5}.grade-eleven-diagram .marker{stroke-width:2}.grade-eleven-diagram text{font-size:18px;fill:currentColor}.grade-eleven-diagram circle{fill:#6a4fa3}.selected-result-sections{margin-top:0}@media(max-width:760px){.section-list{grid-template-columns:1fr}.selection-summary{grid-template-columns:1fr}.section-group-head{align-items:flex-start;flex-direction:column}}
+        .grade-eleven-home{
+          --eleven-ink:#2e2636;
+          --eleven-violet:#7352bd;
+          --eleven-violet-dark:#5e3ca7;
+          --eleven-lilac:#f2eafb;
+          --eleven-border:#e7dcef;
+          --eleven-blue:#eaf5fb;
+          overflow:hidden;
+        }
+
+        .grade-eleven-home .site-header{
+          max-width:1180px;
+          margin:0 auto;
+          padding-left:24px;
+          padding-right:24px;
+        }
+
+        .grade-eleven-hero{
+          display:grid;
+          grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);
+          gap:64px;
+          align-items:center;
+          max-width:1180px;
+          margin:0 auto;
+          padding:74px 24px 58px;
+        }
+
+        .grade-eleven-hero-copy{
+          min-width:0;
+        }
+
+        .grade-eleven-hero h1{
+          max-width:720px;
+          margin:26px 0 24px;
+          font-size:clamp(3.65rem,6.5vw,6.7rem);
+          line-height:.93;
+          letter-spacing:-.055em;
+        }
+
+        .grade-eleven-hero h1 em{
+          display:block;
+          color:var(--eleven-violet);
+          font-family:var(--font-hand,inherit);
+          font-style:normal;
+          font-weight:600;
+          letter-spacing:-.035em;
+          margin-top:8px;
+        }
+
+        .grade-eleven-hero .hero-lead{
+          max-width:700px;
+          margin:0;
+          font-size:clamp(1.08rem,1.45vw,1.28rem);
+          line-height:1.62;
+        }
+
+        .eleven-facts{
+          display:grid;
+          grid-template-columns:repeat(3,minmax(0,1fr));
+          gap:12px;
+          margin-top:30px;
+        }
+
+        .eleven-fact{
+          min-height:82px;
+          display:flex;
+          flex-direction:column;
+          justify-content:center;
+          gap:4px;
+          padding:14px 16px;
+          border:1px solid var(--eleven-border);
+          border-radius:17px;
+          background:rgba(255,255,255,.72);
+          text-align:center;
+        }
+
+        .eleven-fact b{
+          color:var(--eleven-violet);
+          font-size:1.15rem;
+        }
+
+        .eleven-fact span{
+          font-size:.86rem;
+          line-height:1.25;
+        }
+
+        .grade-eleven-doodle{
+          position:relative;
+          min-height:535px;
+          isolation:isolate;
+        }
+
+        .grade-eleven-doodle::before{
+          content:"";
+          position:absolute;
+          inset:28px 6px 18px 10px;
+          border-radius:50%;
+          background:
+            radial-gradient(circle at 64% 24%,rgba(192,222,239,.92) 0 10%,transparent 10.5%),
+            radial-gradient(circle at 22% 73%,rgba(241,190,208,.88) 0 2.4%,transparent 2.8%),
+            linear-gradient(145deg,#eee3fb 0%,#eadcf6 48%,#f4e8f0 100%);
+          z-index:-2;
+        }
+
+        .eleven-orbit{
+          position:absolute;
+          border:2px dashed rgba(117,82,189,.22);
+          border-radius:50%;
+          z-index:-1;
+        }
+
+        .orbit-one{inset:85px 42px 82px 58px;transform:rotate(-11deg)}
+        .orbit-two{inset:115px 70px 54px 30px;transform:rotate(14deg)}
+
+        .eleven-sheet{
+          position:absolute;
+          width:56%;
+          min-width:280px;
+          height:58%;
+          left:50%;
+          top:50%;
+          transform:translate(-50%,-48%) rotate(-3deg);
+          border-radius:18px;
+          background:#fff;
+          box-shadow:0 28px 60px rgba(79,54,105,.18);
+          padding:54px 34px 28px;
+        }
+
+        .sheet-label{
+          position:absolute;
+          left:-38px;
+          top:-25px;
+          display:grid;
+          place-items:center;
+          width:76px;
+          height:76px;
+          border-radius:22px;
+          background:#fff;
+          color:var(--eleven-violet);
+          font-weight:800;
+          font-size:1.2rem;
+          box-shadow:0 16px 35px rgba(79,54,105,.13);
+          transform:rotate(2deg);
+        }
+
+        .sheet-formula{
+          color:#7258ad;
+          font-size:clamp(1.35rem,2.4vw,2rem);
+          font-weight:700;
+          letter-spacing:.04em;
+          margin-bottom:28px;
+        }
+
+        .sheet-line{
+          height:11px;
+          border-radius:999px;
+          background:#eeeaf2;
+          margin:13px 0;
+        }
+
+        .sheet-line.wide{width:92%}
+        .sheet-line.medium{width:70%}
+        .sheet-line.short{width:43%}
+
+        .sheet-check{
+          position:absolute;
+          right:28px;
+          bottom:30px;
+          color:#d487a5;
+          font-size:4rem;
+          line-height:1;
+          font-weight:800;
+          transform:rotate(-8deg);
+        }
+
+        .formula-bubble{
+          position:absolute;
+          display:grid;
+          place-items:center;
+          border-radius:50%;
+          font-family:Georgia,serif;
+          font-weight:700;
+          color:var(--eleven-violet);
+          box-shadow:0 16px 36px rgba(79,54,105,.10);
+        }
+
+        .bubble-one{
+          width:82px;height:82px;right:20px;top:84px;background:#dff1f8;font-size:1.55rem;
+        }
+        .bubble-two{
+          width:94px;height:94px;left:14px;bottom:45px;background:#fff;font-size:1.06rem;transform:rotate(-6deg);
+        }
+        .bubble-three{
+          width:68px;height:68px;right:30px;bottom:45px;background:#fff;font-size:1.5rem;
+        }
+
+        .formula-dot{
+          position:absolute;
+          border-radius:50%;
+        }
+        .dot-one{width:12px;height:12px;background:#8ec6df;right:76px;top:48px}
+        .dot-two{width:16px;height:16px;background:#efb4cb;left:44px;bottom:140px}
+
+        .eleven-intro-section{
+          max-width:1180px;
+          margin:0 auto;
+          padding:8px 24px 30px;
+        }
+
+        .eleven-intro-grid{
+          display:grid;
+          grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+          gap:22px;
+          align-items:stretch;
+        }
+
+        .eleven-name-card,
+        .eleven-guidance-card{
+          border:1px solid var(--eleven-border);
+          border-radius:24px;
+          background:#fff;
+          padding:25px;
+        }
+
+        .eleven-name-card{
+          display:flex;
+          flex-direction:column;
+          justify-content:center;
+        }
+
+        .eleven-name-card label{
+          font-weight:800;
+          margin-bottom:10px;
+        }
+
+        .eleven-name-card input{
+          width:100%;
+          min-height:58px;
+          border:1px solid #dacdea;
+          border-radius:15px;
+          padding:0 17px;
+          font:inherit;
+          background:#fff;
+          box-shadow:0 10px 24px rgba(91,63,117,.05);
+        }
+
+        .eleven-name-card p{
+          margin:12px 0 0;
+          font-size:.88rem;
+          opacity:.72;
+        }
+
+        .eleven-guidance-card h2{
+          margin:0 0 15px;
+          font-size:1.45rem;
+        }
+
+        .eleven-guidance-card ul{
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:10px 24px;
+          margin:0;
+          padding-left:20px;
+        }
+
+        .eleven-guidance-card li{
+          line-height:1.45;
+        }
+
+        .eleven-picker-section{
+          max-width:1180px;
+          margin:0 auto;
+          padding:32px 24px 80px;
+        }
+
+        .eleven-picker-heading{
+          display:flex;
+          justify-content:space-between;
+          align-items:end;
+          gap:30px;
+          margin-bottom:24px;
+        }
+
+        .eleven-picker-heading h2{
+          margin:4px 0 0;
+          font-size:clamp(2rem,3.5vw,3.25rem);
+        }
+
+        .eleven-picker-heading>p{
+          max-width:470px;
+          margin:0;
+          line-height:1.55;
+        }
+
+        .section-picker{
+          display:grid;
+          grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);
+          gap:22px;
+          align-items:start;
+        }
+
+        .section-group{
+          border:1px solid var(--eleven-border);
+          border-radius:26px;
+          padding:24px;
+          background:#fff;
+          box-shadow:0 18px 48px rgba(91,63,117,.055);
+        }
+
+        .section-group-head{
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:16px;
+          margin-bottom:18px;
+        }
+
+        .section-group-head h3{
+          margin:0;
+          font-size:1.45rem;
+        }
+
+        .mini-action{
+          border:0;
+          background:var(--eleven-lilac);
+          color:var(--eleven-violet-dark);
+          padding:9px 14px;
+          border-radius:999px;
+          cursor:pointer;
+          font:inherit;
+          font-weight:700;
+          white-space:nowrap;
+        }
+
+        .section-list{
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:11px;
+        }
+
+        .section-group.stereometry .section-list{
+          grid-template-columns:1fr;
+        }
+
+        .section-choice{
+          position:relative;
+          display:grid;
+          grid-template-columns:32px 1fr;
+          gap:11px;
+          align-items:center;
+          min-height:72px;
+          border:1px solid #ebe2f1;
+          border-radius:17px;
+          padding:12px 14px;
+          cursor:pointer;
+          transition:.18s ease;
+          background:#fff;
+        }
+
+        .section-choice:hover{
+          transform:translateY(-1px);
+          border-color:#cbb8df;
+          background:#fcf9ff;
+        }
+
+        .section-choice input{
+          position:absolute;
+          opacity:0;
+          pointer-events:none;
+        }
+
+        .choice-check{
+          display:grid;
+          place-items:center;
+          width:28px;
+          height:28px;
+          border:2px solid #cfbfdd;
+          border-radius:9px;
+          color:transparent;
+          font-weight:900;
+          transition:.18s ease;
+        }
+
+        .choice-copy{
+          min-width:0;
+        }
+
+        .choice-copy b{
+          display:block;
+          color:var(--eleven-ink);
+          font-family:inherit;
+          font-size:.98rem;
+          line-height:1.25;
+        }
+
+        .choice-copy small{
+          display:block;
+          margin-top:4px;
+          color:#7d7086;
+          font-size:.78rem;
+          font-weight:500;
+        }
+
+        .section-choice.selected{
+          border-color:#9874c7;
+          background:#f8f3fd;
+          box-shadow:inset 0 0 0 1px rgba(115,82,189,.08);
+        }
+
+        .section-choice.selected .choice-check{
+          border-color:var(--eleven-violet);
+          background:var(--eleven-violet);
+          color:#fff;
+        }
+
+        .eleven-start-panel{
+          display:grid;
+          grid-template-columns:1fr auto;
+          gap:24px;
+          align-items:center;
+          margin-top:22px;
+          padding:23px 24px;
+          border:1px solid var(--eleven-border);
+          border-radius:24px;
+          background:linear-gradient(135deg,#f7f1fd 0%,#f7fbfd 100%);
+        }
+
+        .selection-summary{
+          display:flex;
+          gap:10px;
+          flex-wrap:wrap;
+          margin:0 0 15px;
+        }
+
+        .selection-summary span{
+          min-width:145px;
+          padding:12px 15px;
+          border-radius:15px;
+          background:#fff;
+          border:1px solid rgba(123,86,180,.12);
+          text-align:center;
+        }
+
+        .selection-summary b{
+          display:block;
+          color:var(--eleven-violet);
+          font-size:1.25rem;
+          margin-bottom:2px;
+        }
+
+        .eleven-consent-wrap .consent-check{
+          margin:0;
+        }
+
+        .eleven-consent-wrap .consent-check span{
+          line-height:1.4;
+        }
+
+        .eleven-start-actions{
+          min-width:250px;
+          text-align:center;
+        }
+
+        .eleven-start-actions .button{
+          width:100%;
+          justify-content:center;
+        }
+
+        .eleven-start-actions p{
+          margin:10px 0 0;
+          font-size:.82rem;
+          color:#776b7e;
+        }
+
+        .eleven-calm-note{
+          display:flex;
+          gap:13px;
+          align-items:flex-start;
+          max-width:760px;
+          margin:20px 0 0;
+          padding:16px 18px;
+          border:1px solid var(--eleven-border);
+          border-radius:18px;
+          background:#fff;
+        }
+
+        .eleven-calm-note span{
+          color:#d986a7;
+          font-size:1.25rem;
+        }
+
+        .eleven-calm-note p{
+          margin:0;
+          line-height:1.5;
+        }
+
+        .grade-eleven-home footer{
+          max-width:1180px;
+          margin:0 auto;
+          padding-left:24px;
+          padding-right:24px;
+        }
+
+        .compound-fields{display:grid;gap:18px;margin-top:22px}
+        .compound-field{border-top:1px solid #eee3f4;padding-top:18px}
+        .compound-field:first-child{border-top:0;padding-top:0}
+        .compound-field h2{font-size:1.05rem;margin-bottom:12px}
+        .field-dont-know{margin-top:12px}
+        .question-number-nav .partial,.overview-item.partial{background:#efe4fb;color:#6f4aa8;border-color:#b99ad9}
+        .selection-disclaimer{margin-top:12px;font-weight:600}
+        .result-field-line{padding:12px 0;border-top:1px solid #eee}
+        .grade-eleven-diagram svg{width:100%;max-width:520px}
+        .grade-eleven-diagram svg path,.grade-eleven-diagram svg line,.grade-eleven-diagram svg polygon{fill:none;stroke:currentColor;stroke-width:3;stroke-linejoin:round}
+        .grade-eleven-diagram .plane-shape{fill:#f4eef9;stroke:#8064a8}
+        .grade-eleven-diagram .diagram-dashed{stroke-dasharray:8 7}
+        .grade-eleven-diagram .diagram-highlight{stroke:#6a4fa3;stroke-width:5}
+        .grade-eleven-diagram .marker{stroke-width:2}
+        .grade-eleven-diagram text{font-size:18px;fill:currentColor}
+        .grade-eleven-diagram circle{fill:#6a4fa3}
+        .selected-result-sections{margin-top:0}
+
+        @media(max-width:980px){
+          .grade-eleven-hero{
+            grid-template-columns:1fr;
+            gap:24px;
+            padding-top:52px;
+          }
+          .grade-eleven-doodle{
+            min-height:430px;
+            max-width:650px;
+            width:100%;
+            margin:0 auto;
+          }
+          .eleven-intro-grid{
+            grid-template-columns:1fr;
+          }
+          .section-picker{
+            grid-template-columns:1fr;
+          }
+          .section-group.stereometry .section-list{
+            grid-template-columns:repeat(2,minmax(0,1fr));
+          }
+        }
+
+        @media(max-width:700px){
+          .grade-eleven-hero{
+            padding:38px 18px 36px;
+          }
+          .grade-eleven-hero h1{
+            font-size:clamp(3rem,16vw,4.7rem);
+          }
+          .eleven-facts{
+            grid-template-columns:1fr;
+          }
+          .grade-eleven-doodle{
+            min-height:350px;
+          }
+          .eleven-sheet{
+            min-width:230px;
+            width:62%;
+            height:60%;
+            padding:44px 24px 20px;
+          }
+          .bubble-two{left:0}
+          .bubble-one{right:0}
+          .eleven-intro-section,
+          .eleven-picker-section{
+            padding-left:18px;
+            padding-right:18px;
+          }
+          .eleven-guidance-card ul{
+            grid-template-columns:1fr;
+          }
+          .eleven-picker-heading{
+            align-items:flex-start;
+            flex-direction:column;
+          }
+          .section-list,
+          .section-group.stereometry .section-list{
+            grid-template-columns:1fr;
+          }
+          .section-group{
+            padding:18px;
+          }
+          .section-group-head{
+            align-items:flex-start;
+            flex-direction:column;
+          }
+          .eleven-start-panel{
+            grid-template-columns:1fr;
+          }
+          .eleven-start-actions{
+            min-width:0;
+          }
+          .selection-summary{
+            display:grid;
+            grid-template-columns:1fr;
+          }
+          .selection-summary span{
+            min-width:0;
+          }
+        }
       `}</style>
-      <header className="site-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a></header>
-      <section className="hero">
-        <div className="hero-copy">
+
+      <header className="site-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+      </header>
+
+      <section className="grade-eleven-hero">
+        <div className="grade-eleven-hero-copy">
           <div className="soft-pill">Диагностика по изученным темам старшей школы</div>
-          <h1>Что повторить<br />перед <em>11 классом?</em></h1>
-          <p className="hero-lead">Отметь только те разделы, которые уже проходил(а). Диагностика сформируется по выбранным темам и не будет оценивать материал, которого у тебя ещё не было.</p>
 
-          <div className="name-start-card grade-eleven-start-card">
+          <h1>
+            Что повторить
+            <em>перед 11 классом?</em>
+          </h1>
+
+          <p className="hero-lead">
+            Отметь только те разделы, которые уже проходил(а). Диагностика
+            сформируется по выбранным темам и не будет оценивать материал,
+            которого у тебя ещё не было.
+          </p>
+
+          <div className="eleven-facts">
+            <div className="eleven-fact">
+              <b>19 разделов</b>
+              <span>выбираешь только изученные</span>
+            </div>
+            <div className="eleven-fact">
+              <b>1–32 задания</b>
+              <span>объём зависит от выбора</span>
+            </div>
+            <div className="eleven-fact">
+              <b>Без оценки</b>
+              <span>получаешь маршрут повторения</span>
+            </div>
+          </div>
+        </div>
+
+        <GradeElevenDoodle />
+      </section>
+
+      <section className="eleven-intro-section">
+        <div className="eleven-intro-grid">
+          <div className="eleven-name-card">
             <label htmlFor="student-name">Как тебя зовут?</label>
-            <input id="student-name" type="text" value={name} onChange={(event) => setName(event.target.value)} placeholder="Введи имя" autoComplete="given-name" />
+            <input
+              id="student-name"
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Введи имя"
+              autoComplete="given-name"
+            />
+            <p>Имя и ответы сохраняются только в браузере на этом устройстве.</p>
+          </div>
 
-            <div className="start-guidance">
-              <h2>Перед началом</h2>
-              <ul>
-                <li>Выбери только те разделы, которые уже изучал(а).</li>
-                <li>Решай самостоятельно, без учебника и подсказок.</li>
-                <li>Строгого ограничения времени нет.</li>
-                <li>Если способ решения незнаком, нажми «Не знаю, как решить».</li>
-              </ul>
-            </div>
+          <div className="eleven-guidance-card">
+            <h2>Перед началом</h2>
+            <ul>
+              <li>Выбери только те разделы, которые уже изучал(а).</li>
+              <li>Решай самостоятельно, без учебника и подсказок.</li>
+              <li>Строгого ограничения времени нет.</li>
+              <li>Незнакомое задание отмечай кнопкой «Не знаю».</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-            <div className="section-picker">
-              {(["Алгебра и начала анализа", "Стереометрия"] as Part[]).map((part) => {
-                const partSections = sections.filter((section) => section.part === part);
-                const allSelected = partSections.every((section) => selectedSections.includes(section.id));
-                return (
-                  <section className="section-group" key={part}>
-                    <div className="section-group-head">
-                      <h2>{part}</h2>
-                      <div className="section-group-actions">
-                        <button type="button" className="mini-action" onClick={() => togglePart(part, !allSelected)}>{allSelected ? "Снять выбор" : "Выбрать все"}</button>
-                      </div>
-                    </div>
-                    <div className="section-list">
-                      {partSections.map((section) => {
-                        const selected = selectedSections.includes(section.id);
-                        return (
-                          <label className={`section-choice ${selected ? "selected" : ""}`} key={section.id}>
-                            <input type="checkbox" checked={selected} onChange={() => toggleSection(section.id)} />
-                            <span>{section.title}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
+      <section className="eleven-picker-section">
+        <div className="eleven-picker-heading">
+          <div>
+            <p className="kicker">Собери свою диагностику</p>
+            <h2>Какие разделы ты уже изучал(а)?</h2>
+          </div>
+          <p>
+            Можно выбрать любое количество тем. В результате будут учитываться
+            только отмеченные разделы.
+          </p>
+        </div>
 
+        <div className="section-picker">
+          {(["Алгебра и начала анализа", "Стереометрия"] as Part[]).map((part) => {
+            const partSections = sections.filter((section) => section.part === part);
+            const allSelected = partSections.every((section) =>
+              selectedSections.includes(section.id),
+            );
+
+            return (
+              <section
+                className={`section-group ${part === "Стереометрия" ? "stereometry" : ""}`}
+                key={part}
+              >
+                <div className="section-group-head">
+                  <h3>{part}</h3>
+                  <button
+                    type="button"
+                    className="mini-action"
+                    onClick={() => togglePart(part, !allSelected)}
+                  >
+                    {allSelected ? "Снять выбор" : "Выбрать все"}
+                  </button>
+                </div>
+
+                <div className="section-list">
+                  {partSections.map((section) => {
+                    const selected = selectedSections.includes(section.id);
+
+                    return (
+                      <label
+                        className={`section-choice ${selected ? "selected" : ""}`}
+                        key={section.id}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => toggleSection(section.id)}
+                        />
+
+                        <span className="choice-check">✓</span>
+
+                        <span className="choice-copy">
+                          <b>{section.title}</b>
+                          <small>
+                            {section.questions.length}{" "}
+                            {section.questions.length === 1 ? "задание" : "задания"} ·{" "}
+                            около {section.estimatedMinutes} мин
+                          </small>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+
+        <div className="eleven-start-panel">
+          <div className="eleven-consent-wrap">
             <div className="selection-summary">
-              <span><b>{selectedSections.length}</b><br />разделов выбрано</span>
-              <span><b>{activeQuestions.length}</b><br />заданий</span>
-              <span><b>{estimatedMinutes || 0}</b><br />минут примерно</span>
+              <span>
+                <b>{selectedSections.length}</b>
+                разделов выбрано
+              </span>
+              <span>
+                <b>{activeQuestions.length}</b>
+                заданий
+              </span>
+              <span>
+                <b>{estimatedMinutes || 0}</b>
+                минут примерно
+              </span>
             </div>
 
             <label className="consent-check">
-              <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
-              <span>Я выбрал(а) только изученные разделы и прочитал(а) рекомендации</span>
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(event) => setAccepted(event.target.checked)}
+              />
+              <span>
+                Я выбрал(а) только изученные разделы и прочитал(а) рекомендации
+              </span>
             </label>
-
-            <button className="button primary big" onClick={start} disabled={!name.trim() || !accepted || !selectedSections.length}>Начать диагностику <span>→</span></button>
-            {!selectedSections.length && <p className="name-start-meta">Выбери хотя бы один изученный раздел</p>}
           </div>
 
-          <div className="calm-note"><span>♡</span><p>Это не оценка за всю программу 10 класса. В результате учитываются только выбранные разделы.</p></div>
-          <p className="privacy-note">Без регистрации. Имя, выбор тем и ответы остаются только в браузере на этом устройстве.</p>
+          <div className="eleven-start-actions">
+            <button
+              className="button primary big"
+              onClick={start}
+              disabled={!name.trim() || !accepted || !selectedSections.length}
+            >
+              Начать диагностику <span>→</span>
+            </button>
+
+            {!selectedSections.length && <p>Сначала выбери хотя бы один раздел</p>}
+            {selectedSections.length > 0 && !name.trim() && <p>Осталось указать имя</p>}
+          </div>
+        </div>
+
+        <div className="eleven-calm-note">
+          <span>♡</span>
+          <p>
+            Это не оценка за всю программу старшей школы. В итогах учитываются
+            только разделы, выбранные перед началом диагностики.
+          </p>
         </div>
       </section>
-      <footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Проверяем знания, а не ставим оценки ♡</p></footer>
+
+      <footer>
+        <div className="brand">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </div>
+        <p>Проверяем знания, а не ставим оценки ♡</p>
+      </footer>
     </main>
-  );
-}
+  );}
