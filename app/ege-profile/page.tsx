@@ -667,7 +667,7 @@ export default function EgeProfileDiagnostic() {
         <section className="test-wrap">
           <div className="progress-line">
             <div>
-              <span>Задание {current + 1} из {questions.length}</span>
+             <span>Задание №{question.id}</span>
               <small>№{question.id} ЕГЭ · {question.block} · {question.topic}</small>
             </div>
             <strong>{Math.round(((current + 1) / questions.length) * 100)}%</strong>
@@ -681,7 +681,7 @@ export default function EgeProfileDiagnostic() {
                 <button
                   type="button"
                   className={`${stateClass} ${index === current ? "current" : ""}`}
-                  key={item.id}
+                  key={index + 1}
                   title={`№${item.id} ЕГЭ`}
                   onClick={() => {
                     setCurrent(index);
