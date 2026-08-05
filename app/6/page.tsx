@@ -312,7 +312,7 @@ export default function Home() {
     const blocks = [...new Set(questions.map((question) => question.block))];
     const strongTopics = questions.filter((question) => !dontKnow[question.id] && question.check(answers[question.id] ?? "")).map((question) => question.topic);
     const missed = questions.filter((question) => !question.check(answers[question.id] ?? ""));
-    const telegramMessage = encodeURIComponent(resultText());
+const telegramMessage = encodeURIComponent(reportText());
     const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
     return <main className="result-page">
       <header className="compact-header result-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a><button className="text-button" onClick={restart}>Пройти ещё раз</button></header>
