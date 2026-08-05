@@ -112,7 +112,6 @@ const questions: Question[] = [
   prompt: "Высота тела, брошенного вертикально вверх, изменяется по закону",
   expression: String.raw`h(t)=20t-5t^2`,
   type: "number",
-  note: "где h — высота в метрах, t — время в секундах. В течение какого промежутка времени тело находилось на высоте не менее 15 метров? Ответ запишите в виде [1; 3].",
 },
   {
     id: 10,
@@ -736,6 +735,22 @@ export default function EgeProfileDiagnostic() {
     )}
   </>
 )}
+            {question.id === 8 && (
+  <div className="ege8-text">
+    <p>
+      где <span className="inline-katex"><MathFormula expression="h" displayMode={false} /></span> — высота в метрах,
+      <span className="inline-katex"><MathFormula expression="t" displayMode={false} /></span> — время в секундах.
+    </p>
+
+    <p>
+      В течение какого промежутка времени тело находилось на высоте не менее 15 метров?
+    </p>
+
+    <p>
+      Ответ запишите в виде интервала.
+    </p>
+  </div>
+)}
            
             {question.diagram && <ProfileDiagram kind={question.diagram} />}
             {question.note && question.type === "number" && <p className="profile-note">{question.note}</p>}
@@ -1165,6 +1180,26 @@ const profileStyles = `
 .ege13-condition .oge-expression{
   margin-top:14px
 }
+.ege8-text{
+  margin:14px 0 0;
+  color:#332c3b;
+  font-size:1.05rem;
+  line-height:1.6
+}
+
+.ege8-text p{
+  margin:6px 0
+}
+
+.inline-katex{
+  display:inline-flex;
+  align-items:center;
+  margin:0 3px
+}
+
+.inline-katex > div{
+  display:inline-block
+}
 .profile-diagram .highlight{stroke:#9672c8;stroke-width:4}
 .profile-diagram .thin-highlight{stroke:#c2a8df;stroke-width:3}
 .profile-diagram .bisector{stroke:#9a79c2;stroke-width:3.5}
@@ -1181,6 +1216,7 @@ const profileStyles = `
   stroke-width:3;
   stroke-dasharray:8 7
 }
+
 
 .profile-facts span{min-height:54px}
 .profile-overview-grid .overview-item{min-height:86px}
