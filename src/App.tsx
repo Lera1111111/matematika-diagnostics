@@ -29,6 +29,7 @@ const titleByRoute: Record<string, string> = {
   "/oge": "Входная диагностика для подготовки к ОГЭ",
   "/after9": "Что повторить после 9 класса?",
     "/11": "Что повторить перед 11 классом?",
+  "/ege-profile": "Входная диагностика ЕГЭ профиль",
 };
 
 function normalizedBase() {
