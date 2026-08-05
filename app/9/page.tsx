@@ -1316,7 +1316,7 @@ ${rows}
             ? "Многое уже получается. Небольшое повторение поможет начать 9 класс спокойнее и увереннее."
             : "Есть темы, которые стоит восстановить по порядку. Это не оценка, а понятный маршрут для повторения.";
 
-const telegramMessage = encodeURIComponent(reportText());
+const telegramMessage = encodeURIComponent(resultText());
 
     const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
 
