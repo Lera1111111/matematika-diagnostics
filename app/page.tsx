@@ -204,7 +204,7 @@ export default function HomePage() {
 
         <div className="class-grid">
           {diagnostics.map((diagnostic) => (
-           <a
+<a
   className="class-card active"
   href={item.href}
 >
