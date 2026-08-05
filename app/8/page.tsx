@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import GeometryDiagram, { type DiagramKind } from "../components/GeometryDiagram";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -1742,45 +1743,7 @@ ${rows}
         </div>
       </section>
 
-      <section className="class-section">
-        <div className="section-heading">
-          <div>
-            <p className="kicker">
-              Другие диагностики
-            </p>
-            <h2>Выбери свой класс</h2>
-          </div>
-        </div>
-
-        <div className="class-grid compact-class-grid">
-          <a className="class-card active" href="/">
-            <span>Доступно сейчас</span>
-            <b>Перехожу в 6 класс</b>
-            <i>Программа 5 класса →</i>
-          </a>
-
-          <a className="class-card active" href="/7">
-            <span>Доступно сейчас</span>
-            <b>Перехожу в 7 класс</b>
-            <i>Программа 6 класса →</i>
-          </a>
-
-          <button
-            className="class-card active grade-eight-card"
-            onClick={start}
-          >
-            <span>Доступно сейчас</span>
-            <b>Перехожу в 8 класс</b>
-            <i>Программа 7 класса →</i>
-          </button>
-
-          <a className="class-card active" href="/9">
-            <span>Доступно сейчас</span>
-            <b>Перехожу в 9 класс</b>
-            <i>Программа 8 класса →</i>
-          </a>
-        </div>
-      </section>
+<OtherDiagnostics current="/8" />
 
       <footer>
         <div className="brand">
