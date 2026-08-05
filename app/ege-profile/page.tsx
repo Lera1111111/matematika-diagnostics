@@ -361,7 +361,7 @@ function ProfileDiagram({ kind }: { kind: DiagramKind }) {
   y2="31"
   className="tangent"
 />
-            <line x1="160" y1="195" x2="310" y2="75" className="tangent" />
+           
             <circle cx="160" cy="195" r="5" className="point" />
             <circle cx="310" cy="75" r="5" className="point" />
             <text x="130" y="215" className="value-label">(2; 1)</text>
@@ -684,17 +684,20 @@ export default function EgeProfileDiagnostic() {
       <MathFormula expression={question.expression!} />
     </div>
 
-<div className="ege13-partb">
-  <strong>б)</strong>
-  <span>Найдите все корни, принадлежащие отрезку</span>
-  <div className="inline-formula">
-    <MathFormula
-      expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
-      displayMode={false}
-    />
+    <div className="ege13-partb">
+      <strong>б)</strong>
+      <span>Найдите все корни, принадлежащие отрезку</span>
+
+      <div className="inline-formula">
+        <MathFormula
+          expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
+          displayMode={false}
+        />
+      </div>
+
+      <span>.</span>
+    </div>
   </div>
-  <span>.</span>
-</div>
 ) : (
   question.expression && (
     <div className="expression oge-expression">
