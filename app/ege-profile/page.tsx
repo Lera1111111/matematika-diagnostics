@@ -129,7 +129,7 @@ const questions: Question[] = [
     type: "number",
     note: "В ответ запишите значение x.",
   },
-  {
+{
   id: 13,
   block: "Вторая часть",
   topic: "Тригонометрическое уравнение",
@@ -279,7 +279,7 @@ function MathFormula({
     if (!element) return;
     const renderFormula = () => {
       if (!window.katex) return false;
-      window.katex.render(expression, element, { displayMode, throwOnError: false });
+    window.katex.render(expression, element, { displayMode, throwOnError: false });
       return true;
     };
     if (renderFormula()) return;
@@ -288,7 +288,6 @@ function MathFormula({
     }, 100);
     return () => window.clearInterval(timer);
 }, [element, expression, displayMode]);
-
   return <div ref={setElement} />;
 }
 
@@ -345,14 +344,22 @@ function ProfileDiagram({ kind }: { kind: DiagramKind }) {
               <text x="432" y="250">x</text>
               <text x="70" y="20">y</text>
             </g>
-            <path
+           <path
   d="
-    M75 235
-    C110 230 135 215 160 195
-    C200 163 245 112 310 75
-    C345 55 380 60 420 95
+    M75 225
+    C135 230 205 195 280 99
+    C285 85 300 83 310 75
+    C330 59 370 55 420 100
   "
   className="function-curve"
+/>
+
+<line
+  x1="120"
+  y1="227"
+  x2="365"
+  y2="31"
+  className="tangent"
 />
             <line x1="160" y1="195" x2="310" y2="75" className="tangent" />
             <circle cx="160" cy="195" r="5" className="point" />
@@ -671,17 +678,31 @@ export default function EgeProfileDiagnostic() {
           <article className="question-card oge-question profile-question-card">
             <div className="question-meta"><span>{question.block}</span><span>№{question.id} · {question.topic}</span></div>
             <h1>{question.prompt}</h1>
-            {question.expression && <div className="expression oge-expression"><MathFormula expression={question.expression} /></div>}
-            {question.id === 13 && (
-  <div className="ege-profile-subtask">
-    <span>б) Найдите все корни, принадлежащие отрезку</span>
+            {question.id === 13 ? (
+  <div className="ege13-condition">
+    <div className="expression oge-expression">
+      <MathFormula expression={question.expression!} />
+    </div>
+
+<div className="ege13-partb">
+  <strong>б)</strong>
+  <span>Найдите все корни, принадлежащие отрезку</span>
+  <div className="inline-formula">
     <MathFormula
       expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
       displayMode={false}
     />
-    <span>.</span>
   </div>
+  <span>.</span>
+</div>
+) : (
+  question.expression && (
+    <div className="expression oge-expression">
+      <MathFormula expression={question.expression} />
+    </div>
+  )
 )}
+           
             {question.diagram && <ProfileDiagram kind={question.diagram} />}
             {question.note && question.type === "number" && <p className="profile-note">{question.note}</p>}
             
@@ -1067,6 +1088,35 @@ const profileStyles = `
   stroke:#9275be;
   stroke-width:2.5
 }
+.ege13-condition{margin:8px 0 18px}
+
+.ege13-partb{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  margin:18px 0 6px;
+  font-size:1.08rem;
+  line-height:1.65;
+  color:#3f3552;
+  font-weight:500;
+}
+
+.ege13-partb strong{
+  color:#62479a;
+  font-weight:800;
+  font-size:1.1em;
+}
+
+.ege13-partb .inline-formula{
+  display:inline-flex;
+  align-items:center;
+  margin-left:4px;
+}
+
+.ege13-partb .inline-formula .katex{
+  font-size:1.08em;
+}
 .profile-diagram .highlight{stroke:#9672c8;stroke-width:4}
 .profile-diagram .thin-highlight{stroke:#c2a8df;stroke-width:3}
 .profile-diagram .bisector{stroke:#9a79c2;stroke-width:3.5}
@@ -1083,24 +1133,7 @@ const profileStyles = `
   stroke-width:3;
   stroke-dasharray:8 7
 }
-.ege-profile-subtask{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:5px;
-  margin:10px 0 18px;
-  color:#332c3b;
-  font-size:1rem;
-  line-height:1.55
-}
 
-.ege-profile-subtask > div{
-  display:inline-block
-}
-
-.ege-profile-subtask .katex{
-  font-size:1.08em
-}
 .profile-facts span{min-height:54px}
 .profile-overview-grid .overview-item{min-height:86px}
 .profile-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
