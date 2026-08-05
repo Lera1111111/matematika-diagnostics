@@ -1,7 +1,17 @@
 import { copyFile, mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const routes = ["7", "8", "9", "oge", "after9"];
+const routes = [
+  "6",
+  "7",
+  "8",
+  "9",
+  "oge",
+  "after9",
+  "11",
+  "ege-base",
+  "ege-profile",
+];
 const dist = resolve("dist");
 const source = resolve(dist, "index.html");
 
