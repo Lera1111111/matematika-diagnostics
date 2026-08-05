@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -325,5 +326,176 @@ const telegramMessage = encodeURIComponent(reportText());
     </main>;
   }
 
-  return <main className="home-page"><header className="site-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a><button className="header-cta" onClick={start} disabled={!studentName.trim() || !accepted}>Начать диагностику</button></header><section className="hero"><div className="hero-copy"><div className="soft-pill">Бесплатная диагностика перед учебным годом</div><h1>Что повторить<br/>перед <em>6 классом?</em></h1><p className="hero-lead">Пройди небольшую диагностику и узнай, какие темы 5 класса ты помнишь, а что стоит освежить перед новым учебным годом.</p><div className="calm-note"><span>♡</span><p>Это не контрольная и не экзамен. Здесь нет оценок — только понятный результат и рекомендации.</p></div><div className="name-start-card"><label htmlFor="student-name">Как тебя зовут?</label><input id="student-name" type="text" value={studentName} onChange={(event) => setStudentName(event.target.value)} placeholder="Введи имя" autoComplete="given-name"/><div className="start-guidance"><h2>Перед началом</h2><ul><li>Приготовь лист бумаги для вычислений.</li><li>Выполняй задания самостоятельно, без калькулятора, учебника и подсказок.</li><li>Строгого ограничения времени нет.</li><li>Не стирай неудачные попытки — они помогают увидеть, что стоит повторить.</li><li>Если не знаешь ответ, нажми «Не знаю, как решить».</li></ul><label className="consent-check"><input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)}/><span>Я прочитал(а) рекомендации и готов(а) начать</span></label></div><button className="button primary big" onClick={start} disabled={!studentName.trim() || !accepted}>Начать диагностику <span>→</span></button><p className="name-start-meta"><b>20 заданий</b><span>·</span> около 20 минут <span>·</span> результат сразу</p></div></div><MathDoodle/></section><section className="how"><div className="section-heading home-heading"><div><p className="kicker">Всё просто</p><h2>Как это работает</h2></div><p>Без регистрации, калькулятора и лишнего волнения</p></div><div className="steps">{[["01","Решаешь задания","20 коротких заданий по основным темам 5 класса.","violet"],["02","Получаешь результат","Сразу видишь, что уже получается уверенно.","blue"],["03","Знаешь, что повторить","Получаешь рекомендации именно по своим ошибкам.","pink"]].map(([number,title,text,color]) => <article className={`step-card ${color}`} key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></article>)}</div><div className="tip"><span>✦</span><p><b>Небольшой совет:</b> постарайся решить задания самостоятельно. Так рекомендации получатся точнее.</p></div></section><section className="class-section"><div className="section-heading"><div><p className="kicker">Диагностики</p><h2>Выбери свой класс</h2></div><p>Выбирай диагностику по следующему учебному этапу</p></div><div className="class-grid"><button className="class-card active" onClick={start}><span>Доступно сейчас</span><b>Перехожу в 6 класс</b><i>Программа 5 класса →</i></button><a className="class-card active grade-seven-card" href="/7"><span>Доступно сейчас</span><b>Перехожу в 7 класс</b><i>Программа 6 класса →</i></a><a className="class-card active grade-eight-card" href="/8"><span>Доступно сейчас</span><b>Перехожу в 8 класс</b><i>Программа 7 класса →</i></a><a className="class-card active" href="/9"><span>Доступно сейчас</span><b>Перехожу в 9 класс</b><i>Программа 8 класса →</i></a><a className="class-card active" href="/oge"><span>Доступно сейчас</span><b>Начинаю подготовку к ОГЭ</b><i>Входная диагностика →</i></a><a className="class-card active after-nine-card" href="/after9"><span>Доступно сейчас</span><b>Перед 10 классом или колледжем</b><i>Программа 5–9 классов →</i></a>{[5,10,11].map((grade) => <div className="class-card soon" key={grade}><span>Скоро</span><b>Перехожу в {grade} класс</b><i>Диагностика готовится</i></div>)}<div className="class-card soon college"><span>Скоро</span><b>Учусь в колледже</b><i>Диагностика готовится</i></div></div></section><footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Проверяем знания, а не ставим оценки ♡</p></footer></main>;
-}
+return (
+  <main className="home-page">
+    <header className="site-header">
+      <a className="brand" href="/">
+        <span className="brand-mark">∿</span>
+        <span>Математика без стресса</span>
+      </a>
+
+      <button
+        className="header-cta"
+        onClick={start}
+        disabled={!studentName.trim() || !accepted}
+      >
+        Начать диагностику
+      </button>
+    </header>
+
+    <section className="hero">
+      <div className="hero-copy">
+        <div className="soft-pill">
+          Бесплатная диагностика перед учебным годом
+        </div>
+
+        <h1>
+          Что повторить
+          <br />
+          перед <em>6 классом?</em>
+        </h1>
+
+        <p className="hero-lead">
+          Пройди небольшую диагностику и узнай, какие темы 5 класса ты помнишь,
+          а что стоит освежить перед новым учебным годом.
+        </p>
+
+        <div className="calm-note">
+          <span>♡</span>
+          <p>
+            Это не контрольная и не экзамен. Здесь нет оценок — только понятный
+            результат и рекомендации.
+          </p>
+        </div>
+
+        <div className="name-start-card">
+          <label htmlFor="student-name">
+            Как тебя зовут?
+          </label>
+
+          <input
+            id="student-name"
+            type="text"
+            value={studentName}
+            onChange={(event) => setStudentName(event.target.value)}
+            placeholder="Введи имя"
+            autoComplete="given-name"
+          />
+
+          <div className="start-guidance">
+            <h2>Перед началом</h2>
+
+            <ul>
+              <li>Приготовь лист бумаги для вычислений.</li>
+              <li>
+                Выполняй задания самостоятельно, без калькулятора, учебника и
+                подсказок.
+              </li>
+              <li>Строгого ограничения времени нет.</li>
+              <li>
+                Не стирай неудачные попытки — они помогают увидеть, что стоит
+                повторить.
+              </li>
+              <li>
+                Если не знаешь ответ, нажми «Не знаю, как решить».
+              </li>
+            </ul>
+
+            <label className="consent-check">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(event) => setAccepted(event.target.checked)}
+              />
+              <span>
+                Я прочитал(а) рекомендации и готов(а) начать
+              </span>
+            </label>
+          </div>
+
+          <button
+            className="button primary big"
+            onClick={start}
+            disabled={!studentName.trim() || !accepted}
+          >
+            Начать диагностику <span>→</span>
+          </button>
+
+          <p className="name-start-meta">
+            <b>20 заданий</b>
+            <span>·</span>
+            около 20 минут
+            <span>·</span>
+            результат сразу
+          </p>
+        </div>
+      </div>
+
+      <MathDoodle />
+    </section>
+
+    <section className="how">
+      <div className="section-heading home-heading">
+        <div>
+          <p className="kicker">Всё просто</p>
+          <h2>Как это работает</h2>
+        </div>
+
+        <p>
+          Без регистрации, калькулятора и лишнего волнения
+        </p>
+      </div>
+
+      <div className="steps">
+        {[
+          [
+            "01",
+            "Решаешь задания",
+            "20 коротких заданий по основным темам 5 класса.",
+            "violet",
+          ],
+          [
+            "02",
+            "Получаешь результат",
+            "Сразу видишь, что уже получается уверенно.",
+            "blue",
+          ],
+          [
+            "03",
+            "Знаешь, что повторить",
+            "Получаешь рекомендации именно по своим ошибкам.",
+            "pink",
+          ],
+        ].map(([number, title, text, color]) => (
+          <article
+            className={`step-card ${color}`}
+            key={number}
+          >
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="tip">
+        <span>✦</span>
+        <p>
+          <b>Небольшой совет:</b> постарайся решить задания самостоятельно.
+          Так рекомендации получатся точнее.
+        </p>
+      </div>
+    </section>
+
+    <OtherDiagnostics current="/6" />
+
+    <footer>
+      <div className="brand">
+        <span className="brand-mark">∿</span>
+        <span>Математика без стресса</span>
+      </div>
+
+      <p>Проверяем знания, а не ставим оценки ♡</p>
+    </footer>
+  </main>
+);}
