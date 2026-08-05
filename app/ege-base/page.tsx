@@ -799,77 +799,124 @@ export default function EgeBaseDiagnosticPage() {
     );
   }
 
-  return (
-    <main className="home-page ege-base-page ege-base-home">
-      <PageStyles />
-      <header className="site-header">
-        <a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a>
-      </header>
+return (
+  <main className="home-page ege-base-page ege-base-home">
+    <PageStyles />
 
-      <section className="base-hero">
-        <div>
-          <div className="soft-pill">ЕГЭ по математике · базовый уровень</div>
-          <h1>Что стоит повторить <em>перед экзаменом?</em></h1>
-          <p className="hero-lead">15 заданий по основным типам базового ЕГЭ. Диагностика покажет, какие темы уже получаются уверенно, а что лучше повторить в первую очередь.</p>
-          <div className="base-facts">
-            <div><b>15 заданий</b><span>основные типы ЕГЭ</span></div>
-            <div><b>≈ 50 минут</b><span>можно решать в своём темпе</span></div>
-            <div><b>Без оценки</b><span>получишь маршрут повторения</span></div>
-          </div>
+    <header className="site-header">
+      <a className="brand" href="/">
+        <span className="brand-mark">∿</span>
+        <span>Математика без стресса</span>
+      </a>
+    </header>
+
+    <section className="base-simple-home">
+      <div className="soft-pill">Входная диагностика ЕГЭ</div>
+
+      <h1>
+        ЕГЭ
+        <em>база</em>
+      </h1>
+
+      <p className="base-simple-lead">
+        Пройди диагностику и узнай, какие темы базового ЕГЭ уже получаются
+        уверенно, а что стоит повторить перед подготовкой.
+      </p>
+
+      <div className="base-info-grid">
+        <div className="base-info-card">
+          <b>15</b>
+          <span>заданий</span>
         </div>
 
-        <div className="base-doodle" aria-hidden="true">
-          <div className="base-sheet">
-            <span className="base-sheet-badge">ЕГЭ</span>
-            <div className="base-formula">log₂ 4 = 2</div>
-            <div className="sheet-line wide" /><div className="sheet-line medium" /><div className="sheet-line short" />
-            <div className="base-check">✓</div>
-          </div>
-          <div className="base-bubble one">%</div>
-          <div className="base-bubble two">√x</div>
-          <div className="base-bubble three">π</div>
-        </div>
-      </section>
-
-      <section className="base-start-section">
-        <div className="base-start-grid">
-          <div className="base-name-card">
-            <label htmlFor="student-name">Как тебя зовут?</label>
-            <input id="student-name" type="text" value={name} onChange={(event) => setName(event.target.value)} placeholder="Введи имя" autoComplete="given-name" />
-            <p>Имя и ответы сохраняются только в браузере на этом устройстве.</p>
-          </div>
-
-          <div className="base-guidance-card">
-            <h2>Перед началом</h2>
-            <ul>
-              <li>Решай самостоятельно, без учебника и подсказок.</li>
-              <li>Калькулятор не используй — как на экзамене.</li>
-              <li>Строгого ограничения времени нет.</li>
-              <li>Если совсем не знаешь, отмечай «Не знаю».</li>
-            </ul>
-          </div>
+        <div className="base-info-card">
+          <span>Основные типы ЕГЭ</span>
         </div>
 
-        <div className="base-start-panel">
-          <label className="consent-check">
-            <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
-            <span>Я прочитал(а) рекомендации и готов(а) начать диагностику</span>
-          </label>
-          <div className="base-start-actions">
-            <button className="button primary big" onClick={start} disabled={!name.trim() || !accepted}>Начать диагностику <span>→</span></button>
-            {!name.trim() && <p>Сначала укажи имя</p>}
-          </div>
+        <div className="base-info-card">
+          <span>Без оценки и таймера</span>
         </div>
 
-        <div className="base-calm-note"><span>♡</span><p>Это не пробник и не оценка. Здесь мы ищем темы, которые стоит повторить перед дальнейшей подготовкой.</p></div>
-      </section>
+        <div className="base-info-card">
+          <span>Персональные рекомендации</span>
+        </div>
+      </div>
 
-      <footer>
-        <div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div>
-        <p>Проверяем знания, а не ставим оценки ♡</p>
-      </footer>
-    </main>
-  );
+      <div className="base-simple-name">
+        <label htmlFor="student-name">Как тебя зовут?</label>
+
+        <input
+          id="student-name"
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Введи имя"
+          autoComplete="given-name"
+        />
+      </div>
+
+      <div className="base-simple-guidance">
+        <h2>Перед началом</h2>
+
+        <ul>
+          <li>Приготовь лист бумаги для вычислений.</li>
+          <li>Сначала попробуй решить задание самостоятельно.</li>
+          <li>Строгого ограничения времени нет.</li>
+          <li>
+            Если не знаешь, как решить, нажми «Не знаю, как решить».
+          </li>
+        </ul>
+
+        <div className="base-guidance-divider" />
+
+        <label className="consent-check">
+          <input
+            type="checkbox"
+            checked={accepted}
+            onChange={(event) => setAccepted(event.target.checked)}
+          />
+          <span>
+            Я прочитал(а) рекомендации и готов(а) начать
+          </span>
+        </label>
+      </div>
+
+      <div className="base-simple-start">
+        <button
+          className="button primary big"
+          onClick={start}
+          disabled={!name.trim() || !accepted}
+        >
+          Начать диагностику <span>→</span>
+        </button>
+
+        <p>
+          <b>15 заданий</b>
+          <span> · </span>
+          около 45–60 минут
+          <span> · </span>
+          результат сразу
+        </p>
+      </div>
+
+      <div className="base-simple-note">
+        <span>♡</span>
+        <p>
+          Это не пробный ЕГЭ и не школьная оценка. Диагностика показывает,
+          какие темы стоит повторить перед подготовкой.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <div className="brand">
+        <span className="brand-mark">∿</span>
+        <span>Математика без стресса</span>
+      </div>
+      <p>Проверяем знания, а не ставим оценки ♡</p>
+    </footer>
+  </main>
+);
 }
 
 function PageStyles() {
@@ -896,6 +943,185 @@ function PageStyles() {
       .ege-base-question h1{white-space:pre-line}.base-answer-field{margin-top:24px}.ege-table-wrap{overflow-x:auto;margin:22px 0}.ege-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #dfd2e9;border-radius:16px;overflow:hidden;background:#fff}.ege-table th,.ege-table td{padding:12px 14px;border-right:1px solid #e8deee;border-bottom:1px solid #e8deee;text-align:center;vertical-align:middle}.ege-table th{background:#f5effa;color:#59416f;font-size:.92rem}.ege-table tr:last-child td{border-bottom:0}.ege-table th:last-child,.ege-table td:last-child{border-right:0}.suppliers-table td:last-child{text-align:left;min-width:250px}
       .pulse-card,.geometry-card,.ineq-card{margin:22px 0;padding:18px;border:1px solid var(--base-border);border-radius:18px;background:#fff}.pulse-card svg,.geometry-card svg{width:100%;height:auto;display:block}.grid-line{stroke:#d9dde2;stroke-width:1}.axis{stroke:#313038;stroke-width:2}.axis-label{fill:#595461;font-size:12px}.axis-title{fill:#4a4351;font-size:13px;font-weight:700}.pulse-line{fill:none;stroke:#7252bd;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}.pulse-point{fill:#7252bd}.matching-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:18px;margin-top:14px}.matching-grid h3,.ineq-card h3{margin:0 0 10px;font-size:1rem;color:#5d4479}.matching-grid p{margin:8px 0;line-height:1.4}.statement-list{margin:22px 0 0;padding-left:28px}.statement-list li{margin:10px 0;line-height:1.48}.geom-shape,.geom-edge{fill:none;stroke:#3e3745;stroke-width:2.2}.geom-face{fill:#f2ecf8;stroke:#3e3745;stroke-width:2}.back-face{fill:#e7f2f8}.missing-face{fill:#fff;stroke:#aa8dcf;stroke-width:2;stroke-dasharray:7 6}.dashed{stroke-dasharray:7 6}.right-mark{fill:none;stroke:#7352bd;stroke-width:2}.geom-value{fill:#5f497a;font-size:16px;font-weight:700}.missing-label{fill:#8d70ae;font-size:13px;font-weight:700}.ineq-columns{display:grid;grid-template-columns:1fr 1fr;gap:30px}.formula-row{display:flex;align-items:center;gap:10px;min-height:38px}.formula-row>div{display:inline-block}.formula-row .katex{font-size:1.02em}
       .result-field-line{padding:12px 0;border-top:1px solid #eee}.result-field-line.correct{color:#3e7352}.result-field-line.incorrect{color:#8a4257}.result-field-line.dont_know{color:#6f5a83}
+     .base-simple-home{
+  max-width:920px;
+  margin:0 auto;
+  padding:58px 24px 80px;
+}
+
+.base-simple-home h1{
+  margin:18px 0 22px;
+  font-size:clamp(3.7rem,8vw,6.8rem);
+  line-height:.92;
+  letter-spacing:-.055em;
+  color:var(--base-ink);
+}
+
+.base-simple-home h1 em{
+  display:inline-block;
+  margin-left:14px;
+  color:var(--base-violet);
+  font-family:var(--font-hand,inherit);
+  font-style:normal;
+  font-weight:600;
+  letter-spacing:-.035em;
+}
+
+.base-simple-lead{
+  max-width:760px;
+  margin:0;
+  font-size:1.12rem;
+  line-height:1.65;
+  color:#5f5564;
+}
+
+.base-info-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:28px;
+}
+
+.base-info-card{
+  min-height:60px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:14px 16px;
+  border:1px solid var(--base-border);
+  border-radius:16px;
+  background:#fff;
+  color:#62566a;
+}
+
+.base-info-card b{
+  color:var(--base-violet);
+  font-size:1.05rem;
+}
+
+.base-simple-name{
+  margin-top:28px;
+}
+
+.base-simple-name label{
+  display:block;
+  margin-bottom:10px;
+  font-weight:800;
+  color:var(--base-ink);
+}
+
+.base-simple-name input{
+  width:100%;
+  min-height:58px;
+  border:1px solid #d9cbea;
+  border-radius:16px;
+  padding:0 17px;
+  background:#fff;
+  font:inherit;
+  box-shadow:0 12px 28px rgba(91,63,117,.06);
+}
+
+.base-simple-guidance{
+  margin-top:24px;
+  padding:26px 26px 24px;
+  border:1px solid var(--base-border);
+  border-radius:24px;
+  background:#fff;
+}
+
+.base-simple-guidance h2{
+  margin:0 0 16px;
+  font-size:1.55rem;
+}
+
+.base-simple-guidance ul{
+  margin:0;
+  padding-left:22px;
+}
+
+.base-simple-guidance li{
+  margin:10px 0;
+  line-height:1.5;
+  color:#63586a;
+}
+
+.base-guidance-divider{
+  height:1px;
+  margin:20px 0 16px;
+  background:#eadff0;
+}
+
+.base-simple-guidance .consent-check{
+  margin:0;
+}
+
+.base-simple-start{
+  margin-top:24px;
+}
+
+.base-simple-start .button{
+  min-width:242px;
+}
+
+.base-simple-start p{
+  margin:12px 0 0;
+  color:#6e6176;
+  font-size:.9rem;
+}
+
+.base-simple-start p b{
+  color:#66517d;
+}
+
+.base-simple-note{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin-top:24px;
+  padding:16px 18px;
+  border:1px solid var(--base-border);
+  border-radius:18px;
+  background:#fff;
+}
+
+.base-simple-note>span{
+  color:#d986a7;
+  font-size:1.25rem;
+}
+
+.base-simple-note p{
+  margin:0;
+  line-height:1.5;
+  color:#6a5e71;
+}
+
+@media(max-width:700px){
+  .base-simple-home{
+    padding:38px 18px 60px;
+  }
+
+  .base-simple-home h1{
+    font-size:clamp(3.2rem,16vw,5rem);
+  }
+
+  .base-simple-home h1 em{
+    display:block;
+    margin:6px 0 0;
+  }
+
+  .base-info-grid{
+    grid-template-columns:1fr;
+  }
+
+  .base-simple-guidance{
+    padding:22px 20px;
+  }
+
+  .base-simple-start .button{
+    width:100%;
+    min-width:0;
+  }
+}
       @media(max-width:980px){.base-hero{grid-template-columns:1fr;gap:24px;padding-top:52px}.base-doodle{min-height:410px;max-width:650px;width:100%;margin:0 auto}.base-start-grid{grid-template-columns:1fr}}
       @media(max-width:700px){.base-hero{padding:38px 18px 36px}.base-hero h1{font-size:clamp(3rem,16vw,4.7rem)}.base-facts{grid-template-columns:1fr}.base-doodle{min-height:340px}.base-sheet{width:64%;height:60%;padding:44px 24px 20px}.base-start-section{padding-left:18px;padding-right:18px}.base-guidance-card ul{grid-template-columns:1fr}.base-start-panel{grid-template-columns:1fr}.base-start-actions{min-width:0}.matching-grid,.ineq-columns{grid-template-columns:1fr}.suppliers-table{min-width:780px}}
     `}</style>
