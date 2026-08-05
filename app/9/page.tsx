@@ -1,6 +1,7 @@
 "use client";
 
 import { createElement, useEffect, useMemo, useState } from "react";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -1818,54 +1819,7 @@ const telegramMessage = encodeURIComponent(resultText());
         </div>
       </section>
 
-      <section className="class-section">
-        <div className="section-heading">
-          <div>
-            <p className="kicker">
-              Другие диагностики
-            </p>
-            <h2>Выбери свой класс</h2>
-          </div>
-        </div>
-
-        <div className="class-grid compact-class-grid">
-          <a className="class-card active" href="/">
-            <span>Доступно</span>
-            <b>Перед 6 классом</b>
-            <i>Программа 5 класса →</i>
-          </a>
-
-          <a className="class-card active" href="/7">
-            <span>Доступно</span>
-            <b>Перед 7 классом</b>
-            <i>Программа 6 класса →</i>
-          </a>
-
-          <a className="class-card active" href="/8">
-            <span>Доступно</span>
-            <b>Перед 8 классом</b>
-            <i>Программа 7 класса →</i>
-          </a>
-
-          <button
-            className="class-card active"
-            onClick={start}
-          >
-            <span>Ты здесь</span>
-            <b>Перед 9 классом</b>
-            <i>Программа 8 класса →</i>
-          </button>
-
-          <a
-            className="class-card active"
-            href="/oge"
-          >
-            <span>Отдельная диагностика</span>
-            <b>Подготовка к ОГЭ</b>
-            <i>Определить стартовый уровень →</i>
-          </a>
-        </div>
-      </section>
+      <OtherDiagnostics current="/9" />
 
       <footer>
         <div className="brand">
