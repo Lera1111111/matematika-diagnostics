@@ -62,7 +62,7 @@ export default function OtherDiagnostics({
       <div className="section-heading">
         <div>
           <p className="kicker">Другие диагностики</p>
-          <h2>Выбери подходящую</h2>
+<h2>Выбери подходящий раздел</h2>
         </div>
       </div>
 
