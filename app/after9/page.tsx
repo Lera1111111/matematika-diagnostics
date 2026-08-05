@@ -1156,13 +1156,6 @@ if (screen === "result") {
       Скопировать результат
     </button>
 
-    <button
-      className="button secondary"
-      onClick={download}
-    >
-      Скачать результат
-    </button>
-
     <a
       className="button primary"
       href={TELEGRAM_URL}
