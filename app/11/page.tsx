@@ -1218,8 +1218,7 @@ export default function GradeElevenDiagnostic() {
           ? "Многое уже получается. Повторение слабых разделов поможет начать 11 класс спокойнее."
           : "Есть разделы, которые стоит восстановить по порядку. Это не оценка, а маршрут повторения.";
 
-    const telegramMessage = encodeURIComponent(`Здравствуйте! Меня зовут ${name.trim()}. Результат диагностики перед 11 классом — ${score} из ${allFields.length}. Проверялись только выбранные мной разделы. Хочу обсудить план повторения.`);
-
+  const telegramMessage = encodeURIComponent(resultText);
     return (
       <main className="result-page grade-eleven-page">
         <header className="compact-header result-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a><button className="text-button" onClick={restart}>Пройти ещё раз</button></header>
@@ -1281,8 +1280,7 @@ export default function GradeElevenDiagnostic() {
           <div><p className="kicker">Следующий шаг</p><h2>{perfect ? "Можно двигаться дальше" : "Хочешь составить план повторения?"}</h2><p>{perfect ? "Результат относится только к выбранным разделам. Новые темы можно изучать дальше, периодически возвращаясь к пройденному." : "Разберём только те разделы, в которых диагностика показала пробелы."}</p></div>
           <div className="cta-actions">
             <button className="button secondary" onClick={() => copyResult()}>Скопировать результат</button>
-            <button className="button secondary" onClick={downloadResult}>Скачать результат</button>
-            <a className="button primary" href={`https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`} target="_blank" rel="noreferrer" onClick={() => copyResult("Результат скопирован. Вставь его в сообщение")}>Обсудить результат</a>
+          <a className="button primary" href={`https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`} target="_blank" rel="noreferrer" onClick={() => copyResult("Результат скопирован. Вставь его в сообщение")}>Отправить результат Лере</a>
             <button className="button secondary" onClick={restart}>Пройти ещё раз</button>
           </div>
           {copyState && <p className="copy-toast" role="status">{copyState}</p>}
