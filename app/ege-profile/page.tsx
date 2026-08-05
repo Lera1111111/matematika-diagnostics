@@ -906,43 +906,112 @@ export default function EgeProfileDiagnostic() {
   }
 
   return (
-    <main className="home-page oge-page ege-profile-page">
+    <main className="home-page ege-profile-page profile-home">
       <style>{profileStyles}</style>
-      <header className="site-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a></header>
-      <section className="hero oge-hero">
-        <div className="hero-copy">
-          <div className="soft-pill">Старт подготовки к профильному ЕГЭ</div>
-          <h1>Входная диагностика<br /><em>ЕГЭ профиль</em></h1>
-          <p className="hero-lead">Проверим основные экзаменационные навыки и посмотрим, какие темы уже держатся уверенно, а что стоит повторить.</p>
-          <div className="diagnostic-facts oge-facts profile-facts">
-            <span><b>14</b> заданий</span>
-            <span><b>10</b> с автопроверкой</span>
-            <span><b>4</b> проверит преподаватель</span>
-            <span>Около 60–75 минут</span>
-            <span>Без школьной оценки</span>
-            <span>По формату профильного ЕГЭ</span>
+
+      <header className="site-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+      </header>
+
+      <section className="hero profile-start-hero">
+        <div className="hero-copy profile-start-copy">
+          <div className="soft-pill">Подготовка к профильному ЕГЭ</div>
+
+          <h1 className="profile-start-title">
+            Входная диагностика<br />
+            <em>ЕГЭ профиль</em>
+          </h1>
+
+          <p className="hero-lead profile-start-lead">
+            Проверь основные задания профильного ЕГЭ и узнай, какие темы уже
+            получаются уверенно, а что стоит повторить перед подготовкой.
+          </p>
+
+          <div className="calm-note profile-calm-note">
+            <span>♡</span>
+            <p>
+              Это не пробник и не оценка. Первая часть проверится автоматически,
+              решения второй части посмотрит преподаватель.
+            </p>
           </div>
-          <label className="name-field"><span>Имя и фамилия ученика</span><input value={name} onChange={(event) => setName(event.target.value)} placeholder="Введите имя и фамилию" autoComplete="name" /></label>
-          <div className="start-guidance">
+
+          <label className="name-field profile-name-field">
+            <span>Как тебя зовут?</span>
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Введи имя"
+              autoComplete="given-name"
+            />
+          </label>
+
+          <div className="start-guidance profile-start-guidance">
             <h2>Перед началом</h2>
-            <p className="paper-reminder">Приготовь несколько листов бумаги: для второй части понадобятся полные решения.</p>
             <ul>
-              <li>Выполняй работу самостоятельно и желательно за один подход.</li>
-              <li>Строгого ограничения по времени нет, обычно нужно около 60–75 минут.</li>
-              <li>Не используй интернет, учебник, конспекты и готовые решения.</li>
-              <li>Не стирай неудачные попытки на бумаге: они помогают увидеть пробелы.</li>
-              <li>Если задание не получается, отметь «Не знаю, как решить» и переходи дальше.</li>
-              <li>Во второй части важны не только ответы, но и обоснования — приложи фотографии решений.</li>
+              <li>Приготовь несколько листов бумаги для вычислений и полных решений.</li>
+              <li>Решай самостоятельно, без калькулятора, учебника и подсказок.</li>
+              <li>Строгого ограничения времени нет.</li>
+              <li>Если не знаешь способ решения, нажми «Не знаю, как решить».</li>
+              <li>Во второй части важны обоснования — сохрани записи и приложи фотографии.</li>
             </ul>
-            <p>Эта работа нужна не для оценки, а для определения стартового уровня и составления плана подготовки.</p>
-            <label className="consent-check"><input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} /><span>Я прочитал(а) рекомендации и готов(а) начать</span></label>
+
+            <label className="consent-check">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(event) => setAccepted(event.target.checked)}
+              />
+              <span>Я прочитал(а) рекомендации и готов(а) начать</span>
+            </label>
           </div>
-          <button className="button primary big" disabled={!name.trim() || !accepted} onClick={() => { setCurrent(0); setScreen("test"); }}>Начать диагностику <span>→</span></button>
-          <p className="privacy-note">Другие персональные данные не собираются. Имя, ответы и фотографии сохраняются только в этом браузере.</p>
+
+          <button
+            className="button primary big profile-start-button"
+            disabled={!name.trim() || !accepted}
+            onClick={() => {
+              setCurrent(0);
+              setScreen("test");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            Начать диагностику <span>→</span>
+          </button>
+
+          <p className="profile-start-meta">
+            <b>14 заданий</b> · около 60–75 минут · предварительный результат сразу
+          </p>
+          <p className="privacy-note profile-privacy-note">
+            Имя, ответы и фотографии сохраняются только в этом браузере.
+          </p>
         </div>
-        <div className="doodle oge-doodle" aria-hidden="true"><span className="doodle-plus">ЕГЭ</span><span className="doodle-pi">f′(x)</span><span className="doodle-frac"><b>13</b><i /><b>18</b></span><div className="doodle-paper"><div /><div /><div /><span>✓</span></div><span className="doodle-dot dot-one" /><span className="doodle-dot dot-two" /></div>
+
+        <div className="doodle profile-start-doodle" aria-hidden="true">
+          <span className="doodle-plus profile-doodle-badge">ЕГЭ</span>
+          <span className="doodle-pi profile-doodle-formula">π</span>
+          <span className="profile-doodle-log">log</span>
+          <span className="doodle-frac profile-doodle-frac"><b>13</b><i /><b>18</b></span>
+          <div className="doodle-paper profile-doodle-paper">
+            <strong>f′(x) = ?</strong>
+            <div />
+            <div />
+            <div />
+            <span>✓</span>
+          </div>
+          <span className="doodle-dot dot-one" />
+          <span className="doodle-dot dot-two" />
+        </div>
       </section>
-      <footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Диагностика помогает составить программу, а не ставит оценку ♡</p></footer>
+
+      <footer>
+        <div className="brand">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </div>
+        <p>Диагностика помогает составить программу, а не ставит оценку ♡</p>
+      </footer>
     </main>
   );
 }
@@ -972,4 +1041,33 @@ const profileStyles = `
 .profile-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media(max-width:900px){.profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.profile-stats{grid-template-columns:1fr}.profile-diagram svg{max-width:100%}}
+
+/* Стартовый экран профиля — в том же ритме, что диагностики по классам */
+.profile-home .site-header{margin-bottom:0}
+.profile-start-hero{align-items:flex-start;min-height:auto;padding-top:56px;padding-bottom:72px}
+.profile-start-copy{max-width:640px}
+.profile-start-title{margin-bottom:22px;line-height:.98}
+.profile-start-title em{display:inline-block;color:#7455bd}
+.profile-start-lead{max-width:620px;margin-bottom:24px}
+.profile-calm-note{max-width:620px;margin:0 0 28px}
+.profile-name-field{display:grid;gap:8px;max-width:620px;margin:0 0 18px}
+.profile-name-field>span{font-family:Georgia,serif;font-size:1rem;font-weight:700;color:#2e2735}
+.profile-name-field input{width:100%;height:58px;border:1px solid #d9cdec;border-radius:16px;background:#fff;padding:0 18px;font:inherit;color:#32293a;box-shadow:0 10px 28px rgba(89,65,120,.06);outline:none}
+.profile-name-field input:focus{border-color:#8e70c2;box-shadow:0 0 0 3px rgba(142,112,194,.12)}
+.profile-start-guidance{max-width:620px;margin-top:0;padding:22px 24px;border-radius:22px}
+.profile-start-guidance h2{margin-top:0}
+.profile-start-guidance ul{margin-bottom:18px}
+.profile-start-guidance .consent-check{padding-top:16px;border-top:1px solid #eee4f3}
+.profile-start-button{margin-top:22px;min-width:245px}
+.profile-start-meta{margin:13px 0 0;color:#786b82;font-size:.92rem}
+.profile-start-meta b{color:#6d50ae}
+.profile-privacy-note{margin-top:8px}
+.profile-start-doodle{position:relative;min-height:560px}
+.profile-doodle-paper strong{display:block;margin-bottom:12px;font-family:"Comic Sans MS",cursive;font-size:28px;font-weight:700;color:#7052ad;transform:rotate(-2deg)}
+.profile-doodle-badge{font-size:.88rem;font-weight:800}
+.profile-doodle-formula{font-size:1.7rem}
+.profile-doodle-log{position:absolute;right:5%;top:54%;display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:#f7d9e5;color:#9e5c7b;font-family:Georgia,serif;font-size:1.25rem;font-weight:700;box-shadow:0 12px 30px rgba(90,70,120,.10)}
+.profile-doodle-frac{right:2%;bottom:10%}
+@media(max-width:980px){.profile-start-hero{grid-template-columns:1fr}.profile-start-copy{max-width:none}.profile-start-doodle{display:none}.profile-start-copy,.profile-start-guidance,.profile-calm-note,.profile-name-field,.profile-start-lead{max-width:none}}
+@media(max-width:620px){.profile-start-hero{padding-top:34px;padding-bottom:48px}.profile-start-title br{display:none}.profile-start-title em{display:block;margin-top:6px}.profile-start-guidance{padding:20px 18px}.profile-start-button{width:100%}.profile-start-meta{line-height:1.5}}
 `;
