@@ -204,11 +204,10 @@ export default function HomePage() {
 
         <div className="class-grid">
           {diagnostics.map((diagnostic) => (
-            <a
-              className={`class-card active ${diagnostic.className}`}
-              href={diagnostic.href}
-              key={diagnostic.href}
-            >
+           <a
+  className="class-card active"
+  href={item.href}
+>
               <span>Доступно сейчас</span>
               <b>{diagnostic.label}</b>
               <p>{diagnostic.description}</p>
