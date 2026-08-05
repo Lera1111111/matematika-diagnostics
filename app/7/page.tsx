@@ -1279,11 +1279,7 @@ ${rows}
   if (screen === "result") {
     const copy = resultCopy(score);
 
-    const telegramMessage = encodeURIComponent(
-      `Здравствуйте! Меня зовут ${studentName.trim()}. ` +
-        `Результат моей диагностики перед 7 классом — ${score} из ${questions.length}. ` +
-        `Хочу обсудить план повторения.`,
-    );
+const telegramMessage = encodeURIComponent(reportText());
 
     const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
 
