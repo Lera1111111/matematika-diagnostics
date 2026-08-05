@@ -774,9 +774,6 @@ export default function GradeSeven() {
 
  const telegramMessage = encodeURIComponent(reportText());
 
-    window.setTimeout(() => setToast(""), 4000);
-  };
-
   const downloadResult = () => {
     const rows = questions
       .map((question) => {
