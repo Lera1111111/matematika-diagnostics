@@ -859,9 +859,6 @@ a.brand {
   background: rgba(255,255,255,0.78);
 }
 
-.compact-class-grid {
-  grid-template-columns: repeat(2, minmax(0, 280px));
-}
 
 /* Diagnostic before grade 9 */
 .grade-nine-page {
