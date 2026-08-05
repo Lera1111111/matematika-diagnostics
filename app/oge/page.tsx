@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OgeReferenceModal from "../components/OgeReferenceModal";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -871,6 +872,7 @@ export default function OgeEntryDiagnostic() {
         </div>
         <div className="doodle oge-doodle" aria-hidden="true"><span className="doodle-plus">ОГЭ</span><span className="doodle-pi">x²</span><span className="doodle-frac"><b>19</b><i /><b>25</b></span><div className="doodle-paper"><div /><div /><div /><span>✓</span></div><span className="doodle-dot dot-one" /><span className="doodle-dot dot-two" /></div>
       </section>
+      <OtherDiagnostics current="/oge" />
       <footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Диагностика помогает составить программу, а не ставит оценку ♡</p></footer>
     </main>
   );
