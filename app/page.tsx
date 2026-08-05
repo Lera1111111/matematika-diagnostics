@@ -206,7 +206,7 @@ export default function HomePage() {
           {diagnostics.map((diagnostic) => (
 <a
   className="class-card active"
-  href={item.href}
+href={diagnostic.href}
 >
               <span>Доступно сейчас</span>
               <b>{diagnostic.label}</b>
