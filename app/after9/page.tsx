@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -1205,5 +1206,162 @@ if (screen === "result") {
   );
 }
 
-  return <main className="home-page after9-page"><header className="site-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a></header><section className="hero oge-hero"><div className="hero-copy"><div className="soft-pill">После основной школы</div><h1>Что повторить<br/><em>перед 10 классом или колледжем?</em></h1><p className="hero-lead">Проверим знания из программы 5–9 классов и определим, что стоит повторить перед 10 классом или колледжем.</p><div className="diagnostic-facts oge-facts"><span><b>24</b> задания</span><span>Три уровня сложности</span><span>Около 60 минут</span><span>Без школьной оценки</span><span>Разбор по темам</span><span>Блок В проверит преподаватель</span></div><label className="name-field"><span>Имя и фамилия ученика</span><input value={name} onChange={e=>setName(e.target.value)} placeholder="Введите имя и фамилию"/></label><fieldset className="destination-choice"><legend>Где ты продолжишь обучение?</legend>{["10 класс","колледж","пока не определился","другое"].map(v=><label key={v}><input type="radio" name="destination" checked={destination===v} onChange={()=>setDestination(v)}/>{v}</label>)}</fieldset><div className="start-guidance"><h2>Перед началом</h2><p className="paper-reminder">Приготовь несколько листов бумаги для вычислений и решений.</p><ul><li>Выполняй работу самостоятельно и по возможности за один подход.</li><li>Обычно нужно около 60 минут, но строгого ограничения нет.</li><li>Не используй калькулятор, интернет, учебник, конспекты и подсказки.</li><li>Не стирай неудачные попытки — они тоже помогают увидеть пробелы.</li><li>Если задание не получается, переходи дальше и вернись позже.</li><li>Блок В сложнее остальных. Если он пока не получается, это нормально.</li></ul><p>Эта работа нужна не для оценки, а для определения тем, которые стоит повторить перед дальнейшим изучением математики.</p><label className="consent-check"><input type="checkbox" checked={accepted} onChange={e=>setAccepted(e.target.checked)}/><span>Я прочитал(а) рекомендации и готов(а) начать</span></label></div><button className="button primary big" disabled={!name.trim()||!destination||!accepted} onClick={()=>setScreen("test")}>Начать диагностику →</button><p className="privacy-note">Имя, ответы и фотографии сохраняются только в этом браузере.</p></div><div className="doodle oge-doodle" aria-hidden="true"><span className="doodle-plus">10</span><span className="doodle-pi">x²</span><span className="doodle-frac"><b>5</b><i/><b>9</b></span><div className="doodle-paper"><div/><div/><div/><span>✓</span></div><span className="doodle-dot dot-one"/><span className="doodle-dot dot-two"/></div></section><footer><div className="brand"><span className="brand-mark">∿</span><span>Математика без стресса</span></div><p>Проверяем опорные знания, а не ставим оценку ♡</p></footer></main>;
+  return (
+  <main className="home-page after9-page">
+    <header className="site-header">
+      <a className="brand" href="/">
+        <span className="brand-mark">∿</span>
+        <span>Математика без стресса</span>
+      </a>
+    </header>
+
+    <section className="hero oge-hero">
+      <div className="hero-copy">
+        <div className="soft-pill">После основной школы</div>
+
+        <h1>
+          Что повторить
+          <br />
+          <em>перед 10 классом или колледжем?</em>
+        </h1>
+
+        <p className="hero-lead">
+          Проверим знания из программы 5–9 классов и определим, что стоит
+          повторить перед 10 классом или колледжем.
+        </p>
+
+        <div className="diagnostic-facts oge-facts">
+          <span>
+            <b>24</b> задания
+          </span>
+          <span>Три уровня сложности</span>
+          <span>Около 60 минут</span>
+          <span>Без школьной оценки</span>
+          <span>Разбор по темам</span>
+          <span>Блок В проверит преподаватель</span>
+        </div>
+
+        <label className="name-field">
+          <span>Имя и фамилия ученика</span>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Введите имя и фамилию"
+          />
+        </label>
+
+        <fieldset className="destination-choice">
+          <legend>Где ты продолжишь обучение?</legend>
+
+          {[
+            "10 класс",
+            "колледж",
+            "пока не определился",
+            "другое",
+          ].map((v) => (
+            <label key={v}>
+              <input
+                type="radio"
+                name="destination"
+                checked={destination === v}
+                onChange={() => setDestination(v)}
+              />
+              {v}
+            </label>
+          ))}
+        </fieldset>
+
+        <div className="start-guidance">
+          <h2>Перед началом</h2>
+
+          <p className="paper-reminder">
+            Приготовь несколько листов бумаги для вычислений и решений.
+          </p>
+
+          <ul>
+            <li>
+              Выполняй работу самостоятельно и по возможности за один подход.
+            </li>
+            <li>
+              Обычно нужно около 60 минут, но строгого ограничения нет.
+            </li>
+            <li>
+              Не используй калькулятор, интернет, учебник, конспекты и
+              подсказки.
+            </li>
+            <li>
+              Не стирай неудачные попытки — они тоже помогают увидеть пробелы.
+            </li>
+            <li>
+              Если задание не получается, переходи дальше и вернись позже.
+            </li>
+            <li>
+              Блок В сложнее остальных. Если он пока не получается, это нормально.
+            </li>
+          </ul>
+
+          <p>
+            Эта работа нужна не для оценки, а для определения тем, которые стоит
+            повторить перед дальнейшим изучением математики.
+          </p>
+
+          <label className="consent-check">
+            <input
+              type="checkbox"
+              checked={accepted}
+              onChange={(e) => setAccepted(e.target.checked)}
+            />
+            <span>
+              Я прочитал(а) рекомендации и готов(а) начать
+            </span>
+          </label>
+        </div>
+
+        <button
+          className="button primary big"
+          disabled={!name.trim() || !destination || !accepted}
+          onClick={() => setScreen("test")}
+        >
+          Начать диагностику →
+        </button>
+
+        <p className="privacy-note">
+          Имя, ответы и фотографии сохраняются только в этом браузере.
+        </p>
+      </div>
+
+      <div className="doodle oge-doodle" aria-hidden="true">
+        <span className="doodle-plus">10</span>
+        <span className="doodle-pi">x²</span>
+
+        <span className="doodle-frac">
+          <b>5</b>
+          <i />
+          <b>9</b>
+        </span>
+
+        <div className="doodle-paper">
+          <div />
+          <div />
+          <div />
+          <span>✓</span>
+        </div>
+
+        <span className="doodle-dot dot-one" />
+        <span className="doodle-dot dot-two" />
+      </div>
+    </section>
+
+    <OtherDiagnostics current="/after9" />
+
+    <footer>
+      <div className="brand">
+        <span className="brand-mark">∿</span>
+        <span>Математика без стресса</span>
+      </div>
+
+      <p>Проверяем опорные знания, а не ставим оценку ♡</p>
+    </footer>
+  </main>
+);
 }
