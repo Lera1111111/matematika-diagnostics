@@ -18,6 +18,7 @@ const pageByRoute: Record<string, React.ComponentType> = {
   "/oge": OgePage,
   "/after9": AfterNinePage,
     "/11": GradeElevenPage,
+    "/ege-profile": EgeProfilePage,
 };
 
 const titleByRoute: Record<string, string> = {
