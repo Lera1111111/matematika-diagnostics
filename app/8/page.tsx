@@ -563,6 +563,20 @@ export default function GradeEight() {
         questions.map((question) => question.block),
       ),
     ];
+    const copyResult = async (
+  message = "Результат скопирован",
+) => {
+  try {
+    await navigator.clipboard.writeText(reportText());
+    setToast(message);
+    setCopyFallback("");
+  } catch {
+    setToast("Браузер запретил автоматическое копирование");
+    setCopyFallback(reportText());
+  }
+
+  window.setTimeout(() => setToast(""), 4000);
+};
 
     const blockLines = blocks.map((block) => {
       const blockQuestions = questions.filter(
@@ -1182,11 +1196,7 @@ ${rows}
   if (screen === "result") {
     const copy = resultCopy(score);
 
-    const telegramMessage = encodeURIComponent(
-      `Здравствуйте! Меня зовут ${studentName.trim()}. ` +
-        `Результат моей диагностики перед 8 классом — ${score} из ${questions.length}. ` +
-        `Хочу обсудить план повторения.`,
-    );
+    const telegramMessage = encodeURIComponent(reportText());
 
     const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
 
@@ -1536,12 +1546,7 @@ ${rows}
               Скопировать результат
             </button>
 
-            <button
-              className="button secondary"
-              onClick={downloadResult}
-            >
-              Скачать результат
-            </button>
+          
 
             <a
               className="button primary"
