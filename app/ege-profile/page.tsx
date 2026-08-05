@@ -688,8 +688,9 @@ export default function EgeProfileDiagnostic() {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
-                  {item.id}
-                </button>
+                >
+  {index + 1}
+</button>
               );
             })}
           </nav>
