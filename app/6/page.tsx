@@ -333,14 +333,6 @@ return (
         <span className="brand-mark">∿</span>
         <span>Математика без стресса</span>
       </a>
-
-      <button
-        className="header-cta"
-        onClick={start}
-        disabled={!studentName.trim() || !accepted}
-      >
-        Начать диагностику
-      </button>
     </header>
 
     <section className="hero">
