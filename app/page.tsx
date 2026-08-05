@@ -59,6 +59,13 @@ const diagnostics = [
   meta: "Первая и вторая части",
   className: "",
 },
+  {
+  href: "/ege-base",
+  label: "ЕГЭ база",
+  description: "Входная диагностика перед подготовкой к базовому ЕГЭ",
+  meta: "15 заданий · основные типы ЕГЭ",
+  className: "",
+},
 ];
 
 function MathDoodle() {
