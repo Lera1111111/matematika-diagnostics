@@ -1217,8 +1217,7 @@ export default function GradeElevenDiagnostic() {
         : percent >= 50
           ? "Многое уже получается. Повторение слабых разделов поможет начать 11 класс спокойнее."
           : "Есть разделы, которые стоит восстановить по порядку. Это не оценка, а маршрут повторения.";
-
-  const telegramMessage = encodeURIComponent(resultText);
+const telegramMessage = encodeURIComponent(resultText());
     return (
       <main className="result-page grade-eleven-page">
         <header className="compact-header result-header"><a className="brand" href="/"><span className="brand-mark">∿</span><span>Математика без стресса</span></a><button className="text-button" onClick={restart}>Пройти ещё раз</button></header>
