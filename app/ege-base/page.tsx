@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -981,40 +982,7 @@ return (
         </div>
       </section>
 
-      <section className="class-section">
-        <div className="section-heading">
-          <div>
-            <p className="kicker">Другие диагностики</p>
-            <h2>Выбери нужный формат</h2>
-          </div>
-        </div>
-
-        <div className="class-grid compact-class-grid">
-          <a className="class-card active" href="/oge">
-            <span>Доступно сейчас</span>
-            <b>ОГЭ</b>
-            <i>Входная диагностика →</i>
-          </a>
-
-          <a className="class-card active" href="/ege-profile">
-            <span>Доступно сейчас</span>
-            <b>ЕГЭ профиль</b>
-            <i>Входная диагностика →</i>
-          </a>
-
-          <a className="class-card active" href="/11">
-            <span>Доступно сейчас</span>
-            <b>Перед 11 классом</b>
-            <i>По изученным темам →</i>
-          </a>
-
-          <a className="class-card active" href="/">
-            <span>Все варианты</span>
-            <b>Другие классы</b>
-            <i>К списку диагностик →</i>
-          </a>
-        </div>
-      </section>
+<OtherDiagnostics current="/ege-base" />
 
       <footer>
         <div className="brand">
