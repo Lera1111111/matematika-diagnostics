@@ -829,7 +829,6 @@ export default function OgeEntryDiagnostic() {
           <div><p className="kicker">Получить разбор и рекомендации</p><h2>Отправь результат и фотографии решений Лере</h2><p>Я посмотрю ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план подготовки.</p></div>
           <div className="cta-actions oge-cta-actions">
             <button className="button secondary" onClick={() => copyReport()}>Скопировать результат</button>
-            <button className="button secondary" onClick={downloadReport}>Скачать результат</button>
             <a className="button primary" href={TELEGRAM_URL} target="_blank" rel="noreferrer" onClick={() => copyReport("Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений")}>Открыть Telegram Леры</a>
             <button className="button secondary" onClick={restart}>Пройти ещё раз</button>
           </div>
