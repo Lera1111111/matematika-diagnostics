@@ -383,38 +383,82 @@ function LogicList() {
 
 function GeometryDiagram({ kind }: { kind: "open-cube" | "triangle" | "prism" }) {
   if (kind === "triangle") {
-    return (
-      <div className="geometry-card">
-        <svg viewBox="0 0 420 250" role="img" aria-label="Равнобедренный треугольник ABC">
-          <polygon points="210,35 85,205 335,205" className="geom-shape" />
-          <text x="202" y="25">B</text>
-          <text x="65" y="222">A</text>
-          <text x="342" y="222">C</text>
-          <text x="126" y="115" className="geom-value">25</text>
-          <text x="276" y="115" className="geom-value">25</text>
-          <text x="188" y="232" className="geom-value">20√6</text>
-        </svg>
-      </div>
-    );
+return (
+  <div className="geometry-card">
+    <svg viewBox="0 0 420 280" role="img" aria-label="Куб с ребром 28 см">
+      {/* Передняя грань */}
+      <rect
+        x="120"
+        y="95"
+        width="140"
+        height="140"
+        className="geom-shape"
+      />
+
+      {/* Задние вершины */}
+      <line x1="120" y1="95" x2="180" y2="55" className="geom-edge" />
+      <line x1="260" y1="95" x2="320" y2="55" className="geom-edge" />
+      <line x1="260" y1="235" x2="320" y2="195" className="geom-edge" />
+
+      {/* Задние рёбра */}
+      <line x1="180" y1="55" x2="320" y2="55" className="geom-edge" />
+      <line x1="320" y1="55" x2="320" y2="195" className="geom-edge" />
+
+      {/* Скрытые рёбра */}
+      <line x1="120" y1="235" x2="180" y2="195" className="geom-edge dashed" />
+      <line x1="180" y1="55" x2="180" y2="195" className="geom-edge dashed" />
+      <line x1="180" y1="195" x2="320" y2="195" className="geom-edge dashed" />
+
+      {/* Размер */}
+      <text x="88" y="170" className="geom-value">
+        28
+      </text>
+    </svg>
+  </div>
+);
   }
 
   if (kind === "prism") {
-    return (
-      <div className="geometry-card">
-        <svg viewBox="0 0 440 280" role="img" aria-label="Прямая треугольная призма">
-          <polygon points="100,215 100,125 215,215" className="geom-shape" />
-          <polygon points="245,170 245,80 360,170" className="geom-shape" />
-          <line x1="100" y1="215" x2="245" y2="170" className="geom-edge" />
-          <line x1="100" y1="125" x2="245" y2="80" className="geom-edge" />
-          <line x1="215" y1="215" x2="360" y2="170" className="geom-edge" />
-          <path d="M100 197 h18 v18" className="right-mark" />
-          <text x="70" y="170" className="geom-value">7</text>
-          <text x="150" y="238" className="geom-value">11</text>
-          <text x="174" y="145" className="geom-value">6</text>
-        </svg>
-      </div>
-    );
-  }
+  return (
+    <div className="geometry-card">
+      <svg viewBox="0 0 440 320" role="img" aria-label="Прямая треугольная призма">
+        {/* Нижнее основание */}
+        <polygon
+          points="110,240 110,165 225,240"
+          className="geom-shape"
+        />
+
+        {/* Верхнее основание */}
+        <polygon
+          points="175,130 175,55 290,130"
+          className="geom-shape"
+        />
+
+        {/* Боковые рёбра */}
+        <line x1="110" y1="240" x2="175" y2="130" className="geom-edge" />
+        <line x1="110" y1="165" x2="175" y2="55" className="geom-edge" />
+        <line x1="225" y1="240" x2="290" y2="130" className="geom-edge" />
+
+        {/* Прямой угол */}
+        <path d="M110 222 h18 v18" className="right-mark" />
+
+        {/* Катеты */}
+        <text x="78" y="205" className="geom-value">
+          7
+        </text>
+
+        <text x="155" y="265" className="geom-value">
+          11
+        </text>
+
+        {/* Высота призмы */}
+        <text x="132" y="150" className="geom-value">
+          6
+        </text>
+      </svg>
+    </div>
+  );
+}
 
   return (
     <div className="geometry-card">
