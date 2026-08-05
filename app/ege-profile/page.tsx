@@ -105,14 +105,15 @@ const questions: Question[] = [
     type: "number",
     note: "Можно записать ответ обычной или десятичной дробью.",
   },
-  {
-    id: 8,
-    block: "Первая часть",
-    topic: "Производная по графику",
-    prompt: "На рисунке изображены график функции y = f(x) и касательная к нему в точке с абсциссой x₀. Касательная проходит через точки (2; 1) и (5; 7). Найдите f′(x₀).",
-    type: "number",
-    diagram: "derivative-graph",
-  },
+ {
+  id: 8,
+  block: "Первая часть",
+  topic: "Прикладная задача",
+  prompt: "Высота тела, брошенного вертикально вверх, изменяется по закону",
+  expression: String.raw`h(t)=20t-5t^2`,
+  type: "number",
+  note: "где h — высота в метрах, t — время в секундах. В течение какого промежутка времени тело находилось на высоте не менее 15 метров? Ответ запишите в виде [1; 3].",
+},
   {
     id: 10,
     block: "Первая часть",
@@ -183,7 +184,21 @@ function numberValue(value: string) {
   const result = Number(clean);
   return Number.isFinite(result) ? result : null;
 }
+function equalsInterval(value: string, left: number, right: number) {
+  const clean = normalize(value)
+    .replace(/\s+/g, "")
+    .replace(/,/g, ".")
+    .replace(/[−–—]/g, "-");
 
+  const accepted = [
+    `[${left};${right}]`,
+    `[${left},${right}]`,
+    `${left};${right}`,
+    `${left},${right}`,
+  ];
+
+  return accepted.includes(clean);
+}
 function equalsNumber(value: string, target: number) {
   const parsed = numberValue(value);
   return parsed !== null && Math.abs(parsed - target) < 1e-9;
@@ -531,7 +546,13 @@ export default function EgeProfileDiagnostic() {
     { questionId: 5, topic: "Вероятность повышенного уровня", group: "Вероятность", correct: equalsNumber(answers[5]?.value || "", 0.65), dontKnow: Boolean(answers[5]?.dontKnow) },
     { questionId: 6, topic: "Показательное уравнение", group: "Алгебра и тригонометрия", correct: equalsNumber(answers[6]?.value || "", 0), dontKnow: Boolean(answers[6]?.dontKnow) },
     { questionId: 7, topic: "Тригонометрия", group: "Алгебра и тригонометрия", correct: equalsNumber(answers[7]?.value || "", 0.8), dontKnow: Boolean(answers[7]?.dontKnow) },
-    { questionId: 8, topic: "Производная по графику", group: "Функции и производная", correct: equalsNumber(answers[8]?.value || "", 2), dontKnow: Boolean(answers[8]?.dontKnow) },
+   {
+  questionId: 8,
+  topic: "Квадратичное неравенство в прикладной задаче",
+  group: "Функции и производная",
+  correct: equalsInterval(answers[8]?.value || "", 1, 3),
+  dontKnow: Boolean(answers[8]?.dontKnow),
+},
     { questionId: 10, topic: "Текстовая задача", group: "Текстовые задачи", correct: equalsNumber(answers[10]?.value || "", 4), dontKnow: Boolean(answers[10]?.dontKnow) },
     { questionId: 12, topic: "Экстремум функции", group: "Функции и производная", correct: equalsNumber(answers[12]?.value || "", 3), dontKnow: Boolean(answers[12]?.dontKnow) },
   ], [answers]);
@@ -677,33 +698,43 @@ export default function EgeProfileDiagnostic() {
 
           <article className="question-card oge-question profile-question-card">
             <div className="question-meta"><span>{question.block}</span><span>№{question.id} · {question.topic}</span></div>
-            <h1>{question.prompt}</h1>
-            {question.id === 13 ? (
+           {question.id === 13 ? (
   <div className="ege13-condition">
+    <div className="ege13-parts">
+      <p>
+        <strong>а)</strong>
+        <span>Решите уравнение.</span>
+      </p>
+
+      <div className="ege13-part-row">
+        <strong>б)</strong>
+        <span>Найдите все корни, принадлежащие отрезку</span>
+
+        <div className="inline-formula">
+          <MathFormula
+            expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
+            displayMode={false}
+          />
+        </div>
+
+        <span>.</span>
+      </div>
+    </div>
+
     <div className="expression oge-expression">
       <MathFormula expression={question.expression!} />
     </div>
-
-    <div className="ege13-partb">
-      <strong>б)</strong>
-      <span>Найдите все корни, принадлежащие отрезку</span>
-
-      <div className="inline-formula">
-        <MathFormula
-          expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
-          displayMode={false}
-        />
-      </div>
-
-      <span>.</span>
-    </div>
   </div>
 ) : (
-  question.expression && (
-    <div className="expression oge-expression">
-      <MathFormula expression={question.expression} />
-    </div>
-  )
+  <>
+    <h1>{question.prompt}</h1>
+
+    {question.expression && (
+      <div className="expression oge-expression">
+        <MathFormula expression={question.expression} />
+      </div>
+    )}
+  </>
 )}
            
             {question.diagram && <ProfileDiagram kind={question.diagram} />}
@@ -715,7 +746,7 @@ export default function EgeProfileDiagnostic() {
               <label className="answer-field">
                 <span>Ответ</span>
                 <input
-                  inputMode="decimal"
+                 inputMode={question.id === 8 ? "text" : "decimal"}
                   value={answer.dontKnow ? "" : answer.value}
                   onChange={(event) => update(question.id, { value: event.target.value })}
                   placeholder="Введите ответ"
@@ -1091,34 +1122,48 @@ const profileStyles = `
   stroke:#9275be;
   stroke-width:2.5
 }
-.ege13-condition{margin:8px 0 18px}
+.ege13-condition{
+  margin:8px 0 18px
+}
 
-.ege13-partb{
+.ege13-parts{
+  margin:4px 0 18px;
+  color:#332c3b;
+  font-size:1.12rem;
+  line-height:1.6
+}
+
+.ege13-parts p{
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+  margin:0 0 8px
+}
+
+.ege13-part-row{
   display:flex;
   align-items:center;
   flex-wrap:wrap;
-  gap:5px;
-  margin:18px 0 6px;
-  font-size:1.08rem;
-  line-height:1.65;
-  color:#3f3552;
-  font-weight:500;
+  gap:6px;
+  margin:0
 }
 
-.ege13-partb strong{
+.ege13-parts strong{
   color:#62479a;
-  font-weight:800;
-  font-size:1.1em;
+  font-weight:800
 }
 
-.ege13-partb .inline-formula{
+.ege13-part-row .inline-formula{
   display:inline-flex;
-  align-items:center;
-  margin-left:4px;
+  align-items:center
 }
 
-.ege13-partb .inline-formula .katex{
-  font-size:1.08em;
+.ege13-part-row .inline-formula .katex{
+  font-size:1.05em
+}
+
+.ege13-condition .oge-expression{
+  margin-top:14px
 }
 .profile-diagram .highlight{stroke:#9672c8;stroke-width:4}
 .profile-diagram .thin-highlight{stroke:#c2a8df;stroke-width:3}
