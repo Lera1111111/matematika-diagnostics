@@ -52,6 +52,13 @@ const diagnostics = [
   meta: "Алгебра и стереометрия",
   className: "",
 },
+  {
+  href: "/ege-profile",
+  label: "ЕГЭ профиль",
+  description: "Входная диагностика перед подготовкой к профильному ЕГЭ",
+  meta: "Первая и вторая части",
+  className: "",
+},
 ];
 
 function MathDoodle() {
