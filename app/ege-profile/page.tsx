@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -1117,6 +1118,7 @@ export default function EgeProfileDiagnostic() {
           <span className="doodle-dot dot-two" />
         </div>
       </section>
+      <OtherDiagnostics current="/ege-profile" />
 
       <footer>
         <div className="brand">
