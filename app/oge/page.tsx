@@ -46,7 +46,7 @@ type AutoItem = {
 };
 
 const STORAGE_KEY = "oge-entry-diagnostic-v2";
-const TELEGRAM_URL = "https://t.me/m/8wQr09o1NDEy";
+const TELEGRAM_URL = "https://t.me/vxoab";
 const DB_NAME = "oge-diagnostic-photos";
 const PHOTO_STORE = "photos";
 const initialOrder = ["−√5", "−2,4", "−7/3"];
