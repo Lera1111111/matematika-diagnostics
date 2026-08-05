@@ -772,17 +772,7 @@ export default function GradeSeven() {
     ].join("\n\n");
   };
 
-  const copyResult = async (
-    message = "Результат скопирован",
-  ) => {
-    try {
-      await navigator.clipboard.writeText(reportText());
-      setToast(message);
-      setCopyFallback("");
-    } catch {
-      setToast("Браузер запретил автоматическое копирование");
-      setCopyFallback(reportText());
-    }
+ const telegramMessage = encodeURIComponent(reportText());
 
     window.setTimeout(() => setToast(""), 4000);
   };
@@ -1641,13 +1631,6 @@ ${rows}
               onClick={() => copyResult()}
             >
               Скопировать результат
-            </button>
-
-            <button
-              className="button secondary"
-              onClick={downloadResult}
-            >
-              Скачать результат
             </button>
 
             <a
