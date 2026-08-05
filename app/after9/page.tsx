@@ -501,7 +501,9 @@ function PhotoUploader({ bucket, photos, onAdd, onRemove, onLabel, onZoom }: {
 }
 
 export default function AfterGradeNineDiagnostic() {
-  const [screen, setScreen] = useState<"home" | "test" | "bridgeB" | "bridgeC" | "photos" | "review" | "result">("home");
+const [screen, setScreen] = useState<
+  "home" | "test" | "photos" | "review" | "result"
+>("home");
   const [name, setName] = useState("");
   const [destination, setDestination] = useState("");
   const [accepted, setAccepted] = useState(false);
@@ -514,7 +516,7 @@ export default function AfterGradeNineDiagnostic() {
   const [zoomPhoto, setZoomPhoto] = useState<Photo | null>(null);
   const [toast, setToast] = useState("");
   const [copyFallback, setCopyFallback] = useState("");
-  const [advancedSkipped, setAdvancedSkipped] = useState(false);
+
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -522,7 +524,9 @@ export default function AfterGradeNineDiagnostic() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (["home","test","bridgeB","bridgeC","photos","review"].includes(parsed.screen)) setScreen(parsed.screen);
+       if (["home", "test", "photos", "review"].includes(parsed.screen)) {
+  setScreen(parsed.screen);
+}
         setName(parsed.name || ""); setDestination(parsed.destination || ""); setAccepted(Boolean(parsed.accepted));
         setCurrent(Math.min(Math.max(parsed.current || 0, 0), 23)); setAnswers(parsed.answers || {});
         setOrder(parsed.order?.length === 3 ? parsed.order : initialOrder); setOrderTouched(Boolean(parsed.orderTouched));
@@ -644,13 +648,14 @@ export default function AfterGradeNineDiagnostic() {
   }, [answers, order, orderTouched, subchecks]);
 
   const goNext = () => {
-    if (current === 9) setScreen("bridgeB");
-    else if (current === 19) setScreen("bridgeC");
-    else if (current === 23) setScreen("photos");
-    else setCurrent((value) => value + 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  if (current === questions.length - 1) {
+    setScreen("photos");
+  } else {
+    setCurrent((value) => value + 1);
+  }
 
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
   const restart = async () => {
     if (!window.confirm("Все сохранённые ответы, результаты и загруженные фотографии будут удалены. Начать заново?")) return;
     localStorage.removeItem(STORAGE_KEY); await dbClear().catch(() => {});
@@ -758,7 +763,38 @@ const html = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Рез
         <div className="progress-track">
           <span style={{ width: `${(question.id / 24) * 100}%` }} />
         </div>
+<div className="question-number-nav">
+  {questions.map((item, index) => {
+    const itemAnswer = answer(item.id);
 
+    let status = "empty";
+
+    if (itemAnswer.dontKnow) {
+      status = "unknown";
+    } else if (hasContent(item)) {
+      status = "answered";
+    }
+
+    if (index === current) {
+      status += " current";
+    }
+
+    return (
+      <button
+        key={item.id}
+        type="button"
+        className={status}
+        onClick={() => {
+          setCurrent(index);
+          window.scrollTo({ top: 0 });
+        }}
+        aria-label={`Перейти к заданию ${item.id}`}
+      >
+        {item.id}
+      </button>
+    );
+  })}
+</div>
         <article className="question-card after9-question">
           <div className="question-meta">
             <span>{question.block}</span>
@@ -815,83 +851,6 @@ const html = `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Рез
     );
   }
 
- if (screen === "bridgeB") {
-  return (
-    <main className="center-screen after9-page">
-      <section className="review-card bridge-card">
-        <div className="review-icon">Б</div>
-        <p className="kicker">Блок А завершён</p>
-
-        <h1>Основная программа 7–9 классов</h1>
-
-        <p>
-          Теперь проверим алгебру, функции, текстовые задачи,
-          вероятность и геометрию.
-        </p>
-
-        <button
-          className="button primary"
-          onClick={() => {
-            setCurrent(10);
-            setScreen("test");
-            window.scrollTo({ top: 0 });
-          }}
-        >
-          Продолжить →
-        </button>
-      </section>
-    </main>
-  );
-}
-
-if (screen === "bridgeC") {
-  return (
-    <main className="center-screen after9-page">
-      <section className="review-card bridge-card">
-        <div className="review-icon">✓</div>
-        <p className="kicker">Основная диагностика завершена</p>
-
-        <h1>Можно посмотреть результат</h1>
-
-        <p>
-          Ты выполнил(а) основную часть диагностики. Результат по базовым
-          знаниям и программе 7–9 классов уже готов.
-        </p>
-
-        <p>
-          Дополнительно можно выполнить четыре более сложных задания.
-          В них важен не только ответ, но и ход решения.
-        </p>
-
-        <div className="review-actions">
-          <button
-            className="button secondary"
-            onClick={() => {
-              setAdvancedSkipped(true);
-              setScreen("result");
-              localStorage.removeItem(STORAGE_KEY);
-              window.scrollTo({ top: 0 });
-            }}
-          >
-            Посмотреть результат
-          </button>
-
-          <button
-            className="button primary"
-            onClick={() => {
-              setAdvancedSkipped(false);
-              setCurrent(20);
-              setScreen("test");
-              window.scrollTo({ top: 0 });
-            }}
-          >
-            Выполнить сложные задания →
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
 
   if (screen === "photos") {
     return <main className="center-screen after9-page"><section className="review-card photo-review-card"><div className="review-icon">▧</div><p className="kicker">Решения на бумаге</p><h1>Загрузи фотографии решений</h1><p>Фотографии помогут увидеть не только финальные ответы, но и ход рассуждений. Особенно важно приложить решения заданий №21–24.</p><PhotoUploader bucket="final" photos={photos} onAdd={addPhotos} onRemove={removePhoto} onLabel={labelPhoto} onZoom={setZoomPhoto}/><p className="privacy-note">Можно подписать номер задания под каждой фотографией. Файлы хранятся только в этом браузере.</p><div className="review-actions"><button className="button secondary" onClick={()=>{setCurrent(23);setScreen("test")}}>Назад к №24</button><button className="button primary" onClick={()=>setScreen("review")}>Перейти к обзору →</button></div></section>{zoomPhoto&&<div className="photo-modal" onClick={()=>setZoomPhoto(null)}><button onClick={()=>setZoomPhoto(null)}>Закрыть ×</button><img src={zoomPhoto.data} alt={zoomPhoto.name}/></div>}</main>;
