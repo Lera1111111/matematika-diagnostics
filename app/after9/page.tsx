@@ -515,6 +515,7 @@ const [screen, setScreen] = useState<
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [zoomPhoto, setZoomPhoto] = useState<Photo | null>(null);
   const [toast, setToast] = useState("");
+  const advancedSkipped = false;
   const [copyFallback, setCopyFallback] = useState("");
 
   const [hydrated, setHydrated] = useState(false);
