@@ -1316,11 +1316,7 @@ ${rows}
             ? "Многое уже получается. Небольшое повторение поможет начать 9 класс спокойнее и увереннее."
             : "Есть темы, которые стоит восстановить по порядку. Это не оценка, а понятный маршрут для повторения.";
 
-    const telegramMessage = encodeURIComponent(
-      `Здравствуйте! Меня зовут ${name.trim()}. ` +
-        `Результат моей диагностики перед 9 классом — ${score} из ${questions.length}. ` +
-        `Хочу обсудить план повторения.`,
-    );
+const telegramMessage = encodeURIComponent(reportText());
 
     const telegramUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`;
 
@@ -1614,13 +1610,6 @@ ${rows}
               onClick={() => copyResult()}
             >
               Скопировать результат
-            </button>
-
-            <button
-              className="button secondary"
-              onClick={downloadResult}
-            >
-              Скачать результат
             </button>
 
             <a
