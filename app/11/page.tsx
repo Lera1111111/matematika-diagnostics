@@ -2101,7 +2101,7 @@ const telegramMessage = encodeURIComponent(resultText());
         </div>
       </section>
       
-      <OtherDiagnostics current="/6" />
+      <OtherDiagnostics current="/11" />
 
       <footer>
         <div className="brand">
