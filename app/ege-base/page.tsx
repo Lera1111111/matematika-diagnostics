@@ -278,6 +278,21 @@ function MathFormula({ expression, displayMode = true }: { expression: string; d
   return <div ref={setElement} />;
 }
 
+function EgeBaseDoodle() {
+  return (
+    <div className="doodle grade-seven-doodle ege-base-doodle" aria-hidden="true">
+      <span className="doodle-plus">√</span>
+      <span className="doodle-pi">log</span>
+      <span className="doodle-frac"><b>1</b><i /><b>2</b></span>
+      <div className="doodle-paper">
+        <div /><div /><div /><span>✓</span>
+      </div>
+      <span className="doodle-dot dot-one" />
+      <span className="doodle-dot dot-two" />
+    </div>
+  );
+}
+
 function ResultsTable() {
   return (
     <div className="ege-table-wrap">
@@ -383,95 +398,74 @@ function LogicList() {
 
 function GeometryDiagram({ kind }: { kind: "open-cube" | "triangle" | "prism" }) {
   if (kind === "triangle") {
-return (
-  <div className="geometry-card">
-    <svg viewBox="0 0 420 280" role="img" aria-label="Куб с ребром 28 см">
-      {/* Передняя грань */}
-      <rect
-        x="120"
-        y="95"
-        width="140"
-        height="140"
-        className="geom-shape"
-      />
+    return (
+      <div className="geometry-card">
+        <svg viewBox="0 0 440 300" role="img" aria-label="Равнобедренный треугольник ABC">
+          <polygon points="85,230 220,60 355,230" className="geom-shape" />
 
-      {/* Задние вершины */}
-      <line x1="120" y1="95" x2="180" y2="55" className="geom-edge" />
-      <line x1="260" y1="95" x2="320" y2="55" className="geom-edge" />
-      <line x1="260" y1="235" x2="320" y2="195" className="geom-edge" />
+          <text x="65" y="250" className="geom-label">A</text>
+          <text x="214" y="45" className="geom-label">B</text>
+          <text x="365" y="250" className="geom-label">C</text>
 
-      {/* Задние рёбра */}
-      <line x1="180" y1="55" x2="320" y2="55" className="geom-edge" />
-      <line x1="320" y1="55" x2="320" y2="195" className="geom-edge" />
+          <text x="125" y="142" className="geom-value">25</text>
+          <text x="302" y="142" className="geom-value">25</text>
 
-      {/* Скрытые рёбра */}
-      <line x1="120" y1="235" x2="180" y2="195" className="geom-edge dashed" />
-      <line x1="180" y1="55" x2="180" y2="195" className="geom-edge dashed" />
-      <line x1="180" y1="195" x2="320" y2="195" className="geom-edge dashed" />
+          <line x1="145" y1="146" x2="157" y2="155" className="equal-mark" />
+          <line x1="295" y1="155" x2="307" y2="146" className="equal-mark" />
 
-      {/* Размер */}
-      <text x="88" y="170" className="geom-value">
-        28
-      </text>
-    </svg>
-  </div>
-);
+          <text x="190" y="265" className="geom-value">20√6</text>
+        </svg>
+      </div>
+    );
   }
 
   if (kind === "prism") {
-  return (
-    <div className="geometry-card">
-      <svg viewBox="0 0 440 320" role="img" aria-label="Прямая треугольная призма">
-        {/* Нижнее основание */}
-        <polygon
-          points="110,240 110,165 225,240"
-          className="geom-shape"
-        />
+    return (
+      <div className="geometry-card">
+        <svg viewBox="0 0 440 330" role="img" aria-label="Прямая треугольная призма">
+          {/* Нижнее треугольное основание */}
+          <polygon points="105,255 245,255 105,175" className="geom-shape" />
 
-        {/* Верхнее основание */}
-        <polygon
-          points="175,130 175,55 290,130"
-          className="geom-shape"
-        />
+          {/* Верхнее треугольное основание */}
+          <polygon points="175,135 315,135 175,55" className="geom-shape" />
 
-        {/* Боковые рёбра */}
-        <line x1="110" y1="240" x2="175" y2="130" className="geom-edge" />
-        <line x1="110" y1="165" x2="175" y2="55" className="geom-edge" />
-        <line x1="225" y1="240" x2="290" y2="130" className="geom-edge" />
+          {/* Боковые рёбра */}
+          <line x1="105" y1="255" x2="175" y2="135" className="geom-edge" />
+          <line x1="245" y1="255" x2="315" y2="135" className="geom-edge" />
+          <line x1="105" y1="175" x2="175" y2="55" className="geom-edge" />
 
-        {/* Прямой угол */}
-        <path d="M110 222 h18 v18" className="right-mark" />
+          {/* Прямой угол в нижнем основании */}
+          <path d="M105 237 h18 v18" className="right-mark" />
 
-        {/* Катеты */}
-        <text x="78" y="205" className="geom-value">
-          7
-        </text>
+          {/* Катеты основания */}
+          <text x="72" y="220" className="geom-value">7</text>
+          <text x="165" y="282" className="geom-value">11</text>
 
-        <text x="155" y="265" className="geom-value">
-          11
-        </text>
-
-        {/* Высота призмы */}
-        <text x="132" y="150" className="geom-value">
-          6
-        </text>
-      </svg>
-    </div>
-  );
-}
+          {/* Высота призмы */}
+          <text x="126" y="188" className="geom-value">6</text>
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="geometry-card">
-      <svg viewBox="0 0 420 280" role="img" aria-label="Куб без одной грани">
-        <polygon points="115,85 260,85 325,135 180,135" className="missing-face" />
-        <polygon points="115,85 180,135 180,235 115,185" className="geom-face" />
-        <polygon points="180,135 325,135 325,235 180,235" className="geom-face" />
-        <polygon points="115,185 180,235 325,235 260,185" className="geom-face back-face" />
-        <line x1="260" y1="85" x2="260" y2="185" className="geom-edge dashed" />
-        <line x1="115" y1="85" x2="260" y2="85" className="geom-edge dashed" />
-        <line x1="260" y1="85" x2="325" y2="135" className="geom-edge dashed" />
-        <text x="82" y="155" className="geom-value">28</text>
-        <text x="204" y="72" className="missing-label">одной грани нет</text>
+      <svg viewBox="0 0 440 320" role="img" aria-label="Куб с ребром 28 см">
+        {/* Обычный схематичный куб */}
+        <rect x="105" y="110" width="150" height="150" className="geom-shape" />
+
+        <line x1="105" y1="110" x2="175" y2="60" className="geom-edge" />
+        <line x1="255" y1="110" x2="325" y2="60" className="geom-edge" />
+        <line x1="255" y1="260" x2="325" y2="210" className="geom-edge" />
+
+        <line x1="175" y1="60" x2="325" y2="60" className="geom-edge" />
+        <line x1="325" y1="60" x2="325" y2="210" className="geom-edge" />
+
+        <line x1="105" y1="260" x2="175" y2="210" className="geom-edge dashed" />
+        <line x1="175" y1="60" x2="175" y2="210" className="geom-edge dashed" />
+        <line x1="175" y1="210" x2="325" y2="210" className="geom-edge dashed" />
+
+        <text x="72" y="190" className="geom-value">28</text>
       </svg>
     </div>
   );
@@ -844,123 +838,187 @@ export default function EgeBaseDiagnosticPage() {
   }
 
 return (
-  <main className="home-page ege-base-page ege-base-home">
-    <PageStyles />
+    <main className="home-page ege-base-page">
+      <PageStyles />
 
-    <header className="site-header">
-      <a className="brand" href="/">
-        <span className="brand-mark">∿</span>
-        <span>Математика без стресса</span>
-      </a>
-    </header>
+      <header className="site-header">
+        <a className="brand" href="/">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </a>
+      </header>
 
-    <section className="base-simple-home">
-      <div className="soft-pill">Входная диагностика ЕГЭ</div>
+      <section className="hero">
+        <div className="hero-copy">
+          <div className="soft-pill">
+            Входная диагностика ЕГЭ
+          </div>
 
-      <h1>
-        ЕГЭ
-        <em>база</em>
-      </h1>
+          <h1>
+            ЕГЭ по математике
+            <br />
+            <em>базовый уровень</em>
+          </h1>
 
-      <p className="base-simple-lead">
-        Пройди диагностику и узнай, какие темы базового ЕГЭ уже получаются
-        уверенно, а что стоит повторить перед подготовкой.
-      </p>
+          <p className="hero-lead">
+            Пройди диагностику и узнай, какие типы заданий базового ЕГЭ уже
+            получаются уверенно, а что стоит повторить перед подготовкой.
+          </p>
 
-      <div className="base-info-grid">
-        <div className="base-info-card">
-          <b>15</b>
-          <span>заданий</span>
+          <div className="calm-note">
+            <span>♡</span>
+            <p>
+              Это не пробный ЕГЭ и не школьная оценка. Здесь нет таймера —
+              только понятный результат и персональные рекомендации.
+            </p>
+          </div>
+
+          <div className="name-start-card">
+            <label htmlFor="student-name">
+              Как тебя зовут?
+            </label>
+
+            <input
+              id="student-name"
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Введи имя"
+              autoComplete="given-name"
+            />
+
+            <div className="start-guidance">
+              <h2>Перед началом</h2>
+
+              <ul>
+                <li>Приготовь лист бумаги для вычислений.</li>
+                <li>Решай самостоятельно, без учебника и подсказок.</li>
+                <li>Строгого ограничения времени нет.</li>
+                <li>
+                  Если не знаешь способ решения, не угадывай — нажми
+                  «Не знаю, как решить».
+                </li>
+                <li>
+                  Диагностика состоит из 15 заданий по основным типам
+                  базового ЕГЭ.
+                </li>
+              </ul>
+
+              <label className="consent-check">
+                <input
+                  type="checkbox"
+                  checked={accepted}
+                  onChange={(event) => setAccepted(event.target.checked)}
+                />
+
+                <span>
+                  Я прочитал(а) рекомендации и готов(а) начать
+                </span>
+              </label>
+            </div>
+
+            <button
+              className="button primary big"
+              onClick={start}
+              disabled={!name.trim() || !accepted}
+            >
+              Начать диагностику <span>→</span>
+            </button>
+
+            <p className="name-start-meta">
+              <b>15 заданий</b>
+              <span>·</span> около 45–60 минут{" "}
+              <span>·</span> результат сразу
+            </p>
+          </div>
         </div>
 
-        <div className="base-info-card">
-          <span>Основные типы ЕГЭ</span>
+        <EgeBaseDoodle />
+      </section>
+
+      <section className="how">
+        <div className="section-heading home-heading">
+          <div>
+            <p className="kicker">Всё просто</p>
+            <h2>Как это работает</h2>
+          </div>
+
+          <p>
+            Без регистрации, школьных оценок и лишнего волнения
+          </p>
         </div>
 
-        <div className="base-info-card">
-          <span>Без оценки и таймера</span>
+        <div className="steps">
+          <article className="step-card violet">
+            <span>01</span>
+            <h3>Решаешь задания</h3>
+            <p>
+              Проверяешь основные типы задач, которые встречаются в базовом ЕГЭ.
+            </p>
+          </article>
+
+          <article className="step-card blue">
+            <span>02</span>
+            <h3>Можно честно не знать</h3>
+            <p>
+              Отмечаешь незнакомые способы решения — без случайных догадок.
+            </p>
+          </article>
+
+          <article className="step-card pink">
+            <span>03</span>
+            <h3>Получаешь маршрут</h3>
+            <p>
+              Видишь сильные блоки и темы, которые стоит повторить в первую очередь.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section className="class-section">
+        <div className="section-heading">
+          <div>
+            <p className="kicker">Другие диагностики</p>
+            <h2>Выбери нужный формат</h2>
+          </div>
         </div>
 
-        <div className="base-info-card">
-          <span>Персональные рекомендации</span>
+        <div className="class-grid compact-class-grid">
+          <a className="class-card active" href="/oge">
+            <span>Доступно сейчас</span>
+            <b>ОГЭ</b>
+            <i>Входная диагностика →</i>
+          </a>
+
+          <a className="class-card active" href="/ege-profile">
+            <span>Доступно сейчас</span>
+            <b>ЕГЭ профиль</b>
+            <i>Входная диагностика →</i>
+          </a>
+
+          <a className="class-card active" href="/11">
+            <span>Доступно сейчас</span>
+            <b>Перед 11 классом</b>
+            <i>По изученным темам →</i>
+          </a>
+
+          <a className="class-card active" href="/">
+            <span>Все варианты</span>
+            <b>Другие классы</b>
+            <i>К списку диагностик →</i>
+          </a>
         </div>
-      </div>
+      </section>
 
-      <div className="base-simple-name">
-        <label htmlFor="student-name">Как тебя зовут?</label>
-
-        <input
-          id="student-name"
-          type="text"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          placeholder="Введи имя"
-          autoComplete="given-name"
-        />
-      </div>
-
-      <div className="base-simple-guidance">
-        <h2>Перед началом</h2>
-
-        <ul>
-          <li>Приготовь лист бумаги для вычислений.</li>
-          <li>Сначала попробуй решить задание самостоятельно.</li>
-          <li>Строгого ограничения времени нет.</li>
-          <li>
-            Если не знаешь, как решить, нажми «Не знаю, как решить».
-          </li>
-        </ul>
-
-        <div className="base-guidance-divider" />
-
-        <label className="consent-check">
-          <input
-            type="checkbox"
-            checked={accepted}
-            onChange={(event) => setAccepted(event.target.checked)}
-          />
-          <span>
-            Я прочитал(а) рекомендации и готов(а) начать
-          </span>
-        </label>
-      </div>
-
-      <div className="base-simple-start">
-        <button
-          className="button primary big"
-          onClick={start}
-          disabled={!name.trim() || !accepted}
-        >
-          Начать диагностику <span>→</span>
-        </button>
-
-        <p>
-          <b>15 заданий</b>
-          <span> · </span>
-          около 45–60 минут
-          <span> · </span>
-          результат сразу
-        </p>
-      </div>
-
-      <div className="base-simple-note">
-        <span>♡</span>
-        <p>
-          Это не пробный ЕГЭ и не школьная оценка. Диагностика показывает,
-          какие темы стоит повторить перед подготовкой.
-        </p>
-      </div>
-    </section>
-
-    <footer>
-      <div className="brand">
-        <span className="brand-mark">∿</span>
-        <span>Математика без стресса</span>
-      </div>
-      <p>Проверяем знания, а не ставим оценки ♡</p>
-    </footer>
-  </main>
-);
+      <footer>
+        <div className="brand">
+          <span className="brand-mark">∿</span>
+          <span>Математика без стресса</span>
+        </div>
+        <p>Проверяем знания, а не ставим оценки ♡</p>
+      </footer>
+    </main>
+  );
 }
 
 function PageStyles() {
@@ -985,7 +1043,7 @@ function PageStyles() {
       .base-start-section{max-width:1180px;margin:0 auto;padding:12px 24px 76px}.base-start-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px}.base-name-card,.base-guidance-card{border:1px solid var(--base-border);border-radius:24px;background:#fff;padding:25px}.base-name-card{display:flex;flex-direction:column;justify-content:center}.base-name-card label{font-weight:800;margin-bottom:10px}.base-name-card input{width:100%;min-height:58px;border:1px solid #dacdea;border-radius:15px;padding:0 17px;font:inherit;background:#fff}.base-name-card p{margin:12px 0 0;font-size:.88rem;opacity:.72}.base-guidance-card h2{margin:0 0 15px;font-size:1.45rem}.base-guidance-card ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px;margin:0;padding-left:20px}.base-guidance-card li{line-height:1.45}
       .base-start-panel{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:22px;padding:23px 24px;border:1px solid var(--base-border);border-radius:24px;background:linear-gradient(135deg,#f7f1fd,#f7fbfd)}.base-start-actions{min-width:250px;text-align:center}.base-start-actions .button{width:100%;justify-content:center}.base-start-actions p{margin:10px 0 0;font-size:.82rem;color:#776b7e}.base-calm-note{display:flex;gap:13px;align-items:flex-start;max-width:760px;margin:20px 0 0;padding:16px 18px;border:1px solid var(--base-border);border-radius:18px;background:#fff}.base-calm-note span{color:#d986a7;font-size:1.25rem}.base-calm-note p{margin:0;line-height:1.5}
       .ege-base-question h1{white-space:pre-line}.base-answer-field{margin-top:24px}.ege-table-wrap{overflow-x:auto;margin:22px 0}.ege-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #dfd2e9;border-radius:16px;overflow:hidden;background:#fff}.ege-table th,.ege-table td{padding:12px 14px;border-right:1px solid #e8deee;border-bottom:1px solid #e8deee;text-align:center;vertical-align:middle}.ege-table th{background:#f5effa;color:#59416f;font-size:.92rem}.ege-table tr:last-child td{border-bottom:0}.ege-table th:last-child,.ege-table td:last-child{border-right:0}.suppliers-table td:last-child{text-align:left;min-width:250px}
-      .pulse-card,.geometry-card,.ineq-card{margin:22px 0;padding:18px;border:1px solid var(--base-border);border-radius:18px;background:#fff}.pulse-card svg,.geometry-card svg{width:100%;height:auto;display:block}.grid-line{stroke:#d9dde2;stroke-width:1}.axis{stroke:#313038;stroke-width:2}.axis-label{fill:#595461;font-size:12px}.axis-title{fill:#4a4351;font-size:13px;font-weight:700}.pulse-line{fill:none;stroke:#7252bd;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}.pulse-point{fill:#7252bd}.matching-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:18px;margin-top:14px}.matching-grid h3,.ineq-card h3{margin:0 0 10px;font-size:1rem;color:#5d4479}.matching-grid p{margin:8px 0;line-height:1.4}.statement-list{margin:22px 0 0;padding-left:28px}.statement-list li{margin:10px 0;line-height:1.48}.geom-shape,.geom-edge{fill:none;stroke:#3e3745;stroke-width:2.2}.geom-face{fill:#f2ecf8;stroke:#3e3745;stroke-width:2}.back-face{fill:#e7f2f8}.missing-face{fill:#fff;stroke:#aa8dcf;stroke-width:2;stroke-dasharray:7 6}.dashed{stroke-dasharray:7 6}.right-mark{fill:none;stroke:#7352bd;stroke-width:2}.geom-value{fill:#5f497a;font-size:16px;font-weight:700}.missing-label{fill:#8d70ae;font-size:13px;font-weight:700}.ineq-columns{display:grid;grid-template-columns:1fr 1fr;gap:30px}.formula-row{display:flex;align-items:center;gap:10px;min-height:38px}.formula-row>div{display:inline-block}.formula-row .katex{font-size:1.02em}
+      .pulse-card,.geometry-card,.ineq-card{margin:22px 0;padding:18px;border:1px solid var(--base-border);border-radius:18px;background:#fff}.pulse-card svg,.geometry-card svg{width:100%;height:auto;display:block}.grid-line{stroke:#d9dde2;stroke-width:1}.axis{stroke:#313038;stroke-width:2}.axis-label{fill:#595461;font-size:12px}.axis-title{fill:#4a4351;font-size:13px;font-weight:700}.pulse-line{fill:none;stroke:#7252bd;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}.pulse-point{fill:#7252bd}.matching-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:18px;margin-top:14px}.matching-grid h3,.ineq-card h3{margin:0 0 10px;font-size:1rem;color:#5d4479}.matching-grid p{margin:8px 0;line-height:1.4}.statement-list{margin:22px 0 0;padding-left:28px}.statement-list li{margin:10px 0;line-height:1.48}.geom-shape,.geom-edge{fill:none;stroke:#3e3745;stroke-width:2.2}.geom-face{fill:#f2ecf8;stroke:#3e3745;stroke-width:2}.back-face{fill:#e7f2f8}.missing-face{fill:#fff;stroke:#aa8dcf;stroke-width:2;stroke-dasharray:7 6}.dashed{stroke-dasharray:7 6}.right-mark{fill:none;stroke:#7352bd;stroke-width:2}.geom-value{fill:#5f497a;font-size:16px;font-weight:700}.geom-label{fill:#3e3745;font-size:16px;font-weight:700}.equal-mark{stroke:#7352bd;stroke-width:2.2;stroke-linecap:round}.missing-label{fill:#8d70ae;font-size:13px;font-weight:700}.ineq-columns{display:grid;grid-template-columns:1fr 1fr;gap:30px}.formula-row{display:flex;align-items:center;gap:10px;min-height:38px}.formula-row>div{display:inline-block}.formula-row .katex{font-size:1.02em}
       .result-field-line{padding:12px 0;border-top:1px solid #eee}.result-field-line.correct{color:#3e7352}.result-field-line.incorrect{color:#8a4257}.result-field-line.dont_know{color:#6f5a83}
      .base-simple-home{
   max-width:920px;
