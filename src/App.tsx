@@ -8,6 +8,7 @@ import OgePage from "../app/oge/page";
 import AfterNinePage from "../app/after9/page";
 import GradeElevenPage from "../app/11/page";
 import EgeProfilePage from "../app/ege-profile/page";
+import EgeBasePage from "../app/ege-base/page";
 
 const pageByRoute: Record<string, React.ComponentType> = {
   "/": HomePage,
@@ -19,6 +20,7 @@ const pageByRoute: Record<string, React.ComponentType> = {
   "/after9": AfterNinePage,
     "/11": GradeElevenPage,
     "/ege-profile": EgeProfilePage,
+  "/ege-base": EgeBasePage,
 };
 
 const titleByRoute: Record<string, string> = {
@@ -31,6 +33,7 @@ const titleByRoute: Record<string, string> = {
   "/after9": "Что повторить после 9 класса?",
     "/11": "Что повторить перед 11 классом?",
   "/ege-profile": "Входная диагностика ЕГЭ профиль",
+  "/ege-base": "Входная диагностика ЕГЭ база",
 };
 
 function normalizedBase() {
