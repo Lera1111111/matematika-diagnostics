@@ -1,6 +1,6 @@
 "use client";
 
-const TELEGRAM_URL = "https://t.me/m/8wQr09o1NDEy";
+const TELEGRAM_URL = "https://t.me/vxoab";
 
 const diagnostics = [
   {
@@ -166,8 +166,7 @@ export default function HomePage() {
             <span>01</span>
             <h3>Выбираешь диагностику</h3>
             <p>
-              Выбери свой класс, подготовку к ОГЭ или диагностику после
-              окончания 9 класса.
+              Выбери диагностику под свой учебный этап или экзамен.
             </p>
           </article>
 
