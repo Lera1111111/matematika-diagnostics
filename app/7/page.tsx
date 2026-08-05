@@ -771,6 +771,20 @@ export default function GradeSeven() {
       `Работа выполнена: ${new Date().toLocaleString("ru-RU")}`,
     ].join("\n\n");
   };
+  const copyResult = async (
+  message = "Результат скопирован",
+) => {
+  try {
+    await navigator.clipboard.writeText(reportText());
+    setToast(message);
+    setCopyFallback("");
+  } catch {
+    setToast("Браузер запретил автоматическое копирование");
+    setCopyFallback(reportText());
+  }
+
+  window.setTimeout(() => setToast(""), 4000);
+};
 
  const telegramMessage = encodeURIComponent(reportText());
 
