@@ -7,6 +7,7 @@ import GradeNinePage from "../app/9/page";
 import OgePage from "../app/oge/page";
 import AfterNinePage from "../app/after9/page";
 import GradeElevenPage from "../app/11/page";
+import EgeProfilePage from "../app/ege-profile/page";
 
 const pageByRoute: Record<string, React.ComponentType> = {
   "/": HomePage,
