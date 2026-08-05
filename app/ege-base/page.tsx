@@ -437,17 +437,14 @@ if (kind === "prism") {
         <line x1="18" y1="192" x2="100" y2="145" className="geom-edge dashed" />
         <line x1="182" y1="192" x2="100" y2="145" className="geom-edge dashed" />
 
-        {/* Прямой угол */}
-<path d="M90 155 L101 148 L111 160" className="right-mark" />
-
         {/* Подписи */}
-        <text x="4" y="130" className="geom-value">
-          7
-        </text>
+<text x="48" y="166" className="geom-value">
+  7
+</text>
 
-        <text x="92" y="210" className="geom-value">
-          11
-        </text>
+<text x="140" y="168" className="geom-value">
+  11
+</text>
 
         <text x="108" y="84" className="geom-value">
           6
