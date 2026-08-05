@@ -130,14 +130,13 @@ const questions: Question[] = [
     note: "В ответ запишите значение x.",
   },
   {
-    id: 13,
-    block: "Вторая часть",
-    topic: "Тригонометрическое уравнение",
-    prompt: "Решите уравнение и выполните отбор корней.",
-    expression: String.raw`2\sin^2x-\sin x\cos x-\cos^2x=0`,
-    type: "advanced13",
-    note: String.raw`б) Найдите все корни, принадлежащие отрезку \left[-\pi;\frac{3\pi}{2}\right].`,
-  },
+  id: 13,
+  block: "Вторая часть",
+  topic: "Тригонометрическое уравнение",
+  prompt: "а) Решите уравнение.",
+  expression: String.raw`2\sin^2x-\sin x\cos x-\cos^2x=0`,
+  type: "advanced13",
+},
   {
     id: 15,
     block: "Вторая часть",
@@ -152,7 +151,6 @@ const questions: Question[] = [
     topic: "Планиметрия второй части",
     prompt: "В равнобедренном треугольнике ABC с углом 120° при вершине A проведена биссектриса BD, где D лежит на стороне AC. В треугольник ABC вписан прямоугольник DEFH так, что сторона FH лежит на стороне BC, а вершина E — на стороне AB.",
     type: "advanced17",
-    diagram: "rectangle-triangle",
     note: "а) Докажите, что FH = 2DH.  б) Найдите площадь прямоугольника DEFH, если AB = 4.",
   },
   {
@@ -268,14 +266,20 @@ function fileToPhoto(file: File, bucket: string) {
   });
 }
 
-function MathFormula({ expression }: { expression: string }) {
+function MathFormula({
+  expression,
+  displayMode = true,
+}: {
+  expression: string;
+  displayMode?: boolean;
+}) {
   const [element, setElement] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!element) return;
     const renderFormula = () => {
       if (!window.katex) return false;
-      window.katex.render(expression, element, { displayMode: true, throwOnError: false });
+      window.katex.render(expression, element, { displayMode, throwOnError: false });
       return true;
     };
     if (renderFormula()) return;
@@ -283,7 +287,7 @@ function MathFormula({ expression }: { expression: string }) {
       if (renderFormula()) window.clearInterval(timer);
     }, 100);
     return () => window.clearInterval(timer);
-  }, [element, expression]);
+}, [element, expression, displayMode]);
 
   return <div ref={setElement} />;
 }
@@ -292,22 +296,29 @@ function ProfileDiagram({ kind }: { kind: DiagramKind }) {
   return (
     <div className="geometry-diagram profile-diagram">
       <svg viewBox="0 0 460 290" role="img" aria-label="Схема к заданию">
-        {kind === "planimetry-angle" && (
-          <>
-            <polygon points="85,235 85,65 385,235" className="edge" />
-            <path d="M85 213 h22 v22" className="marker" />
-            <line x1="85" y1="235" x2="235" y2="150" className="highlight" />
-            <line x1="85" y1="235" x2="235" y2="150" className="highlight" />
-            <circle cx="235" cy="150" r="4" className="point" />
-            <line x1="85" y1="235" x2="255" y2="160" className="thin-highlight" />
-            <text x="68" y="55">A</text>
-            <text x="392" y="242">B</text>
-            <text x="65" y="255">C</text>
-            <text x="242" y="146">M</text>
-            <text x="270" y="156">D</text>
-            <text x="334" y="220" className="value-label">65°</text>
-          </>
-        )}
+    {kind === "planimetry-angle" && (
+  <>
+    <polygon points="85,235 85,65 385,235" className="edge" />
+    <path d="M85 213 h22 v22" className="marker" />
+
+    <line x1="85" y1="235" x2="235" y2="150" className="highlight" />
+    <circle cx="235" cy="150" r="4" className="point" />
+
+    <line x1="85" y1="235" x2="255" y2="160" className="thin-highlight" />
+
+    <path
+      d="M353 235 A32 32 0 0 0 357 219"
+      className="angle-arc"
+    />
+
+    <text x="68" y="55">A</text>
+    <text x="392" y="242">B</text>
+    <text x="65" y="255">C</text>
+    <text x="242" y="146">M</text>
+    <text x="270" y="156">D</text>
+    <text x="326" y="231" className="value-label">65°</text>
+  </>
+)}
         {kind === "cylinder" && (
           <>
             <ellipse cx="230" cy="65" rx="105" ry="28" className="edge" />
@@ -315,9 +326,9 @@ function ProfileDiagram({ kind }: { kind: DiagramKind }) {
             <line x1="125" y1="65" x2="125" y2="225" className="edge" />
             <line x1="335" y1="65" x2="335" y2="225" className="edge" />
             <line x1="230" y1="65" x2="330" y2="65" className="highlight" />
-            <line x1="350" y1="65" x2="350" y2="225" className="highlight" />
+<line x1="230" y1="65" x2="230" y2="225" className="cylinder-height" />
             <text x="270" y="54" className="value-label">r</text>
-            <text x="360" y="150" className="value-label">h</text>
+<text x="240" y="150" className="value-label">h</text>
           </>
         )}
         {kind === "derivative-graph" && (
@@ -334,7 +345,15 @@ function ProfileDiagram({ kind }: { kind: DiagramKind }) {
               <text x="432" y="250">x</text>
               <text x="70" y="20">y</text>
             </g>
-            <path d="M75 225 C140 205 180 160 220 145 C260 130 285 125 330 122 C370 120 397 130 420 145" className="function-curve" />
+            <path
+  d="
+    M75 235
+    C110 230 135 215 160 195
+    C200 163 245 112 310 75
+    C345 55 380 60 420 95
+  "
+  className="function-curve"
+/>
             <line x1="160" y1="195" x2="310" y2="75" className="tangent" />
             <circle cx="160" cy="195" r="5" className="point" />
             <circle cx="310" cy="75" r="5" className="point" />
@@ -653,11 +672,19 @@ export default function EgeProfileDiagnostic() {
             <div className="question-meta"><span>{question.block}</span><span>№{question.id} · {question.topic}</span></div>
             <h1>{question.prompt}</h1>
             {question.expression && <div className="expression oge-expression"><MathFormula expression={question.expression} /></div>}
+            {question.id === 13 && (
+  <div className="ege-profile-subtask">
+    <span>б) Найдите все корни, принадлежащие отрезку</span>
+    <MathFormula
+      expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
+      displayMode={false}
+    />
+    <span>.</span>
+  </div>
+)}
             {question.diagram && <ProfileDiagram kind={question.diagram} />}
             {question.note && question.type === "number" && <p className="profile-note">{question.note}</p>}
-            {question.note && question.type !== "number" && question.id !== 17 && (
-              <div className="expression secondary-expression"><MathFormula expression={question.note} /></div>
-            )}
+            
             {question.id === 17 && question.note && <p className="profile-note strong-note">{question.note}</p>}
 
             {question.type === "number" && (
@@ -1033,9 +1060,13 @@ const profileStyles = `
 .strong-note{font-size:1rem}
 .profile-diagram{margin-top:20px}
 .profile-diagram svg{width:100%;max-width:560px;color:#62517e}
-.profile-diagram .edge,.profile-diagram .marker,.profile-diagram .highlight,.profile-diagram .thin-highlight,.profile-diagram .bisector,.profile-diagram .rectangle-shape,.profile-diagram .graph-axes line,.profile-diagram .graph-axes path,.profile-diagram .graph-grid line,.profile-diagram .function-curve,.profile-diagram .tangent{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.profile-diagram .edge,.profile-diagram .marker,.profile-diagram .angle-arc,.profile-diagram .highlight,.profile-diagram .thin-highlight,.profile-diagram .bisector,.profile-diagram .rectangle-shape,.profile-diagram .graph-axes line,.profile-diagram .graph-axes path,.profile-diagram .graph-grid line,.profile-diagram .function-curve,.profile-diagram .cylinder-height,.profile-diagram .tangent{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .profile-diagram .edge{stroke:#67528d;stroke-width:3}
 .profile-diagram .marker{stroke:#9275be;stroke-width:2.5}
+.profile-diagram .angle-arc{
+  stroke:#9275be;
+  stroke-width:2.5
+}
 .profile-diagram .highlight{stroke:#9672c8;stroke-width:4}
 .profile-diagram .thin-highlight{stroke:#c2a8df;stroke-width:3}
 .profile-diagram .bisector{stroke:#9a79c2;stroke-width:3.5}
@@ -1047,6 +1078,29 @@ const profileStyles = `
 .profile-diagram .graph-axes line,.profile-diagram .graph-axes path{stroke:#76658e;stroke-width:2}
 .profile-diagram .function-curve{stroke:#b5a0cc;stroke-width:4}
 .profile-diagram .tangent{stroke:#7f5ab4;stroke-width:4}
+.profile-diagram .cylinder-height{
+  stroke:#9672c8;
+  stroke-width:3;
+  stroke-dasharray:8 7
+}
+.ege-profile-subtask{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  margin:10px 0 18px;
+  color:#332c3b;
+  font-size:1rem;
+  line-height:1.55
+}
+
+.ege-profile-subtask > div{
+  display:inline-block
+}
+
+.ege-profile-subtask .katex{
+  font-size:1.08em
+}
 .profile-facts span{min-height:54px}
 .profile-overview-grid .overview-item{min-height:86px}
 .profile-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
