@@ -419,34 +419,43 @@ function GeometryDiagram({ kind }: { kind: "open-cube" | "triangle" | "prism" })
     );
   }
 
-  if (kind === "prism") {
-    return (
-      <div className="geometry-card">
-        <svg viewBox="0 0 440 330" role="img" aria-label="Прямая треугольная призма">
-          {/* Нижнее треугольное основание */}
-          <polygon points="105,255 245,255 105,175" className="geom-shape" />
+if (kind === "prism") {
+  return (
+    <div className="geometry-card">
+      <svg viewBox="0 0 220 220" role="img" aria-label="Прямая призма">
+        {/* Внешний контур */}
+        <line x1="18" y1="62" x2="100" y2="12" className="geom-edge" />
+        <line x1="100" y1="12" x2="182" y2="62" className="geom-edge" />
+        <line x1="18" y1="62" x2="182" y2="62" className="geom-edge" />
 
-          {/* Верхнее треугольное основание */}
-          <polygon points="175,135 315,135 175,55" className="geom-shape" />
+        <line x1="18" y1="62" x2="18" y2="192" className="geom-edge" />
+        <line x1="182" y1="62" x2="182" y2="192" className="geom-edge" />
+        <line x1="18" y1="192" x2="182" y2="192" className="geom-edge" />
 
-          {/* Боковые рёбра */}
-          <line x1="105" y1="255" x2="175" y2="135" className="geom-edge" />
-          <line x1="245" y1="255" x2="315" y2="135" className="geom-edge" />
-          <line x1="105" y1="175" x2="175" y2="55" className="geom-edge" />
+        {/* Внутренние пунктирные линии */}
+        <line x1="100" y1="12" x2="100" y2="132" className="geom-edge dashed" />
+        <line x1="18" y1="192" x2="100" y2="145" className="geom-edge dashed" />
+        <line x1="182" y1="192" x2="100" y2="145" className="geom-edge dashed" />
 
-          {/* Прямой угол в нижнем основании */}
-          <path d="M105 237 h18 v18" className="right-mark" />
+        {/* Прямой угол */}
+        <path d="M100 145 l12 -7 l7 12" className="right-mark" />
 
-          {/* Катеты основания */}
-          <text x="72" y="220" className="geom-value">7</text>
-          <text x="165" y="282" className="geom-value">11</text>
+        {/* Подписи */}
+        <text x="4" y="130" className="geom-value">
+          7
+        </text>
 
-          {/* Высота призмы */}
-          <text x="126" y="188" className="geom-value">6</text>
-        </svg>
-      </div>
-    );
-  }
+        <text x="92" y="210" className="geom-value">
+          11
+        </text>
+
+        <text x="108" y="84" className="geom-value">
+          6
+        </text>
+      </svg>
+    </div>
+  );
+}
 
   return (
     <div className="geometry-card">
