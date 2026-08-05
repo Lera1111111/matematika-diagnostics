@@ -25,7 +25,7 @@ const diagnostics = [
   },
   {
     href: "/after9",
-    label: "После 9 класса",
+    label: "Перед 10 классом",
     meta: "Программа 5–9 классов",
   },
   {
