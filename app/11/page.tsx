@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import OtherDiagnostics from "../components/OtherDiagnostics";
 
 declare global {
   interface Window {
@@ -2099,6 +2100,8 @@ const telegramMessage = encodeURIComponent(resultText());
           </p>
         </div>
       </section>
+      
+      <OtherDiagnostics current="/6" />
 
       <footer>
         <div className="brand">
