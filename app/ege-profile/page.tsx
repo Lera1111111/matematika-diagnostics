@@ -688,7 +688,6 @@ export default function EgeProfileDiagnostic() {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                 >
-                >
   {index + 1}
 </button>
               );
