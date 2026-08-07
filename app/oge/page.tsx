@@ -829,63 +829,71 @@ export default function OgeEntryDiagnostic() {
           <div>{[16,17,18].map((id) => <span key={id}>№{id} — {highLevelStatus(id)}</span>)}</div>
           <p>Финальные ответы не оцениваются автоматически: важны обоснование, ход решения и записи на бумаге.</p>
         </section>
-  <section className="final-cta oge-final">
-  <div>
-    <p className="kicker">
-      {isTeacherMode ? "Следующий шаг" : "Получить разбор и рекомендации"}
-    </p>
+  
 
-    <h2>
-      {isTeacherMode
-        ? "Сохрани результат и передай его преподавателю"
-        : "Отправь результат и фотографии решений Лере"}
-    </h2>
+        <section className="final-cta oge-final">
+          <div>
+            <p className="kicker">
+              {isTeacherMode
+                ? "Следующий шаг"
+                : "Получить разбор и рекомендации"}
+            </p>
 
-    <p>
-      {isTeacherMode
-        ? "Результат можно скопировать и отправить своему преподавателю вместе с фотографиями решений."
-        : "Я посмотрю ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план подготовки."}
-    </p>
-  </div>
+            <h2>
+              {isTeacherMode
+                ? "Сохрани результат и передай его преподавателю"
+                : "Отправь результат и фотографии решений Лере"}
+            </h2>
 
-  <div className="cta-actions oge-cta-actions">
-    <button
-      className="button secondary"
-      onClick={() => copyReport()}
-    >
-      Скопировать результат
-    </button>
+            <p>
+              {isTeacherMode
+                ? "Результат можно скопировать и отправить своему преподавателю вместе с фотографиями решений."
+                : "Я посмотрю ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план подготовки."}
+            </p>
+          </div>
 
-    {!isTeacherMode && (
-      <a
-        className="button primary"
-        href={TELEGRAM_URL}
-        target="_blank"
-        rel="noreferrer"
-        onClick={() =>
-          copyReport(
-            "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений",
-          )
-        }
-      >
-        Обсудить результат
-      </a>
-    )}
+          <div className="cta-actions oge-cta-actions">
+            <button
+              className="button secondary"
+              onClick={() => copyReport()}
+            >
+              Скопировать результат
+            </button>
 
-    <button
-      className="button secondary"
-      onClick={restart}
-    >
-      Пройти ещё раз
-    </button>
-  </div>
+            {!isTeacherMode && (
+              <a
+                className="button primary"
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() =>
+                  copyReport(
+                    "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений",
+                  )
+                }
+              >
+                Обсудить результат
+              </a>
+            )}
 
-  {toast && (
-    <p className="copy-toast" role="status">
-      {toast}
-    </p>
-  )}
-</section>
+            <button
+              className="button secondary"
+              onClick={restart}
+            >
+              Пройти ещё раз
+            </button>
+          </div>
+
+          {toast && (
+            <p className="copy-toast" role="status">
+              {toast}
+            </p>
+          )}
+        </section>
+      </main>
+    );
+  }
+
 
   return (
     <main className="home-page oge-page">
