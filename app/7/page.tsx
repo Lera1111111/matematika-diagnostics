@@ -581,6 +581,9 @@ function formatAnswer(answer?: StoredAnswer) {
 }
 
 export default function GradeSeven() {
+    const isTeacherMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("teacher") === "1";
   const [screen, setScreen] =
     useState<"home" | "test" | "geometry" | "review" | "result">("home");
   const [studentName, setStudentName] = useState("");
@@ -1641,17 +1644,21 @@ const telegramMessage = encodeURIComponent(reportText());
               Скопировать результат
             </button>
 
-            <a
-              className="button primary"
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() =>
-                copyResult(
-                  "Результат скопирован. Вставь его в сообщение",
-                )
-              }
-            >
+           {!isTeacherMode && (
+  <a
+    className="button primary"
+    href={telegramUrl}
+    target="_blank"
+    rel="noreferrer"
+    onClick={() =>
+      copyResult(
+        "Результат скопирован. Вставь его в сообщение",
+      )
+    }
+  >
+    {copy.cta}
+  </a>
+)}
               {copy.cta}
             </a>
 
