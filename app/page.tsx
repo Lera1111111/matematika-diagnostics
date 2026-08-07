@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 const TELEGRAM_URL = "https://t.me/vxoab";
 
 const diagnostics = [
@@ -84,6 +86,13 @@ function MathDoodle() {
   );
 }
 export default function HomePage() {
+  const [isTeacherMode, setIsTeacherMode] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsTeacherMode(params.get("teacher") === "1");
+  }, []);
+
   return (
     <main className="home-page">
       <header className="site-header">
