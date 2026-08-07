@@ -503,6 +503,7 @@ function Doodle() {
 
 
 export default function GradeNineDiagnostic() {
+    const [isTeacherMode, setIsTeacherMode] = useState(false);
   const [screen, setScreen] =
     useState<"home" | "test" | "bridge" | "review" | "result">("home");
   const [name, setName] = useState("");
@@ -514,6 +515,8 @@ export default function GradeNineDiagnostic() {
   const [copyFallback, setCopyFallback] = useState("");
 
   useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+    setIsTeacherMode(params.get("teacher") === "1");
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
 
@@ -1613,20 +1616,21 @@ const telegramMessage = encodeURIComponent(resultText());
               Скопировать результат
             </button>
 
-            <a
-              className="button primary"
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() =>
-                copyResult(
-                  "Результат скопирован. Вставь его в сообщение",
-                )
-              }
-            >
-              Обсудить результат
-            </a>
-
+      {!isTeacherMode && (
+  <a
+    className="button primary"
+    href={telegramUrl}
+    target="_blank"
+    rel="noreferrer"
+    onClick={() =>
+      copyResult(
+        "Результат скопирован. Вставь его в сообщение",
+      )
+    }
+  >
+    Обсудить результат
+  </a>
+)}
             <button
               className="button secondary"
               onClick={restart}
