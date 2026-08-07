@@ -1091,111 +1091,92 @@ if (screen === "result") {
   </section>
 )}
 
-    <section className="final-cta oge-final">
-  <div>
-    <p className="kicker">
-      {isTeacherMode
-        ? "Следующий шаг"
-        : advancedSkipped
-          ? "Следующий шаг"
-          : "Получить разбор и план повторения"}
-    </p>
+         <section className="final-cta oge-final">
+        <div>
+          <p className="kicker">
+            {isTeacherMode
+              ? "Следующий шаг"
+              : advancedSkipped
+                ? "Следующий шаг"
+                : "Получить разбор и план повторения"}
+          </p>
 
-    <h2>
-      {isTeacherMode
-        ? "Сохрани результат и передай его преподавателю"
-        : advancedSkipped
-          ? "Хочешь повторить математику без стресса?"
-          : "Отправь результат и фотографии решений Лере"}
-    </h2>
+          <h2>
+            {isTeacherMode
+              ? "Сохрани результат и передай его преподавателю"
+              : advancedSkipped
+                ? "Хочешь повторить математику без стресса?"
+                : "Отправь результат и фотографии решений Лере"}
+          </h2>
 
-    <p>
-      {isTeacherMode
-        ? "Результат можно скопировать и отправить своему преподавателю вместе с фотографиями решений."
-        : advancedSkipped
-          ? "Разберём только те темы, в которых остались пробелы, без повторения всей программы 5–9 классов."
-          : "Я посмотрю не только ответы, но и ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план."}
-    </p>
-  </div>
+          <p>
+            {isTeacherMode
+              ? "Результат можно скопировать и отправить своему преподавателю вместе с фотографиями решений."
+              : advancedSkipped
+                ? "Разберём только те темы, в которых остались пробелы, без повторения всей программы 5–9 классов."
+                : "Я посмотрю не только ответы, но и ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план."}
+          </p>
+        </div>
 
-  <div className="cta-actions oge-cta-actions">
-    <button
-      className="button secondary"
-      onClick={() => copyResult()}
-    >
-      Скопировать результат
-    </button>
+        <div className="cta-actions oge-cta-actions">
+          <button
+            className="button secondary"
+            onClick={() => copyResult()}
+          >
+            Скопировать результат
+          </button>
 
-    {!isTeacherMode && (
-      <a
-        className="button primary"
-        href={TELEGRAM_URL}
-        target="_blank"
-        rel="noreferrer"
-        onClick={() =>
-          copyResult(
-            advancedSkipped
-              ? "Результат скопирован. Вставь его в сообщение"
-              : "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
-          )
-        }
-      >
-        {advancedSkipped
-          ? "Обсудить план повторения"
-          : "Обсудить результат"}
-      </a>
-    )}
+          {!isTeacherMode && (
+            <a
+              className="button primary"
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                copyResult(
+                  advancedSkipped
+                    ? "Результат скопирован. Вставь его в сообщение"
+                    : "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
+                )
+              }
+            >
+              {advancedSkipped
+                ? "Обсудить план повторения"
+                : "Открыть Telegram Леры"}
+            </a>
+          )}
 
-    <button
-      className="button secondary"
-      onClick={restart}
-    >
-      Пройти ещё раз
-    </button>
-  </div>
+          <button
+            className="button secondary"
+            onClick={restart}
+          >
+            Пройти ещё раз
+          </button>
+        </div>
 
-  {toast && (
-    <p className="copy-toast" role="status">
-      {toast}
-    </p>
-  )}
+        {toast && (
+          <p className="copy-toast" role="status">
+            {toast}
+          </p>
+        )}
 
-  {copyFallback && (
-    <div className="copy-fallback">
-      <textarea readOnly value={copyFallback} />
+        {copyFallback && (
+          <div className="copy-fallback">
+            <textarea readOnly value={copyFallback} />
 
-      <button
-        className="button secondary"
-        onClick={() => copyResult()}
-      >
-        Скопировать вручную
-      </button>
-    </div>
-  )}
-</section>
-
-  {toast && (
-    <p className="copy-toast" role="status">
-      {toast}
-    </p>
-  )}
-
-  {copyFallback && (
-    <div className="copy-fallback">
-      <textarea readOnly value={copyFallback} />
-
-      <button
-        className="button secondary"
-        onClick={() => copyResult()}
-      >
-        Скопировать вручную
-      </button>
-    </div>
-  )}
-</section>
+            <button
+              className="button secondary"
+              onClick={() => copyResult()}
+            >
+              Скопировать вручную
+            </button>
+          </div>
+        )}
+      </section>
     </main>
   );
 }
+
 
   return (
   <main className="home-page after9-page">
