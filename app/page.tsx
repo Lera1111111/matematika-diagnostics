@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 const TELEGRAM_URL = "https://t.me/vxoab";
 
 const diagnostics = [
@@ -87,23 +85,10 @@ function MathDoodle() {
 }
 
 export default function HomePage() {
-  const [isTeacherMode, setIsTeacherMode] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setIsTeacherMode(params.get("teacher") === "1");
-  }, []);
-
-  const diagnosticHref = (href: string) =>
-    isTeacherMode ? `${href}?teacher=1` : href;
-
   return (
     <main className="home-page">
       <header className="site-header">
-        <a
-          className="brand"
-          href={isTeacherMode ? "/?teacher=1" : "/"}
-        >
+        <a className="brand" href="/">
           <span className="brand-mark">∿</span>
 
           <span className="brand-text">
@@ -186,8 +171,8 @@ export default function HomePage() {
             <span>02</span>
             <h3>Выполняешь задания</h3>
             <p>
-              Решай самостоятельно. Если способ решения незнаком, можно
-              честно отметить «Не знаю».
+              Решай самостоятельно. Если способ решения незнаком, можно честно
+              отметить «Не знаю».
             </p>
           </article>
 
@@ -228,7 +213,7 @@ export default function HomePage() {
             <a
               key={diagnostic.href}
               className="class-card active"
-              href={diagnosticHref(diagnostic.href)}
+              href={diagnostic.href}
             >
               <span>Доступно сейчас</span>
               <b>{diagnostic.label}</b>
@@ -239,30 +224,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      {!isTeacherMode && (
-        <section className="final-cta">
-          <div>
-            <p className="kicker">Нужна помощь?</p>
-            <h2>Можно разобрать результаты вместе</h2>
-            <p>
-              Если после диагностики останутся вопросы, напиши мне в Telegram.
-              Помогу понять результат и определить, с чего лучше начать
-              повторение.
-            </p>
-          </div>
+      <section className="final-cta">
+        <div>
+          <p className="kicker">Нужна помощь?</p>
+          <h2>Можно разобрать результаты вместе</h2>
+          <p>
+            Если после диагностики останутся вопросы, напиши мне в Telegram.
+            Помогу понять результат и определить, с чего лучше начать
+            повторение.
+          </p>
+        </div>
 
-          <div className="cta-actions">
-            <a
-              className="button primary"
-              href={TELEGRAM_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Написать в Telegram
-            </a>
-          </div>
-        </section>
-      )}
+        <div className="cta-actions">
+          <a
+            className="button primary"
+            href={TELEGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Написать в Telegram
+          </a>
+        </div>
+      </section>
 
       <footer>
         <div className="brand">
