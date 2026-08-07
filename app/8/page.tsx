@@ -434,6 +434,9 @@ function formatAnswer(
 }
 
 export default function GradeEight() {
+    const isTeacherMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("teacher") === "1";
   const [screen, setScreen] =
     useState<"home" | "test" | "geometry" | "review" | "result">("home");
   const [studentName, setStudentName] = useState("");
@@ -1540,37 +1543,36 @@ ${rows}
           </div>
 
           <div className="cta-actions">
-            <button
-              className="button secondary"
-              onClick={() => copyResult()}
-            >
-              Скопировать результат
-            </button>
+  <button
+    className="button secondary"
+    onClick={() => copyResult()}
+  >
+    Скопировать результат
+  </button>
 
-          
+  {!isTeacherMode && (
+    <a
+      className="button primary"
+      href={telegramUrl}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() =>
+        copyResult(
+          "Результат скопирован. Вставь его в сообщение",
+        )
+      }
+    >
+      {copy.cta}
+    </a>
+  )}
 
-            <a
-              className="button primary"
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() =>
-                copyResult(
-                  "Результат скопирован. Вставь его в сообщение",
-                )
-              }
-            >
-              {copy.cta}
-            </a>
-
-            <button
-              className="button secondary"
-              onClick={restart}
-            >
-              Пройти тест ещё раз
-            </button>
-          </div>
-
+  <button
+    className="button secondary"
+    onClick={restart}
+  >
+    Пройти тест ещё раз
+  </button>
+</div>
           {toast && (
             <p className="copy-toast" role="status">
               {toast}
