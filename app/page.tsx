@@ -232,28 +232,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="final-cta">
-        <div>
-          <p className="kicker">Нужна помощь?</p>
-          <h2>Можно разобрать результаты вместе</h2>
-          <p>
-            Если после диагностики останутся вопросы, напиши мне в Telegram.
-            Помогу понять результат и определить, с чего лучше начать
-            повторение.
-          </p>
-        </div>
+     {!isTeacherMode && (
+  <section className="final-cta">
+    <div>
+      <p className="kicker">Нужна помощь?</p>
+      <h2>Можно разобрать результаты вместе</h2>
+      <p>
+        Если после диагностики останутся вопросы, напиши мне в Telegram.
+        Помогу понять результат и определить, с чего лучше начать
+        повторение.
+      </p>
+    </div>
 
-        <div className="cta-actions">
-          <a
-            className="button primary"
-            href={TELEGRAM_URL}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Написать в Telegram
-          </a>
-        </div>
-      </section>
+    <div className="cta-actions">
+      <a
+        className="button primary"
+        href={TELEGRAM_URL}
+        target="_blank"
+        rel="noreferrer"
+      >
+        Написать в Telegram
+      </a>
+    </div>
+  </section>
+)}
 
       <footer>
         <div className="brand">
