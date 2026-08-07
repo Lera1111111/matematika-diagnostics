@@ -221,7 +221,11 @@ export default function HomePage() {
             <a
               key={diagnostic.href}
               className="class-card active"
-              href={diagnostic.href}
+             href={
+  isTeacherMode
+    ? `${diagnostic.href}?teacher=1`
+    : diagnostic.href
+}
             >
               <span>Доступно сейчас</span>
               <b>{diagnostic.label}</b>
