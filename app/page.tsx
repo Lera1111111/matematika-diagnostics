@@ -62,8 +62,8 @@ const diagnostics = [
 function MathDoodle() {
   return (
     <div className="math-doodle" aria-hidden="true">
-      <span className="doodle-plus">+</span>
-      <span className="doodle-pi">π</span>
+      <span>+</span>
+      <span>π</span>
 
       <span className="doodle-frac">
         <b>5</b>
