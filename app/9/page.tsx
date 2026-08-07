@@ -503,7 +503,9 @@ function Doodle() {
 
 
 export default function GradeNineDiagnostic() {
-    const [isTeacherMode, setIsTeacherMode] = useState(false);
+   const isTeacherMode =
+  typeof window !== "undefined" &&
+  new URLSearchParams(window.location.search).get("teacher") === "1";
   const [screen, setScreen] =
     useState<"home" | "test" | "bridge" | "review" | "result">("home");
   const [name, setName] = useState("");
@@ -515,8 +517,7 @@ export default function GradeNineDiagnostic() {
   const [copyFallback, setCopyFallback] = useState("");
 
   useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-    setIsTeacherMode(params.get("teacher") === "1");
+
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
 
