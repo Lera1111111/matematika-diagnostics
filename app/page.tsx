@@ -89,9 +89,15 @@ export default function HomePage() {
     <main className="home-page">
       <header className="site-header">
         <a className="brand" href="/">
-          <span className="brand-mark">∿</span>
-          <span>Математика без стресса</span>
-        </a>
+  <span className="brand-mark">∿</span>
+
+  <span className="brand-text">
+    <span className="brand-title">Математика без стресса</span>
+    <span className="brand-author">
+      Валерия Евгеньевна · репетитор по математике
+    </span>
+  </span>
+</a>
 
         <a className="header-cta" href="#diagnostics">
           Выбрать диагностику
