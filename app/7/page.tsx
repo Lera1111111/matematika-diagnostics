@@ -1636,39 +1636,37 @@ const telegramMessage = encodeURIComponent(reportText());
             <p>{copy.card}</p>
           </div>
 
-          <div className="cta-actions">
-            <button
-              className="button secondary"
-              onClick={() => copyResult()}
-            >
-              Скопировать результат
-            </button>
-
-           {!isTeacherMode && (
-  <a
-    className="button primary"
-    href={telegramUrl}
-    target="_blank"
-    rel="noreferrer"
-    onClick={() =>
-      copyResult(
-        "Результат скопирован. Вставь его в сообщение",
-      )
-    }
+         <div className="cta-actions">
+  <button
+    className="button secondary"
+    onClick={() => copyResult()}
   >
-    {copy.cta}
-  </a>
-)}
-              {copy.cta}
-            </a>
+    Скопировать результат
+  </button>
 
-            <button
-              className="button secondary"
-              onClick={restart}
-            >
-              Пройти тест ещё раз
-            </button>
-          </div>
+  {!isTeacherMode && (
+    <a
+      className="button primary"
+      href={telegramUrl}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() =>
+        copyResult(
+          "Результат скопирован. Вставь его в сообщение",
+        )
+      }
+    >
+      {copy.cta}
+    </a>
+  )}
+
+  <button
+    className="button secondary"
+    onClick={restart}
+  >
+    Пройти тест ещё раз
+  </button>
+</div>
 
           {toast && (
             <p className="copy-toast" role="status">
