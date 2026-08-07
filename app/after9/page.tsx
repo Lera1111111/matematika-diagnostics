@@ -501,6 +501,9 @@ function PhotoUploader({ bucket, photos, onAdd, onRemove, onLabel, onZoom }: {
 }
 
 export default function AfterGradeNineDiagnostic() {
+    const isTeacherMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("teacher") === "1";
 const [screen, setScreen] = useState<
   "home" | "test" | "photos" | "review" | "result"
 >("home");
@@ -1088,24 +1091,30 @@ if (screen === "result") {
   </section>
 )}
 
-     <section className="final-cta oge-final">
+    <section className="final-cta oge-final">
   <div>
     <p className="kicker">
-      {advancedSkipped
+      {isTeacherMode
         ? "Следующий шаг"
-        : "Получить разбор и план повторения"}
+        : advancedSkipped
+          ? "Следующий шаг"
+          : "Получить разбор и план повторения"}
     </p>
 
     <h2>
-      {advancedSkipped
-        ? "Хочешь повторить математику без стресса?"
-        : "Отправь результат и фотографии решений Лере"}
+      {isTeacherMode
+        ? "Сохрани результат и передай его преподавателю"
+        : advancedSkipped
+          ? "Хочешь повторить математику без стресса?"
+          : "Отправь результат и фотографии решений Лере"}
     </h2>
 
     <p>
-      {advancedSkipped
-        ? "Разберём только те темы, в которых остались пробелы, без повторения всей программы 5–9 классов."
-        : "Я посмотрю не только ответы, но и ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план."}
+      {isTeacherMode
+        ? "Результат можно скопировать и отправить своему преподавателю вместе с фотографиями решений."
+        : advancedSkipped
+          ? "Разберём только те темы, в которых остались пробелы, без повторения всей программы 5–9 классов."
+          : "Я посмотрю не только ответы, но и ход работы, отмечу сильные стороны и темы для повторения, а затем предложу подходящий план."}
     </p>
   </div>
 
@@ -1117,23 +1126,25 @@ if (screen === "result") {
       Скопировать результат
     </button>
 
-    <a
-      className="button primary"
-      href={TELEGRAM_URL}
-      target="_blank"
-      rel="noreferrer"
-      onClick={() =>
-        copyResult(
-          advancedSkipped
-            ? "Результат скопирован. Вставь его в сообщение"
-            : "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
-        )
-      }
-    >
-      {advancedSkipped
-        ? "Обсудить план повторения"
-        : "Открыть Telegram Леры"}
-    </a>
+    {!isTeacherMode && (
+      <a
+        className="button primary"
+        href={TELEGRAM_URL}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() =>
+          copyResult(
+            advancedSkipped
+              ? "Результат скопирован. Вставь его в сообщение"
+              : "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений"
+          )
+        }
+      >
+        {advancedSkipped
+          ? "Обсудить план повторения"
+          : "Обсудить результат"}
+      </a>
+    )}
 
     <button
       className="button secondary"
@@ -1142,6 +1153,26 @@ if (screen === "result") {
       Пройти ещё раз
     </button>
   </div>
+
+  {toast && (
+    <p className="copy-toast" role="status">
+      {toast}
+    </p>
+  )}
+
+  {copyFallback && (
+    <div className="copy-fallback">
+      <textarea readOnly value={copyFallback} />
+
+      <button
+        className="button secondary"
+        onClick={() => copyResult()}
+      >
+        Скопировать вручную
+      </button>
+    </div>
+  )}
+</section>
 
   {toast && (
     <p className="copy-toast" role="status">
