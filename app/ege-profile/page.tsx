@@ -452,6 +452,9 @@ function defaultAnswer(): StoredAnswer {
 }
 
 export default function EgeProfileDiagnostic() {
+    const isTeacherMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("teacher") === "1";
   const [screen, setScreen] = useState<"home" | "test" | "bridge" | "photos" | "review" | "result">("home");
   const [name, setName] = useState("");
   const [accepted, setAccepted] = useState(false);
@@ -994,16 +997,65 @@ export default function EgeProfileDiagnostic() {
           <p>Эти задания не оцениваются автоматически: важны полнота решения, обоснования и оформление.</p>
         </section>
 
-        <section className="final-cta oge-final">
-          <div><p className="kicker">Получить разбор и рекомендации</p><h2>Отправь результат и фотографии решений Лере</h2><p>Я проверю вторую часть, отмечу сильные стороны и темы для повторения, а затем помогу определить дальнейший план подготовки к профильному ЕГЭ.</p></div>
-          <div className="cta-actions oge-cta-actions">
-            <button className="button secondary" onClick={() => copyReport()}>Скопировать результат</button>
-            <button className="button secondary" onClick={downloadReport}>Скачать результат</button>
-            <a className="button primary" href={TELEGRAM_URL} target="_blank" rel="noreferrer" onClick={() => copyReport("Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений")}>Открыть Telegram Леры</a>
-            <button className="button secondary" onClick={restart}>Пройти ещё раз</button>
-          </div>
-          {toast && <p className="copy-toast" role="status">{toast}</p>}
-        </section>
+      <section className="final-cta oge-final">
+  <div>
+    <p className="kicker">
+      {isTeacherMode
+        ? "Следующий шаг"
+        : "Получить разбор и рекомендации"}
+    </p>
+
+    <h2>
+      {isTeacherMode
+        ? "Сохрани результат и передай его преподавателю"
+        : "Отправь результат и фотографии решений Лере"}
+    </h2>
+
+    <p>
+      {isTeacherMode
+        ? "Результат можно скопировать и отправить своему преподавателю вместе с фотографиями решений второй части."
+        : "Я проверю вторую часть, отмечу сильные стороны и темы для повторения, а затем помогу определить дальнейший план подготовки к профильному ЕГЭ."}
+    </p>
+  </div>
+
+  <div className="cta-actions oge-cta-actions">
+    <button
+      className="button secondary"
+      onClick={() => copyReport()}
+    >
+      Скопировать результат
+    </button>
+
+    {!isTeacherMode && (
+      <a
+        className="button primary"
+        href={TELEGRAM_URL}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() =>
+          copyReport(
+            "Результат скопирован. Вставь его в сообщение и прикрепи фотографии решений",
+          )
+        }
+      >
+        Обсудить результат
+      </a>
+    )}
+
+    <button
+      className="button secondary"
+      onClick={restart}
+    >
+      Пройти ещё раз
+    </button>
+  </div>
+
+  {toast && (
+    <p className="copy-toast" role="status">
+      {toast}
+    </p>
+  )}
+</section>
       </main>
     );
   }
