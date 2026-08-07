@@ -3116,3 +3116,24 @@ footer {
   margin-top: 14px;
   font-weight: 600;
 }
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.15;
+}
+
+.brand-title {
+  font-weight: 700;
+}
+
+.brand-author {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.65;
+}
+@media (max-width: 600px) {
+  .brand-author {
+    font-size: 10px;
+  }
+}
