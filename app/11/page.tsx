@@ -851,6 +851,9 @@ function GradeElevenDoodle() {
 }
 
 export default function GradeElevenDiagnostic() {
+    const isTeacherMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("teacher") === "1";
   const [screen, setScreen] = useState<"home" | "test" | "review" | "result">("home");
   const [name, setName] = useState("");
   const [accepted, setAccepted] = useState(false);
@@ -1277,15 +1280,70 @@ const telegramMessage = encodeURIComponent(resultText());
         </section>
 
         <section className="final-cta">
-          <div><p className="kicker">Следующий шаг</p><h2>{perfect ? "Можно двигаться дальше" : "Хочешь составить план повторения?"}</h2><p>{perfect ? "Результат относится только к выбранным разделам. Новые темы можно изучать дальше, периодически возвращаясь к пройденному." : "Разберём только те разделы, в которых диагностика показала пробелы."}</p></div>
-          <div className="cta-actions">
-            <button className="button secondary" onClick={() => copyResult()}>Скопировать результат</button>
-          <a className="button primary" href={`https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`} target="_blank" rel="noreferrer" onClick={() => copyResult("Результат скопирован. Вставь его в сообщение")}>Отправить результат Лере</a>
-            <button className="button secondary" onClick={restart}>Пройти ещё раз</button>
-          </div>
-          {copyState && <p className="copy-toast" role="status">{copyState}</p>}
-          {copyFallback && <div className="copy-fallback"><textarea readOnly value={copyFallback} /></div>}
-        </section>
+  <div>
+    <p className="kicker">Следующий шаг</p>
+
+    <h2>
+      {isTeacherMode
+        ? "Сохрани результат и передай его преподавателю"
+        : perfect
+          ? "Можно двигаться дальше"
+          : "Хочешь составить план повторения?"}
+    </h2>
+
+    <p>
+      {isTeacherMode
+        ? "Результат можно скопировать и отправить своему преподавателю."
+        : perfect
+          ? "Результат относится только к выбранным разделам. Новые темы можно изучать дальше, периодически возвращаясь к пройденному."
+          : "Разберём только те разделы, в которых диагностика показала пробелы."}
+    </p>
+  </div>
+
+  <div className="cta-actions">
+    <button
+      className="button secondary"
+      onClick={() => copyResult()}
+    >
+      Скопировать результат
+    </button>
+
+    {!isTeacherMode && (
+      <a
+        className="button primary"
+        href={`https://t.me/${TELEGRAM_USERNAME}?text=${telegramMessage}`}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() =>
+          copyResult(
+            "Результат скопирован. Вставь его в сообщение",
+          )
+        }
+      >
+        Обсудить результат
+      </a>
+    )}
+
+    <button
+      className="button secondary"
+      onClick={restart}
+    >
+      Пройти ещё раз
+    </button>
+  </div>
+
+  {copyState && (
+    <p className="copy-toast" role="status">
+      {copyState}
+    </p>
+  )}
+
+  {copyFallback && (
+    <div className="copy-fallback">
+      <textarea readOnly value={copyFallback} />
+    </div>
+  )}
+</section>
       </main>
     );
   }
