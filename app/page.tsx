@@ -239,20 +239,20 @@ href={diagnostic.href}
           </a>
         </div>
       </section>
+  <footer>
+    <div className="brand">
+      <span className="brand-mark">∿</span>
 
-<footer>
-  <div className="brand">
-    <span className="brand-mark">∿</span>
-
-    <div className="brand-text">
-      <span className="brand-title">Математика без стресса</span>
-      <span className="brand-author">
-        Валерия Евгеньевна · автор диагностик
-      </span>
+      <div className="brand-text">
+        <span className="brand-title">Математика без стресса</span>
+        <span className="brand-author">
+          Валерия Евгеньевна · автор диагностик
+        </span>
+      </div>
     </div>
-  </div>
 
-  <p>Проверяем знания, а не ставим оценки ♡</p>
-</footer>
+    <p>Проверяем знания, а не ставим оценки ♡</p>
+  </footer>
+</main>
   );
 }
