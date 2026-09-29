@@ -1125,7 +1125,13 @@ if (screen === "result") {
           >
             Скопировать результат
           </button>
-
+<button
+  type="button"
+  className="button secondary"
+  onClick={download}
+>
+  📥 Скачать результат
+</button>
           {!isTeacherMode && (
             <a
               className="button primary"
@@ -1171,13 +1177,7 @@ if (screen === "result") {
               Скопировать вручную
             </button>
             
-<button
-  type="button"
-  className="button secondary"
-  onClick={download}
->
-  📥 Скачать результат
-</button>
+
 
           </div>
         )}
