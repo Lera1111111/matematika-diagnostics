@@ -1170,6 +1170,15 @@ if (screen === "result") {
             >
               Скопировать вручную
             </button>
+            
+<button
+  type="button"
+  className="button secondary"
+  onClick={download}
+>
+  📥 Скачать результат
+</button>
+
           </div>
         )}
       </section>
