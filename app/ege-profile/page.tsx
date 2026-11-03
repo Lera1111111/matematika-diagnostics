@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -446,6 +449,19 @@ function PhotoUploader({
     </div>
   );
 }
+
+const profileReportAnswers: Record<number, string> = {
+  1: "20",
+  2: "10",
+  3: "8",
+  4: "0,3",
+  5: "0,65",
+  6: "0",
+  7: "4/5",
+  8: "[1; 3]",
+  10: "4",
+  12: "3",
+};
 
 function defaultAnswer(): StoredAnswer {
   return { value: "", extra: "", explanation: "", dontKnow: false };
@@ -996,6 +1012,132 @@ export default function EgeProfileDiagnostic() {
           <div>{[13, 15, 17, 18].map((id) => <span key={id}>№{id} — {manualStatus(id)}</span>)}</div>
           <p>Эти задания не оцениваются автоматически: важны полнота решения, обоснования и оформление.</p>
         </section>
+
+<section className="result-section">
+  <div className="section-heading">
+    <div>
+      <p className="kicker">Подробный отчёт</p>
+      <h2>Результаты по каждому заданию</h2>
+    </div>
+  </div>
+
+  <DiagnosticAnswerTable
+    rows={questions.map((question) => {
+      const a = answers[question.id] || defaultAnswer();
+      const item = autoItems.find(
+        (result) => result.questionId === question.id
+      );
+
+      const isManual = question.type !== "number";
+
+      const studentParts = [];
+
+      if (question.id === 13) {
+        studentParts.push(`а) ${a.value || "—"}`);
+        studentParts.push(`б) ${a.extra || "—"}`);
+      } else if (question.id === 17) {
+        studentParts.push(
+          `а) ${a.explanation || "Решение не записано"}`
+        );
+        studentParts.push(`б) ${a.value || "—"}`);
+      } else {
+        studentParts.push(a.value || "Нет ответа");
+      }
+
+      return {
+        id: question.id,
+
+        question: (
+          <div className="report-question-content">
+            {question.id === 8 ? (
+              <>
+                <p>
+                  Высота тела изменяется по закону:
+                </p>
+                <div className="report-question-formula">
+                  <MathFormula
+                    expression={String.raw`h(t)=20t-5t^2`}
+                  />
+                </div>
+                <p>
+                  В течение какого промежутка времени
+                  тело находилось на высоте не менее
+                  15 метров?
+                </p>
+              </>
+            ) : (
+              <p>{question.prompt}</p>
+            )}
+
+            {question.id === 13 && (
+              <p>
+                б) Найдите корни, принадлежащие отрезку:
+              </p>
+            )}
+
+            {question.id === 13 && (
+              <MathFormula
+                expression={String.raw`\left[-\pi;\frac{3\pi}{2}\right]`}
+              />
+            )}
+
+            {question.expression && (
+              <div className="report-question-formula">
+                <MathFormula expression={question.expression} />
+              </div>
+            )}
+
+            {question.diagram && (
+              <ProfileDiagram kind={question.diagram} />
+            )}
+
+            {question.note && (
+              <p className="profile-note">
+                {question.note}
+              </p>
+            )}
+
+            {a.explanation && question.id !== 17 && (
+              <p className="report-explanation">
+                <strong>Ход решения:</strong> {a.explanation}
+              </p>
+            )}
+          </div>
+        ),
+
+        studentAnswer: a.dontKnow
+          ? "Не знаю, как решить"
+          : (
+            <MathText text={studentParts.join("; ")} />
+          ),
+
+        correctAnswer: isManual
+          ? "Проверяет преподаватель"
+          : (
+            <MathText
+              text={profileReportAnswers[question.id]}
+            />
+          ),
+
+        status: (
+          a.dontKnow
+            ? "unknown"
+            : isManual
+              ? "manual"
+              : item?.correct
+                ? "correct"
+                : "wrong"
+        ) as "correct" | "wrong" | "unknown" | "manual",
+
+        points: isManual
+          ? undefined
+          : item?.correct
+            ? "1/1"
+            : "0/1",
+      };
+    })}
+  />
+</section>
 
       <section className="final-cta oge-final">
   <div>
