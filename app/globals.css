@@ -3240,3 +3240,132 @@ footer {
     padding: 11px;
   }
 }
+
+/* Подробный отчёт: карточки заданий */
+
+.diagnostic-report-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.diagnostic-answer-card {
+  background: #fff;
+  border: 1px solid #e9e2ed;
+  border-radius: 18px;
+  padding: 22px;
+  min-width: 0;
+}
+
+.diagnostic-answer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.diagnostic-answer-header strong {
+  font-size: 17px;
+  color: #55436d;
+}
+
+.diagnostic-answer-question {
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+.report-question-content > p {
+  margin: 0 0 12px;
+}
+
+.report-question-formula {
+  padding: 12px 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.report-question-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.report-question-options > div {
+  border: 1px solid #e9e2ed;
+  background: #faf7fd;
+  border-radius: 9px;
+  padding: 8px 12px;
+}
+
+.diagnostic-answer-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #eee8f3;
+}
+
+.diagnostic-answer-comparison > div {
+  min-width: 0;
+}
+
+.diagnostic-answer-comparison p {
+  color: #766f7f;
+  font-size: 12px;
+  margin: 0 0 8px;
+}
+
+.diagnostic-answer-value {
+  font-size: 16px;
+  font-weight: 600;
+  overflow-x: auto;
+  line-height: 1.8;
+}
+
+.report-math {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.report-status {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.report-status.correct {
+  background: #e4f5eb;
+  color: #23734b;
+}
+
+.report-status.wrong {
+  background: #fce8ec;
+  color: #a93849;
+}
+
+.report-status.unknown {
+  background: #fff1d8;
+  color: #805c25;
+}
+
+.report-status.manual {
+  background: #eee6fb;
+  color: #674fa6;
+}
+
+@media (max-width: 600px) {
+  .diagnostic-answer-card {
+    padding: 16px;
+  }
+
+  .diagnostic-answer-comparison {
+    grid-template-columns: 1fr;
+  }
+}
