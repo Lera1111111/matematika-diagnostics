@@ -3266,12 +3266,10 @@ footer {
 }
 
 .diagnostic-answer-card .katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
-  max-width: 100%;
+  margin: 14px 0;
   padding: 5px 0;
+  max-width: 100%;
 }
-
 .diagnostic-answer-question,
 .diagnostic-answer-value {
   min-width: 0;
@@ -3307,7 +3305,7 @@ footer {
 
 .diagnostic-answer-question {
   line-height: 1.7;
-  overflow-x: auto;
+  min-width: 0;
 }
 
 .report-question-content > p {
@@ -3317,7 +3315,7 @@ footer {
 .report-question-formula {
   padding: 12px 0;
   text-align: center;
-  overflow-x: auto;
+  min-width: 0;
 }
 
 .report-question-options {
@@ -3571,13 +3569,22 @@ footer {
   max-width: 100%;
 }
 
-.diagnostic-answer-question .katex,
-.diagnostic-answer-value .katex {
-  white-space: normal;
+/* Формулы в отчётах: сохраняем стандартный KaTeX */
+
+.diagnostic-answer-card .report-question-formula {
+  font-size: 16px;
 }
 
-.diagnostic-answer-card .katex svg {
-  margin: 0;
-  max-width: none;
-  display: inline;
+.diagnostic-answer-card .report-question-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.diagnostic-answer-card .report-question-options > div {
+  min-width: 0;
+}
+
+.diagnostic-answer-card .katex {
+  font-size: 1em;
 }
