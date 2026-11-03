@@ -3137,3 +3137,106 @@ footer {
     font-size: 10px;
   }
 }
+
+/* Подробный отчёт диагностики */
+
+.diagnostic-report {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.diagnostic-report-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e9e1f1;
+  border-radius: 16px;
+}
+
+.diagnostic-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.diagnostic-report-table th {
+  background: #f5f0fa;
+  color: #55436d;
+  padding: 15px 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.diagnostic-report-table td {
+  padding: 14px;
+  border-top: 1px solid #eee8f3;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.diagnostic-report-table tbody tr:nth-child(even) {
+  background: #fcfaff;
+}
+
+.diagnostic-report-table tbody tr:hover {
+  background: #f7f1fd;
+}
+
+.report-number {
+  font-weight: 700;
+  color: #674fa6;
+}
+
+.report-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.report-status.correct {
+  color: #23734b;
+  background: #e4f5eb;
+}
+
+.report-status.wrong {
+  color: #a93849;
+  background: #fce8ec;
+}
+
+.report-status.unknown {
+  color: #805c25;
+  background: #fff1d8;
+}
+
+.report-status.manual {
+  color: #674fa6;
+  background: #eee6fb;
+}
+
+.report-points {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #777;
+}
+
+.diagnostic-report-note {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #777;
+}
+
+@media (max-width: 700px) {
+  .diagnostic-report-table {
+    min-width: 680px;
+    font-size: 13px;
+  }
+
+  .diagnostic-report-table td,
+  .diagnostic-report-table th {
+    padding: 11px;
+  }
+}
