@@ -3489,3 +3489,68 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* Компактные карточки подробного отчёта */
+
+.diagnostic-report-list {
+  gap: 12px;
+  align-items: start;
+}
+
+.diagnostic-answer-card {
+  padding: 15px;
+}
+
+.diagnostic-answer-header {
+  margin-bottom: 10px;
+}
+
+.diagnostic-answer-question {
+  line-height: 1.5;
+}
+
+.diagnostic-answer-question .geometry-diagram {
+  width: 100%;
+  max-width: 100%;
+  margin: 12px auto;
+  padding: 10px;
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+/* Ограничиваем высоту геометрических рисунков */
+.diagnostic-answer-question .geometry-diagram svg {
+  display: block;
+  width: 100%;
+  max-height: 235px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Не оставляем огромных промежутков */
+.diagnostic-answer-comparison {
+  margin-top: 12px;
+  padding-top: 12px;
+  gap: 10px;
+}
+
+/* Уменьшаем отступы между вариантами ответов */
+.diagnostic-answer-question .report-question-options {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.diagnostic-answer-question .report-question-options > div {
+  padding: 6px 9px;
+}
+
+/* На телефонах оставляем одну колонку */
+@media (max-width: 850px) {
+  .diagnostic-report-list {
+    grid-template-columns: 1fr;
+  }
+
+  .diagnostic-answer-question .geometry-diagram svg {
+    max-height: 280px;
+  }
+}
