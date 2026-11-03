@@ -107,6 +107,7 @@ export type DiagnosticAnswerRow = {
   correctAnswer: ReactNode;
   status: "correct" | "wrong" | "unknown" | "manual";
   points?: string;
+  hideComparison?: boolean;
 };
 
 type Props = {
@@ -137,7 +138,7 @@ export default function DiagnosticAnswerTable({ rows }: Props) {
           <div className="diagnostic-answer-question">
   {row.question ?? row.topic ?? "Задание"}
 </div>
-
+{!row.hideComparison && (
           <div className="diagnostic-answer-comparison">
             <div>
               <p>Ответ ученика</p>
@@ -156,5 +157,6 @@ export default function DiagnosticAnswerTable({ rows }: Props) {
         </article>
       ))}
     </div>
+      )}
   );
 }
