@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -814,22 +817,62 @@ export default function EgeBaseDiagnosticPage() {
 
         <section className="result-section">
           <div className="section-heading"><div><p className="kicker">Все задания</p><h2>Посмотри ответы и статусы</h2></div></div>
-          <div className="overview-grid result-overview-grid">
-            {questions.map((question, index) => {
-              const answer = answerFor(question.id);
-              const status = statusFor(question);
-              return (
-                <details className="overview-item result-answer-item" key={question.id}>
-                  <summary><b>№{index + 1}</b><span>№{question.examNumber} ЕГЭ · {question.topic}</span></summary>
-                  <div className={`result-field-line ${status}`}>
-                    <p><b>Твой ответ:</b> {answer.dontKnow ? "Не знаю, как решить" : answer.value || "Нет ответа"}</p>
-                    <p><b>Правильный ответ:</b> {String(question.answer).replace(".", ",")}</p>
-                    <p><b>Статус:</b> {status === "correct" ? "Правильно" : status === "incorrect" ? "Неправильно" : status === "dont_know" ? "Не знаю" : "Нет ответа"}</p>
-                  </div>
-                </details>
-              );
-            })}
-          </div>
+         
+<DiagnosticAnswerTable
+  rows={questions.map((question, index) => {
+    const answer = answerFor(question.id);
+    const result = statusFor(question);
+
+    return {
+      id: index + 1,
+
+      question: (
+        <div className="report-question-content">
+          <p className="question-eyebrow">
+            Задание №{question.examNumber} ЕГЭ
+          </p>
+
+          <p>{question.prompt}</p>
+
+          {question.expression && (
+            <div className="report-question-formula">
+              <MathFormula expression={question.expression} />
+            </div>
+          )}
+
+          <QuestionVisual question={question} />
+        </div>
+      ),
+
+      studentAnswer: (
+        <MathText
+          text={
+            answer.dontKnow
+              ? "Не знаю, как решить"
+              : answer.value || "Нет ответа"
+          }
+        />
+      ),
+
+      correctAnswer: (
+        <MathText
+          text={String(question.answer).replace(".", ",")}
+        />
+      ),
+
+      status: (
+        result === "correct"
+          ? "correct"
+          : result === "incorrect"
+            ? "wrong"
+            : "unknown"
+      ) as "correct" | "wrong" | "unknown",
+
+      points: result === "correct" ? "1/1" : "0/1",
+    };
+  })}
+/>
+
         </section>
 
       <section className="final-cta">
