@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -313,6 +314,26 @@ export default function Home() {
 
   if (screen === "result") {
     const copy = resultCopy(score);
+    
+    const reportRows = questions.map((question) => {
+      const unknown = Boolean(dontKnow[question.id]);
+      const correct =
+        !unknown && question.check(answers[question.id] ?? "");
+
+      return {
+        id: question.id,
+        topic: question.topic,
+        studentAnswer: unknown
+          ? "Не знаю, как решить"
+          : formatStudentAnswer(question, answers[question.id]),
+        correctAnswer: question.correctLabel,
+        status: (
+          unknown ? "unknown" : correct ? "correct" : "wrong"
+        ) as "unknown" | "correct" | "wrong",
+        points: correct ? "1/1" : "0/1",
+      };
+    });
+
     const blocks = [...new Set(questions.map((question) => question.block))];
     const strongTopics = questions.filter((question) => !dontKnow[question.id] && question.check(answers[question.id] ?? "")).map((question) => question.topic);
     const missed = questions.filter((question) => !question.check(answers[question.id] ?? ""));
@@ -324,7 +345,18 @@ const telegramMessage = encodeURIComponent(reportText());
       <section className="result-section result-stats oge-stats"><article><strong>{score}/{questions.length}</strong><span>правильных ответов</span></article><article><strong>{unknownCount}</strong><span>«не знаю»</span></article><article><strong>{questions.length - score - unknownCount}</strong><span>ошибок</span></article></section>
       <section className="result-section"><div className="section-heading"><div><p className="kicker">Персональный разбор</p><h2>{studentName.trim()}, вот твой результат по темам</h2></div><span>Рекомендации только по твоим ответам</span></div><div className="block-results">{blocks.map((block) => { const blockQuestions = questions.filter((question) => question.block === block); const correct = blockQuestions.filter((question) => !dontKnow[question.id] && question.check(answers[question.id] ?? "")).length; const ratio = correct / blockQuestions.length; const isSingle = blockQuestions.length === 1; const status = ratio === 1 ? "Получается отлично" : isSingle ? "Стоит проверить тему" : ratio >= 0.5 ? "Стоит немного повторить" : "Важно восстановить"; return <article className={`block-card ${ratio === 1 ? "great" : ratio >= 0.5 ? "medium" : "restore"}`} key={block}><div className="block-topline"><span>{correct}/{blockQuestions.length}</span><b>{status}</b></div><h3>{block}</h3><p>{ratio === 1 ? "Здесь всё уверенно — можно двигаться дальше." : isSingle ? "В этом задании возникла трудность — стоит ещё раз проверить тему." : blockCopy[block]}</p></article>; })}</div></section>
       <section className="result-section split-result"><article className="topic-panel strong-panel"><p className="kicker">Сильные темы</p><h2>Уже получается</h2><div className="topic-tags">{strongTopics.map((topic) => <span key={topic}>✓ {topic}</span>)}{!strongTopics.length && <p>Сейчас важнее спокойно восстановить базу — начнём с главного.</p>}</div></article><article className="topic-panel repeat-panel"><p className="kicker">{missed.length ? "Точки роста" : "Можно двигаться дальше"}</p><h2>{missed.length ? "Что повторить" : "Тем для обязательного повторения нет"}</h2><div className="topic-tags">{missed.length ? missed.map((question) => <span key={question.id}>{question.topic}</span>) : <p>Все задания выполнены правильно. Можно переходить к новым темам 6 класса без повторения всей программы.</p>}</div></article></section>
-      <section className="result-section"><div className="section-heading"><div><p className="kicker">Все задания</p><h2>Посмотри ответы и статусы</h2></div></div><div className="overview-grid result-overview-grid">{questions.map((question) => { const isCorrect = !dontKnow[question.id] && question.check(answers[question.id] ?? ""); const stateClass = dontKnow[question.id] ? "unknown" : isCorrect ? "correct" : "wrong"; return <details className={`overview-item result-answer-item ${stateClass}`} key={question.id}><summary><b>№{question.id}</b><span>{dontKnow[question.id] ? "Не знаю" : isCorrect ? "Правильно" : "Неправильно"}</span></summary><div><p><b>Тема:</b> {question.topic}</p><p><b>Твой ответ:</b> {dontKnow[question.id] ? "Не знаю, как решить" : formatStudentAnswer(question, answers[question.id])}</p><p><b>Правильный ответ:</b> {question.correctLabel}</p></div></details>; })}</div></section>
+
+      <section className="result-section">
+        <div className="section-heading">
+          <div>
+            <p className="kicker">Подробный отчёт</p>
+            <h2>Результаты по каждому заданию</h2>
+          </div>
+        </div>
+
+        <DiagnosticAnswerTable rows={reportRows} />
+      </section>
+
       <section className="final-cta"><div><p className="kicker">Следующий шаг</p><h2>Хочешь повторить математику без стресса?</h2><p>{copy.card}</p></div><div className="cta-actions"><button className="button secondary" onClick={() => copyResult()}>Скопировать результат</button>{!isTeacherMode && (
   <a
     className="button primary"
@@ -340,6 +372,7 @@ const telegramMessage = encodeURIComponent(reportText());
 )}<button className="button secondary" onClick={restart}>Пройти тест ещё раз</button></div>{toast && <p className="copy-toast" role="status">{toast}</p>}{copyFallback && <div className="copy-fallback"><textarea readOnly value={copyFallback}/><button className="button secondary" onClick={() => copyResult()}>Скопировать вручную</button></div>}</section>
     </main>;
   }
+
 
 return (
   <main className="home-page">
