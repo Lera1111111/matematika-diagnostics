@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
-import DiagnosticAnswerTable from "../components/DiagnosticAnswerTable";
+import DiagnosticAnswerTable, {
+  MathExpression,
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -315,24 +318,93 @@ export default function Home() {
   if (screen === "result") {
     const copy = resultCopy(score);
     
+ 
     const reportRows = questions.map((question) => {
       const unknown = Boolean(dontKnow[question.id]);
       const correct =
         !unknown && question.check(answers[question.id] ?? "");
 
+      const studentAnswer = unknown
+        ? "Не знаю, как решить"
+        : formatStudentAnswer(question, answers[question.id]);
+
       return {
         id: question.id,
-        topic: question.topic,
-        studentAnswer: unknown
-          ? "Не знаю, как решить"
-          : formatStudentAnswer(question, answers[question.id]),
-        correctAnswer: question.correctLabel,
+
+        question: (
+          <div className="report-question-content">
+            <p>{<MathText text={question.prompt} />}</p>
+
+            {question.expression && (
+              <div className="report-question-formula">
+                <MathExpression
+                  expression={question.expression}
+                  displayMode
+                />
+              </div>
+            )}
+
+            {question.type === "table" && (
+              <div className="data-table" role="table">
+                {[
+                  ["Понедельник", "18 страниц"],
+                  ["Вторник", "25 страниц"],
+                  ["Среда", "17 страниц"],
+                  ["Четверг", "30 страниц"],
+                ].map(([day, pages]) => (
+                  <div role="row" key={day}>
+                    <span role="cell">{day}</span>
+                    <b role="cell">{pages}</b>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {question.type === "choice" && question.options && (
+              <div className="report-question-options">
+                {question.options.map((option) => (
+                  <div key={option}>
+                    <MathText text={option} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {question.type === "multi" && question.options && (
+              <div className="report-question-options">
+                {question.options.map((option) => (
+                  <div key={option}>{option}</div>
+                ))}
+              </div>
+            )}
+
+            {question.type === "double" && question.fields && (
+              <div className="report-question-options">
+                {question.fields.map((field) => (
+                  <div key={field.key}>
+                    {field.label}
+                    {field.suffix ? ` (${field.suffix})` : ""}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ),
+
+        studentAnswer: <MathText text={studentAnswer} />,
+
+        correctAnswer: (
+          <MathText text={question.correctLabel} />
+        ),
+
         status: (
           unknown ? "unknown" : correct ? "correct" : "wrong"
         ) as "unknown" | "correct" | "wrong",
+
         points: correct ? "1/1" : "0/1",
       };
     });
+
 
     const blocks = [...new Set(questions.map((question) => question.block))];
     const strongTopics = questions.filter((question) => !dontKnow[question.id] && question.check(answers[question.id] ?? "")).map((question) => question.topic);
