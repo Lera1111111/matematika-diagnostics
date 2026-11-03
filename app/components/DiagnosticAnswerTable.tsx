@@ -25,14 +25,36 @@ export function MathExpression({
 }
 
 // Преобразуем обычные дроби в математические.
+
 export function MathText({ text }: { text: string }) {
-  const parts = text.split(/(-?\d+\s+\d+\/\d+|-?\d+\/\d+)/g);
+  const parts = text.split(
+    /(\([^()]+\)\s*\/\s*\([^()]+\)|\([^()]+\)\s*\/\s*\d+|-?\d+\s+\d+\s*\/\s*\d+|-?\d+\s*\/\s*\d+|\d*√(?:\([^()]+\)|[a-zA-Zа-яА-Я0-9]+))/g
+  );
 
   return (
     <>
       {parts.map((part, index) => {
-        const mixed = part.match(/^(-?\d+)\s+(\d+)\/(\d+)$/);
-        const fraction = part.match(/^(-?)(\d+)\/(\d+)$/);
+        const value = part.trim();
+
+        // Корни: √3, 3√3, √(x+1)
+        const root = value.match(
+          /^(\d*)√(?:\(([^()]+)\)|([a-zA-Zа-яА-Я0-9]+))$/
+        );
+
+        if (root) {
+          const coefficient = root[1];
+          const radicand = root[2] || root[3];
+
+          return (
+            <MathExpression
+              key={index}
+              expression={`${coefficient}\\sqrt{${radicand}}`}
+            />
+          );
+        }
+
+        // Смешанные числа: 2 3/5
+        const mixed = value.match(/^(-?\d+)\s+(\d+)\/(\d+)$/);
 
         if (mixed) {
           return (
@@ -42,6 +64,23 @@ export function MathText({ text }: { text: string }) {
             />
           );
         }
+
+        // Дроби с переменными: (x+1)/2
+        const algebraic = value.match(
+          /^\(([^()]+)\)\s*\/\s*(?:\(([^()]+)\)|(\d+))$/
+        );
+
+        if (algebraic) {
+          return (
+            <MathExpression
+              key={index}
+              expression={`\\frac{${algebraic[1]}}{${algebraic[2] || algebraic[3]}}`}
+            />
+          );
+        }
+
+        // Обычные дроби: 3/8
+        const fraction = value.match(/^(-?)(\d+)\/(\d+)$/);
 
         if (fraction) {
           return (
@@ -57,6 +96,7 @@ export function MathText({ text }: { text: string }) {
     </>
   );
 }
+
 
 
 export type DiagnosticAnswerRow = {
