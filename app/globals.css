@@ -3433,10 +3433,8 @@ footer {
   }
 }
 
-/* Геометрические рисунки в отчёте */
 
-/* Масштабируем рисунки, но не SVG внутри KaTeX */
-
+/* Рисунки заданий — без вмешательства в KaTeX */
 .diagnostic-answer-question .geometry-diagram svg,
 .diagnostic-answer-question .graph-options svg,
 .diagnostic-answer-question .report-graph-options svg {
@@ -3445,6 +3443,7 @@ footer {
   height: auto;
   margin: 12px auto;
 }
+
 
   display: block;
   max-width: 100%;
