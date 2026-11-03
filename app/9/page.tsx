@@ -2,6 +2,9 @@
 
 import { createElement, useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -1535,65 +1538,70 @@ const telegramMessage = encodeURIComponent(resultText());
             </div>
           </div>
 
-          <div className="overview-grid result-overview-grid">
-            {questions.map((question, index) => {
-              const questionStatus = status(question);
-              const answer = answers[question.id];
+         
+<DiagnosticAnswerTable
+  rows={questions.map((question, index) => {
+    const result = status(question);
+    const answer = answers[question.id];
 
-              const stateClass =
-                questionStatus === "correct"
-                  ? "correct"
-                  : questionStatus === "incorrect"
-                    ? "wrong"
-                    : "unknown";
+    const studentAnswer = answer?.dontKnow
+      ? "Не знаю, как решить"
+      : answer?.value
+        ? answer.value.split(MULTI_SEPARATOR).join("; ")
+        : "Нет ответа";
 
-              const studentAnswer = answer?.dontKnow
-                ? "Не знаю, как решить"
-                : answer?.value
-                  ? answer.value
-                      .split(MULTI_SEPARATOR)
-                      .join("; ")
-                  : "Нет ответа";
+    return {
+      id: index + 1,
 
-              return (
-                <details
-                  className={`overview-item result-answer-item ${stateClass}`}
-                  key={question.id}
-                >
-                  <summary>
-                    <b>№{index + 1}</b>
+      question: (
+        <div className="report-question-content">
+          <p>{question.prompt}</p>
 
-                    <span>
-                      {questionStatus === "correct"
-                        ? "Правильно"
-                        : questionStatus === "incorrect"
-                          ? "Неправильно"
-                          : "Не знаю"}
-                    </span>
-                  </summary>
+          {question.expression && (
+            <div className="report-question-formula">
+              <MathFormula expression={question.expression} />
+            </div>
+          )}
 
-                  <div>
-                    <p>
-                      <b>Тема:</b> {question.block}
-                    </p>
+          {question.diagram && (
+            <GradeNineDiagram kind={question.diagram} />
+          )}
 
-                    <p>
-                      <b>Твой ответ:</b>{" "}
-                      {renderMathText(studentAnswer)}
-                    </p>
+          {question.note && (
+            <p className="diagram-note">{question.note}</p>
+          )}
 
-                    <p>
-                      <b>Правильный ответ:</b>{" "}
-                      {renderMathText(
-                        getCorrectAnswer(question),
-                      )}
-                    </p>
+          {question.options && (
+            <div className="report-question-options">
+              {question.options.map((option, index) => (
+                <div key={index}>
+                  <MathText text={option} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ),
 
-                  </div>
-                </details>
-              );
-            })}
-          </div>
+      studentAnswer: <MathText text={studentAnswer} />,
+
+      correctAnswer: (
+        <MathText text={getCorrectAnswer(question)} />
+      ),
+
+      status: (
+        result === "correct"
+          ? "correct"
+          : result === "incorrect"
+            ? "wrong"
+            : "unknown"
+      ) as "correct" | "wrong" | "unknown",
+
+      points: result === "correct" ? "1/1" : "0/1",
+    };
+  })}
+/>
+
         </section>
 
         <section className="final-cta">
