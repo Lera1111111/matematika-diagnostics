@@ -1560,7 +1560,10 @@ const telegramMessage = encodeURIComponent(resultText());
 
           {question.expression && (
             <div className="report-question-formula">
-              <MathFormula expression={question.expression} />
+             <MathExpression
+  expression={question.expression}
+  displayMode
+/>
             </div>
           )}
 
