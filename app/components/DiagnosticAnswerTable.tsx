@@ -114,6 +114,7 @@ type Props = {
   rows: DiagnosticAnswerRow[];
 };
 
+
 export default function DiagnosticAnswerTable({ rows }: Props) {
   const statusLabels = {
     correct: "Верно",
@@ -125,7 +126,10 @@ export default function DiagnosticAnswerTable({ rows }: Props) {
   return (
     <div className="diagnostic-report-list">
       {rows.map((row) => (
-        <article className="diagnostic-answer-card" key={row.id}>
+        <article
+          className="diagnostic-answer-card"
+          key={row.id}
+        >
           <div className="diagnostic-answer-header">
             <strong>Задание №{row.id}</strong>
 
@@ -136,27 +140,28 @@ export default function DiagnosticAnswerTable({ rows }: Props) {
           </div>
 
           <div className="diagnostic-answer-question">
-  {row.question ?? row.topic ?? "Задание"}
-</div>
-{!row.hideComparison && (
-          <div className="diagnostic-answer-comparison">
-            <div>
-              <p>Ответ ученика</p>
-              <div className="diagnostic-answer-value">
-                {row.studentAnswer}
-              </div>
-            </div>
-
-            <div>
-              <p>Правильный ответ</p>
-              <div className="diagnostic-answer-value">
-                {row.correctAnswer}
-              </div>
-            </div>
+            {row.question ?? row.topic ?? "Задание"}
           </div>
+
+          {!row.hideComparison && (
+            <div className="diagnostic-answer-comparison">
+              <div>
+                <p>Ответ ученика</p>
+                <div className="diagnostic-answer-value">
+                  {row.studentAnswer}
+                </div>
+              </div>
+
+              <div>
+                <p>Правильный ответ</p>
+                <div className="diagnostic-answer-value">
+                  {row.correctAnswer}
+                </div>
+              </div>
+            </div>
+          )}
         </article>
       ))}
     </div>
-      )}
   );
 }
