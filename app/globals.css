@@ -3451,3 +3451,41 @@ footer {
 .diagnostic-answer-question .report-question-options {
   overflow-wrap: anywhere;
 }
+
+/* Подпункты составных заданий */
+
+.report-subquestion {
+  border-top: 1px solid #eee8f3;
+  padding: 12px 0;
+  margin-top: 12px;
+}
+
+.report-subquestion > p {
+  margin: 0 0 10px;
+}
+
+.report-subquestion-answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.report-subquestion-answers > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.report-subquestion-answers small {
+  color: #766f7f;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .report-subquestion-answers {
+    grid-template-columns: 1fr;
+  }
+}
