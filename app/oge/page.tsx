@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import OgeReferenceModal from "../components/OgeReferenceModal";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -311,6 +314,24 @@ function PhotoUploader({
     </div>
   );
 }
+
+const ogeReportAnswers: Record<number, string> = {
+  1: "−1",
+  2: "80",
+  3: "25/16",
+  4: "9",
+  5: "а) −3; б) 2 и 3",
+  6: "−2,4; −7/3; −√5",
+  7: "28",
+  8: "24",
+  9: "Тариф Б; 500 рублей",
+  10: "y = −x + 1",
+  11: "(3; 4]",
+  12: "19/25",
+  13: "28",
+  14: "1",
+  15: "20",
+};
 
 function defaultAnswer(): StoredAnswer {
   return { value: "", extra: "", explanation: "", dontKnow: false };
@@ -830,6 +851,124 @@ export default function OgeEntryDiagnostic() {
           <p>Финальные ответы не оцениваются автоматически: важны обоснование, ход решения и записи на бумаге.</p>
         </section>
   
+
+<section className="result-section">
+  <div className="section-heading">
+    <div>
+      <p className="kicker">Подробный отчёт</p>
+      <h2>Все задания и ответы</h2>
+    </div>
+  </div>
+
+  <DiagnosticAnswerTable
+    rows={questions.map((question) => {
+      const a = answers[question.id] || defaultAnswer();
+      const isManual = question.id >= 16;
+
+      const items = autoItems.filter(
+        (item) => item.questionId === question.id
+      );
+
+      const earned = items.filter(
+        (item) => item.correct
+      ).length;
+
+      const studentAnswer = a.dontKnow
+        ? "Не знаю, как решить"
+        : question.type === "order"
+          ? order.join("; ")
+          : [a.value, a.extra]
+              .filter((value) => value?.trim())
+              .join("; ") || "Нет ответа";
+
+      return {
+        id: question.id,
+
+        question: (
+          <div className="report-question-content">
+            <p>{question.prompt}</p>
+
+            {question.expression && (
+              <div className="report-question-formula">
+                <MathFormula expression={question.expression} />
+              </div>
+            )}
+
+            {question.id === 9 && (
+              <div className="tariff-table">
+                <div className="tariff-head">
+                  <b>Тариф</b>
+                  <b>Плата</b>
+                  <b>Включено</b>
+                  <b>Сверх пакета</b>
+                </div>
+
+                {[
+                  ["А", "350 руб.", "10 ГБ", "40 руб. за 1 ГБ"],
+                  ["Б", "500 руб.", "20 ГБ", "35 руб. за 1 ГБ"],
+                  ["В", "0 руб.", "0 ГБ", "30 руб. за 1 ГБ"],
+                ].map((row) => (
+                  <div className="tariff-row" key={row[0]}>
+                    {row.map((cell, index) => (
+                      <span
+                        key={index}
+                        data-label={
+                          ["Тариф", "Плата", "Включено", "Сверх"][index]
+                        }
+                      >
+                        {cell}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {question.diagram && (
+              <OgeDiagram kind={question.diagram} />
+            )}
+
+            {question.options && (
+              <div className="report-question-options">
+                {question.options.map((option) => (
+                  <div key={option}>
+                    <MathText text={option} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {a.explanation && (
+              <p className="report-explanation">
+                <strong>Ход решения:</strong> {a.explanation}
+              </p>
+            )}
+          </div>
+        ),
+
+        studentAnswer: <MathText text={studentAnswer} />,
+
+        correctAnswer: isManual
+          ? "Проверяет преподаватель"
+          : <MathText text={ogeReportAnswers[question.id]} />,
+
+        status: (
+          a.dontKnow
+            ? "unknown"
+            : isManual
+              ? "manual"
+              : earned === items.length
+                ? "correct"
+                : "wrong"
+        ) as "correct" | "wrong" | "unknown" | "manual",
+
+        points: isManual
+          ? undefined
+          : `${earned}/${items.length}`,
+      };
+    })}
+  />
+</section>
 
         <section className="final-cta oge-final">
           <div>
