@@ -4,6 +4,7 @@ import { createElement, useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
 import DiagnosticAnswerTable, {
   MathText,
+  MathExpression,
 } from "../components/DiagnosticAnswerTable";
 
 declare global {
