@@ -58,9 +58,11 @@ export function MathText({ text }: { text: string }) {
   );
 }
 
+
 export type DiagnosticAnswerRow = {
   id: string | number;
-  question: ReactNode;
+  question?: ReactNode;
+  topic?: string;
   studentAnswer: ReactNode;
   correctAnswer: ReactNode;
   status: "correct" | "wrong" | "unknown" | "manual";
@@ -93,8 +95,8 @@ export default function DiagnosticAnswerTable({ rows }: Props) {
           </div>
 
           <div className="diagnostic-answer-question">
-            {row.question}
-          </div>
+  {row.question ?? row.topic ?? "Задание"}
+</div>
 
           <div className="diagnostic-answer-comparison">
             <div>
