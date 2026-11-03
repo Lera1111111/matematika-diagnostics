@@ -1343,8 +1343,9 @@ const telegramMessage = encodeURIComponent(resultText());
         </div>
       ),
 
-      studentAnswer: "Ответы указаны по пунктам выше",
-      correctAnswer: "Правильные ответы указаны выше",
+studentAnswer: null,
+correctAnswer: null,
+hideComparison: true,
 
       status: (
         correctCount === fieldResults.length
