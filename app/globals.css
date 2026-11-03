@@ -3433,3 +3433,21 @@ footer {
     grid-column: 1 / -1;
   }
 }
+
+/* Геометрические рисунки в отчёте */
+.diagnostic-answer-question svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px auto;
+}
+
+.diagnostic-answer-question .diagram-note {
+  font-size: 13px;
+  color: #766f7f;
+  margin-top: 8px;
+}
+
+.diagnostic-answer-question .report-question-options {
+  overflow-wrap: anywhere;
+}
