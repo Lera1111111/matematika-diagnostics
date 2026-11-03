@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import GeometryDiagram, { type DiagramKind } from "../components/GeometryDiagram";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -1575,56 +1578,61 @@ const telegramMessage = encodeURIComponent(reportText());
             </div>
           </div>
 
-          <div className="overview-grid result-overview-grid">
-            {questions.map((question) => {
-              const status = getStatus(question);
+          
+<DiagnosticAnswerTable
+  rows={questions.map((question) => {
+    const result = getStatus(question);
 
-              const stateClass =
-                status === "correct"
-                  ? "correct"
-                  : status === "incorrect"
-                    ? "wrong"
-                    : "unknown";
+    return {
+      id: question.id,
 
-              return (
-                <details
-                  className={`overview-item result-answer-item ${stateClass}`}
-                  key={question.id}
-                >
-                  <summary>
-                    <b>№{question.id}</b>
-                    <span>
-                      {status === "correct"
-                        ? "Правильно"
-                        : status === "incorrect"
-                          ? "Неправильно"
-                          : "Не знаю"}
-                    </span>
-                  </summary>
+      question: (
+        <div className="report-question-content">
+          <p>{question.prompt}</p>
 
-                  <div>
-                    <p>
-                      <b>Тема:</b> {question.topic}
-                    </p>
+          {question.expression && (
+            <div className="report-question-formula">
+              <MathFormula expression={question.expression} />
+            </div>
+          )}
 
-                    <p>
-                      <b>Твой ответ:</b>{" "}
-                      {formatAnswer(answers[question.id])}
-                    </p>
+          {question.diagram && (
+            <GeometryDiagram kind={question.diagram} />
+          )}
 
-                    <p>
-                      <b>Правильный ответ:</b>{" "}
-                      {question.correctLabel}
-                    </p>
+          {question.options && (
+            <div className="report-question-options">
+              {question.options.map((option, index) => (
+                <div key={index}>
+                  <MathText text={option} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ),
 
-                    <p className="solution">
-                      {question.solution}
-                    </p>
-                  </div>
-                </details>
-              );
-            })}
-          </div>
+      studentAnswer: (
+        <MathText text={formatAnswer(answers[question.id])} />
+      ),
+
+      correctAnswer: (
+        <MathText text={question.correctLabel} />
+      ),
+
+      status: (
+        result === "correct"
+          ? "correct"
+          : result === "incorrect"
+            ? "wrong"
+            : "unknown"
+      ) as "correct" | "wrong" | "unknown",
+
+      points: result === "correct" ? "1/1" : "0/1",
+    };
+  })}
+/>
+
         </section>
 
         <section className="final-cta">
