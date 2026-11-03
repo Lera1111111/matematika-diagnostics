@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -1256,27 +1259,106 @@ const telegramMessage = encodeURIComponent(resultText());
 
         <section className="result-section">
           <div className="section-heading"><div><p className="kicker">Все задания</p><h2>Посмотри ответы и статусы</h2></div></div>
-          <div className="overview-grid result-overview-grid">
-            {activeQuestions.map((question, index) => (
-              <details className="overview-item result-answer-item" key={question.id}>
-                <summary><b>№{index + 1}</b><span>{question.block}</span></summary>
+         
+<DiagnosticAnswerTable
+  rows={activeQuestions.map((question, index) => {
+    const fieldResults = question.fields.map((field) => ({
+      field,
+      answer: fieldAnswer(question.id, field.id),
+      status: fieldStatus(question, field),
+    }));
+
+    const correctCount = fieldResults.filter(
+      (item) => item.status === "correct"
+    ).length;
+
+    const allUnknown = fieldResults.every(
+      (item) =>
+        item.status === "dont_know" ||
+        item.status === "unanswered"
+    );
+
+    return {
+      id: index + 1,
+
+      question: (
+        <div className="report-question-content">
+          <p>{question.prompt}</p>
+
+          {question.expression && (
+            <div className="report-question-formula">
+              <MathFormula expression={question.expression} />
+            </div>
+          )}
+
+          {question.diagram && (
+            <Diagram kind={question.diagram} />
+          )}
+
+          {question.note && (
+            <p className="diagram-note">{question.note}</p>
+          )}
+
+          {fieldResults.map(({ field, answer, status }) => (
+            <div className="report-subquestion" key={field.id}>
+              {field.prompt && (
+                <p><strong>{field.prompt}</strong></p>
+              )}
+
+              <div className="report-subquestion-answers">
                 <div>
-                  {question.fields.map((field) => {
-                    const answer = fieldAnswer(question.id, field.id);
-                    const status = fieldStatus(question, field);
-                    return (
-                      <div className={`result-field-line ${status}`} key={field.id}>
-                        {field.prompt && <p><b>{field.prompt}</b></p>}
-                        <p><b>Твой ответ:</b> {answer.dontKnow ? "Не знаю, как решить" : answer.value || "Нет ответа"}</p>
-                        <p><b>Правильный ответ:</b> {getCorrectAnswer(field)}</p>
-                        <p><b>Статус:</b> {status === "correct" ? "Правильно" : status === "incorrect" ? "Неправильно" : status === "dont_know" ? "Не знаю" : "Нет ответа"}</p>
-                      </div>
-                    );
-                  })}
+                  <small>Ответ ученика</small>
+                  <MathText
+                    text={
+                      answer.dontKnow
+                        ? "Не знаю"
+                        : answer.value || "Нет ответа"
+                    }
+                  />
                 </div>
-              </details>
-            ))}
-          </div>
+
+                <div>
+                  <small>Правильный ответ</small>
+                  <MathText text={getCorrectAnswer(field)} />
+                </div>
+              </div>
+
+              <span
+                className={`report-status ${
+                  status === "correct"
+                    ? "correct"
+                    : status === "incorrect"
+                      ? "wrong"
+                      : "unknown"
+                }`}
+              >
+                {status === "correct"
+                  ? "Верно"
+                  : status === "incorrect"
+                    ? "Ошибка"
+                    : "Нет ответа"}
+              </span>
+            </div>
+          ))}
+        </div>
+      ),
+
+      studentAnswer: "Ответы указаны по пунктам выше",
+      correctAnswer: "Правильные ответы указаны выше",
+
+      status: (
+        correctCount === fieldResults.length
+          ? "correct"
+          : allUnknown
+            ? "unknown"
+            : "wrong"
+      ) as "correct" | "wrong" | "unknown",
+
+      points: `${correctCount}/${fieldResults.length}`,
+    };
+  })}
+/>
+
         </section>
 
         <section className="final-cta">
