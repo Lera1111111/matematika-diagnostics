@@ -3285,7 +3285,6 @@ footer {
 }
 
 .diagnostic-answer-question img,
-.diagnostic-answer-question svg,
 .diagnostic-answer-question canvas {
   max-width: 100%;
   height: auto;
@@ -3435,7 +3434,18 @@ footer {
 }
 
 /* Геометрические рисунки в отчёте */
-.diagnostic-answer-question svg {
+
+/* Масштабируем рисунки, но не SVG внутри KaTeX */
+
+.diagnostic-answer-question .geometry-diagram svg,
+.diagnostic-answer-question .graph-options svg,
+.diagnostic-answer-question .report-graph-options svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px auto;
+}
+
   display: block;
   max-width: 100%;
   height: auto;
@@ -3553,4 +3563,29 @@ footer {
   .diagnostic-answer-question .geometry-diagram svg {
     max-height: 280px;
   }
+}
+
+/* Убираем лишний скролл из карточек отчёта */
+
+.diagnostic-answer-question,
+.diagnostic-answer-value,
+.report-question-formula,
+.diagnostic-answer-card .katex-display {
+  overflow-x: visible;
+  overflow-y: visible;
+}
+
+.diagnostic-answer-card .katex-display {
+  max-width: 100%;
+}
+
+.diagnostic-answer-question .katex,
+.diagnostic-answer-value .katex {
+  white-space: normal;
+}
+
+.diagnostic-answer-card .katex svg {
+  margin: 0;
+  max-width: none;
+  display: inline;
 }
