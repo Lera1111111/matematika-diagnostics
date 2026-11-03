@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import OtherDiagnostics from "../components/OtherDiagnostics";
+import DiagnosticAnswerTable, {
+  MathText,
+} from "../components/DiagnosticAnswerTable";
 
 declare global {
   interface Window {
@@ -256,6 +259,29 @@ const questions: Question[] = [
     diagram: "isosceles-trapezoid",
   },
 ];
+
+const reportCorrectAnswers: Record<number, string> = {
+  1: "0,25",
+  2: "1200",
+  3: "630",
+  4: "3",
+  5: "9",
+  6: "9",
+  7: "40",
+  8: "−19/6; −√10; −3,1",
+  9: "Время: 8:00; повышение: 7 °C",
+  10: "60",
+  11: "(3x − 4)²",
+  12: "(x + 3)/x; x ≠ 0, x ≠ 3",
+  13: "0,5; 3",
+  14: "(2; 5), (5; 2)",
+  15: "[−1; 4]",
+  16: "Вверх; нули 1 и 3; вершина x = 2; график g1",
+  17: "a₁₀ = 29; S₁₀ = 110",
+  18: "3,5",
+  19: "5,25; 6; 3/8",
+  20: "6",
+};
 
 const blank = (): Answer => ({ value: "", extra: "", parts: [], explanation: "", dontKnow: false, reference: false });
 const normalize = (value: string) => value.trim().toLowerCase().replace(/[−–—]/g, "-").replace(/ё/g, "е").replace(/\s+/g, "").replace(/,/g, ".");
@@ -1090,6 +1116,134 @@ if (screen === "result") {
     </div>
   </section>
 )}
+
+<section className="result-section">
+  <div className="section-heading">
+    <div>
+      <p className="kicker">Подробный отчёт</p>
+      <h2>Все задания и ответы</h2>
+    </div>
+  </div>
+
+  <DiagnosticAnswerTable
+    rows={questions
+      .filter((question) => !advancedSkipped || question.id <= 20)
+      .map((question) => {
+        const a = answer(question.id);
+        const isManual = question.id >= 21;
+
+        const questionSkills = skills.filter(
+          (skill) => skill.questionId === question.id
+        );
+
+        const earned = questionSkills.filter(
+          (skill) => skill.correct
+        ).length;
+
+        const total = questionSkills.length;
+        const isCorrect = questionCorrect(question.id);
+
+        const studentParts = [
+          a.value,
+          a.extra,
+          ...a.parts,
+        ].filter((value) => value.trim());
+
+        if (question.id === 8 && !a.dontKnow) {
+          studentParts.splice(0, studentParts.length, ...order);
+        }
+
+        return {
+          id: question.id,
+
+          question: (
+            <div className="report-question-content">
+              <p>{question.prompt}</p>
+
+              {question.expression && (
+                <div className="report-question-formula">
+                  <MathFormula expression={question.expression} />
+                </div>
+              )}
+
+              {question.type === "table" && (
+                <div className="temperature-table">
+                  <div>
+                    <b>Время</b>
+                    {["0:00", "4:00", "8:00", "12:00", "16:00", "20:00"].map(
+                      (value) => <span key={value}>{value}</span>
+                    )}
+                  </div>
+                  <div>
+                    <b>Температура, °C</b>
+                    {[6, 3, 1, 5, 8, 7].map(
+                      (value, index) => (
+                        <span key={index}>{value}</span>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {question.diagram && (
+                <DiagnosticDiagram kind={question.diagram} />
+              )}
+
+              {question.id === 16 && (
+                <div className="graph-options report-graph-options">
+                  {graphOrder.map((id, index) => (
+                    <div key={id}>
+                      <span>Вариант {index + 1}</span>
+                      <GraphOption id={id} />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {a.explanation && (
+                <p className="report-explanation">
+                  <strong>Ход решения:</strong> {a.explanation}
+                </p>
+              )}
+            </div>
+          ),
+
+          studentAnswer: a.dontKnow ? (
+            "Не знаю, как решить"
+          ) : (
+            <div>
+              <MathText
+                text={studentParts.join("; ") || "Нет ответа"}
+              />
+              {isManual && (
+                <p className="report-manual-note">
+                  {manualStatus(question.id)}
+                </p>
+              )}
+            </div>
+          ),
+
+          correctAnswer: isManual
+            ? "Проверяет преподаватель"
+            : <MathText text={reportCorrectAnswers[question.id]} />,
+
+          status: (
+            a.dontKnow
+              ? "unknown"
+              : isManual
+                ? "manual"
+                : isCorrect
+                  ? "correct"
+                  : "wrong"
+          ) as "correct" | "wrong" | "unknown" | "manual",
+
+          points: isManual
+            ? undefined
+            : `${earned}/${total}`,
+        };
+      })}
+  />
+</section>
 
          <section className="final-cta oge-final">
         <div>
